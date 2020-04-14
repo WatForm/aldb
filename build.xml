@@ -1,0 +1,97 @@
+<project name="aldb" default="dist" basedir=".">
+    <description>A debugger for transition systems modelled in Alloy.</description>
+
+    <property name="src.main" location="src" />
+    <property name="src.test" location="test" />
+    <property name="bin" location="bin" />
+    <property name="bin.main" location="${bin}/main" />
+    <property name="bin.test" location="${bin}/test" />
+    <property name="dist" location="dist" />
+    <property name="lib" location="lib" />
+
+    <path id="classpath.test">
+        <pathelement location="${lib}/byte-buddy-1.10.5.jar"/>
+        <pathelement location="${lib}/byte-buddy-agent-1.10.5.jar"/>
+        <pathelement location="${lib}/junit-platform-console-standalone-1.5.2.jar"/>
+        <pathelement location="${lib}/mockito-core-3.3.2.jar"/>
+        <pathelement location="${lib}/objenesis.jar"/>
+        <pathelement location="${lib}/org.alloytools.alloy.dist-5.1.0.jar"/>
+        <pathelement location="${lib}/snakeyaml-1.25.jar"/>
+        <pathelement location="${lib}/system-rules-1.19.0.jar"/>
+        <pathelement location="${bin.main}"/>
+    </path>
+
+    <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask"
+        classpath="${lib}/one-jar-ant-task-0.97.jar" onerror="report" />
+
+    <target name="init">
+        <mkdir dir="${bin.main}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="compile" depends="init" description="compile the source ">
+        <javac srcdir="${src.main}" destdir="${bin.main}" includeantruntime="false" debug="true">
+            <classpath>
+                <fileset dir="${lib}">
+                    <exclude name="byte-buddy*.jar" />
+                    <exclude name="junit*.jar" />
+                    <exclude name="mockito-core*.jar" />
+                    <exclude name="objenesis*.jar" />
+                    <exclude name="one-jar-ant-task*.jar" />
+                    <exclude name="system-rules*.jar" />
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test-compile" depends="compile">
+        <mkdir dir="${bin.test}"/>
+        <javac srcdir="${src.test}" destdir="${bin.test}" includeantruntime="false">
+            <classpath refid="classpath.test"/>
+        </javac>
+    </target>
+
+    <target name="dist" depends="compile" description="generate the distribution">
+        <one-jar destfile="${dist}/aldb.jar">
+            <manifest>
+                <attribute name="One-Jar-Main-Class" value="core.Main" />
+            </manifest>
+            <main>
+                <fileset dir="${bin.main}">
+                    <include name="**/*.class" />
+                </fileset>
+            </main>
+            <lib>
+                <fileset dir="${lib}">
+                    <exclude name="byte-buddy*.jar" />
+                    <exclude name="junit*.jar" />
+                    <exclude name="mockito-core*.jar" />
+                    <exclude name="objenesis*.jar" />
+                    <exclude name="one-jar-ant-task*.jar" />
+                    <exclude name="system-rules*.jar" />
+                </fileset>
+            </lib>
+        </one-jar>
+    </target>
+
+    <target name="test" depends="test-compile, dist">
+        <junit printsummary="on" haltonfailure="yes" showoutput="yes" fork="true">
+            <classpath>
+                <fileset dir="${lib}">
+                    <exclude name="one-jar-ant-task*.jar" />
+                </fileset>
+                <path refid="classpath.test"/>
+                <pathelement location="${bin.test}"/>
+            </classpath>
+            <formatter type="brief" usefile="false" />
+            <batchtest fork="yes">
+                <fileset dir="${src.test}"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="clean">
+        <delete dir="${bin}" />
+        <delete dir="${dist}" />
+    </target>
+</project>

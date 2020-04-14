@@ -1,0 +1,2 @@
+# Name of the sig representing the main state in the Alloy model.
+stateSigName: Snapshot

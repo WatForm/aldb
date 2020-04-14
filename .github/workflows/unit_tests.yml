@@ -1,0 +1,14 @@
+name: CI
+
+on: [push]
+
+jobs:
+  unit-tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Unit tests
+        run: ant test
+
