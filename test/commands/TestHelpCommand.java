@@ -13,6 +13,7 @@ public class TestHelpCommand extends TestCommand {
     private final String help_all_commands = String.join("\n",
         "Available commands:",
         "",
+        "alias          -- Control the set of aliases used",
         "alt            -- Select an alternate execution path",
         "break          -- Control the set of constraints used",
         "current        -- Display the current state",

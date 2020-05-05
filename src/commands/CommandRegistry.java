@@ -4,6 +4,7 @@ public final class CommandRegistry {
     public final static Command NOT_FOUND = new NotFoundCommand();
     public final static Command EMPTY = new EmptyCommand();
     private final static Command[] commands = {
+        new AliasCommand(),
         new AltCommand(),
         new BreakCommand(),
         new CurrentCommand(),
