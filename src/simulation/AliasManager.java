@@ -31,6 +31,10 @@ public class AliasManager {
         aliases.clear();
     }
 
+    public String getPredicate(String alias) {
+        return aliases.get(alias);
+    }
+
     public String getFormattedAliases() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("\n%-16s%s\n", ALIAS_HEADER, PREDICATE_HEADER));
