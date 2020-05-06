@@ -8,7 +8,6 @@ import alloy.SigData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -95,7 +94,7 @@ public class StateNode {
             return toString();
         }
 
-        Map<String, List<String>> otherState = other.state;
+        SortedMap<String, List<String>> otherState = other.state;
 
         StringBuilder sb = new StringBuilder();
         for (String key : state.keySet()) {
@@ -158,7 +157,7 @@ public class StateNode {
      */
     public String getAlloyInitString() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, List<String>> entry : state.entrySet()) {
+        for (SortedMap.Entry<String, List<String>> entry : state.entrySet()) {
             List<String> vals = entry.getValue();
             StringBuilder alloyFormattedValsBuilder = new StringBuilder();
             String prefix = "";
