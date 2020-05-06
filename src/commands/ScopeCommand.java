@@ -26,27 +26,34 @@ public class ScopeCommand extends Command {
         }
 
         if (input.length == 1) {
-            System.out.println();
             Map<String, List<String>> scopes = simulationManager.getScopes();
-            for (String label : scopes.keySet()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(String.format("%s: %s ", label, AlloyConstants.BLOCK_INITIALIZER));
-                sb.append(String.format("%s %s", String.join(", ", scopes.get(label)), AlloyConstants.BLOCK_TERMINATOR));
-                System.out.println(sb.toString());
-            }
-            System.out.println();
+            System.out.println(stringForScopeSet(scopes));
             return;
         }
         String sigName = input[1];
         List<String> scope = simulationManager.getScopeForSig(sigName);
+        System.out.println(stringForSig(scope));
+    }
+
+    private String stringForScopeSet(Map<String, List<String>> scopes) {
+        StringBuilder sb = new StringBuilder();
+        for (String label : scopes.keySet()) {
+            sb.append(String.format("\n%s: %s ", label, AlloyConstants.BLOCK_INITIALIZER));
+            sb.append(String.format("%s %s", String.join(", ", scopes.get(label)), AlloyConstants.BLOCK_TERMINATOR));
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    private String stringForSig(List<String> scope) {
         if (scope == null) {
-            System.out.println(CommandConstants.SIG_NOT_FOUND);
-            return;
+            return CommandConstants.SIG_NOT_FOUND;
         }
-        System.out.println();
-        for (String s : scope) {
-            System.out.println(s);
-        }
-        System.out.println();
+        return String.format(
+            "\n%s %s %s\n",
+            AlloyConstants.BLOCK_INITIALIZER,
+            String.join(", ", scope),
+            AlloyConstants.BLOCK_TERMINATOR
+        );
     }
 }
