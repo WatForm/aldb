@@ -1,6 +1,7 @@
 package commands;
 
 import commands.BreakCommand;
+import simulation.AliasManager;
 import simulation.ConstraintManager;
 import simulation.SimulationManager;
 
@@ -12,6 +13,7 @@ import org.junit.Test;
 public class TestBreakCommand extends TestCommand {
     private final BreakCommand breakCommand = new BreakCommand();
     private final SimulationManager simulationManager = mock(SimulationManager.class);
+    private final AliasManager am = mock(AliasManager.class);
     private final ConstraintManager cm = mock(ConstraintManager.class);
 
     @Test
@@ -76,6 +78,7 @@ public class TestBreakCommand extends TestCommand {
     @Test
     public void testExecute_addConstraint() {
         when(simulationManager.isInitialized()).thenReturn(true);
+        when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.getConstraintManager()).thenReturn(cm);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
@@ -133,6 +136,7 @@ public class TestBreakCommand extends TestCommand {
         setupStreams();
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.validateConstraint(anyString())).thenReturn(false);
+        when(simulationManager.getAliasManager()).thenReturn(am);
         String[] input = {"break", "invalid"};
         String errMsg = String.format(CommandConstants.INVALID_CONSTRAINT, input[1]) + "\n";
         breakCommand.execute(input, simulationManager);
