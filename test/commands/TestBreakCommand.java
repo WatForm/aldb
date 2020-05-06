@@ -90,6 +90,23 @@ public class TestBreakCommand extends TestCommand {
     }
 
     @Test
+    public void testExecute_addAliasedConstraint() {
+        when(simulationManager.isInitialized()).thenReturn(true);
+        when(simulationManager.getAliasManager()).thenReturn(am);
+        when(simulationManager.getConstraintManager()).thenReturn(cm);
+        when(simulationManager.validateConstraint(anyString())).thenReturn(true);
+
+        String alias = "p1";
+        String predicate = "a=b";
+        when(am.isAlias(alias)).thenReturn(true);
+        when(am.getPredicate(alias)).thenReturn(predicate);
+        String[] input = {"break", alias};
+
+        breakCommand.execute(input, simulationManager);
+        verify(cm).addConstraint(predicate);
+    }
+
+    @Test
     public void testExecute_help() {
         setupStreams();
         String[] input = {"break"};

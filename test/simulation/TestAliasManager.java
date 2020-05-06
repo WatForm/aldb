@@ -16,17 +16,23 @@ public class TestAliasManager {
 
         am.addAlias(alias, predicate);
         assertTrue(am.isAlias(alias));
+        assertEquals(predicate, am.getPredicate(alias));
+        assertEquals(null, am.getPredicate(alias2));
         assertFalse(am.isAlias(alias2));
 
         am.addAlias(alias2, predicate);
         assertTrue(am.isAlias(alias));
         assertTrue(am.isAlias(alias2));
+        assertEquals(predicate, am.getPredicate(alias));
+        assertEquals(predicate, am.getPredicate(alias2));
 
         // Test overwriting.
         String predicate2 = "c=d";
-        am.addAlias(alias, predicate2);
+        am.addAlias(alias2, predicate2);
         assertTrue(am.isAlias(alias));
         assertTrue(am.isAlias(alias2));
+        assertEquals(predicate, am.getPredicate(alias));
+        assertEquals(predicate2, am.getPredicate(alias2));
     }
 
     @Test
