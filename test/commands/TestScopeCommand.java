@@ -58,7 +58,22 @@ public class TestScopeCommand extends TestCommand {
         String[] input = {"scope", "sig"};
         scope.execute(input, simulationManager);
         verify(simulationManager).getScopeForSig("sig");
-        String msg = "\nscope\n\n";
+        String msg = "\n{ scope }\n\n";
+        assertEquals(msg, outContent.toString());
+        restoreStreams();
+    }
+
+    @Test
+    public void testExecute_sigInputEmpty() {
+        setupStreams();
+        List<String> res = new ArrayList<>();
+        when(simulationManager.isInitialized()).thenReturn(true);
+        when(simulationManager.getScopeForSig(anyString())).thenReturn(res);
+
+        String[] input = {"scope", "sig"};
+        scope.execute(input, simulationManager);
+        verify(simulationManager).getScopeForSig("sig");
+        String msg = "\n{  }\n\n";
         assertEquals(msg, outContent.toString());
         restoreStreams();
     }

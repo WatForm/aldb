@@ -18,10 +18,11 @@ import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.Stack;
+import java.util.TreeMap;
 
 import org.yaml.snakeyaml.error.YAMLException;
 
@@ -29,7 +30,7 @@ public class SimulationManager {
     private File alloyModelFile;
     private String alloyModelString;
     private String alloyInitString;
-    private Map<String, List<String>> scopes;
+    private SortedMap<String, List<String>> scopes;
     private ParsingConf persistentParsingConf;  // Set by setconf - used across multiple models.
     private ParsingConf embeddedParsingConf;  // Set by load - used for the current model only.
     private SigData stateSigData;
@@ -42,7 +43,7 @@ public class SimulationManager {
     private boolean traceMode;
 
     public SimulationManager() {
-        scopes = new HashMap<>();
+        scopes = new TreeMap<>();
         statePath = new StatePath();
         stateGraph = new StateGraph();
         persistentParsingConf = new ParsingConf();

@@ -69,14 +69,22 @@ public class TestStateNode {
     public void testStringForProperty() {
         String expected = String.join("\n",
             "",
-            "string1",
-            "string2",
-            "string3",
+            "{ string1, string2, string3 }",
             ""
         );
         stateNode.addValueToField("f", "string1");
         stateNode.addValueToField("f", "string2");
         stateNode.addValueToField("f", "string3");
+        assertEquals(expected, stateNode.stringForProperty("f"));
+    }
+
+    @Test
+    public void testStringForProperty_empty() {
+        String expected = String.join("\n",
+            "",
+            "{  }",
+            ""
+        );
         assertEquals(expected, stateNode.stringForProperty("f"));
     }
 
@@ -182,8 +190,8 @@ public class TestStateNode {
     private Sig createNewSig() {
         Sig sigA = new Sig.PrimSig("A");
         Sig sigB = new Sig.PrimSig("B");
-        Sig.Field f1 = sigA.addField("f", sigB.lone_arrow_lone(sigB));
-        Sig.Field f2 = sigA.addField("g", sigB);
+        Sig.Field f1 = sigA.addField("g", sigB);
+        Sig.Field f2 = sigA.addField("f", sigB.lone_arrow_lone(sigB));
         return sigA;
     }
 }

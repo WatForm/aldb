@@ -164,27 +164,27 @@ public class TestSimulationManager {
         );
         String expectedCurrentState = String.join("\n",
             "",
-            "mode: { sitting }",
-            "players: { Player_0, Player_1, Player_2, Player_3 }",
             "chairs: { Chair_0, Chair_1, Chair_2 }",
+            "mode: { sitting }",
             "occupied: { Chair_0->Player_2, Chair_1->Player_1, Chair_2->Player_0 }",
+            "players: { Player_0, Player_1, Player_2, Player_3 }",
             ""
         );
         String expectedHistory = String.join("\n",
             "",
             "(-2)",
             "----",
-            "mode: { start }",
-            "players: { Player_0, Player_1, Player_2, Player_3 }",
             "chairs: { Chair_0, Chair_1, Chair_2 }",
+            "mode: { start }",
             "occupied: {  }",
+            "players: { Player_0, Player_1, Player_2, Player_3 }",
             "",
             "(-1)",
             "----",
-            "mode: { walking }",
-            "players: { Player_0, Player_1, Player_2, Player_3 }",
             "chairs: { Chair_0, Chair_1, Chair_2 }",
+            "mode: { walking }",
             "occupied: {  }",
+            "players: { Player_0, Player_1, Player_2, Player_3 }",
             ""
         );
 
