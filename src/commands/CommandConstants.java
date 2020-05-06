@@ -24,6 +24,17 @@ public class CommandConstants {
     public final static String UNTIL_FAILED = "Unable to find satisfying solution.";
     public final static String NO_MODEL_LOADED = "No model file specified.\nUse the \"load\" command.";
 
+    public final static String ALIAS_NAME = "alias";
+    public final static String ALIAS_DESCRIPTION = "Control the set of aliases used";
+    public final static String ALIAS_HELP = "Control the set of predicate aliases used.\n\n" +
+            "Usage:\n\n" +
+            "alias <alias> <predicate>  -- Add an alias\n" +
+            "alias -rm <alias>          -- Remove an alias\n" +
+            "alias -l                   -- List all aliases\n" +
+            "alias -c                   -- Clear aliases";
+    public final static String ALIAS_DNE = "Alias \"%s\" does not exist.";
+    public final static String[] ALIAS_SHORTHAND = {};
+
     public final static String CURRENT_NAME = "current";
     public final static String CURRENT_DESCRIPTION = "Display the current state";
     public final static String CURRENT_HELP = "Display the current state.\n\n" +

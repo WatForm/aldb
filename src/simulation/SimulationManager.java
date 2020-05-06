@@ -37,6 +37,7 @@ public class SimulationManager {
     private StatePath statePath;
     private StateGraph stateGraph;
     private Stack<A4Solution> activeSolutions;
+    private AliasManager aliasManager;
     private ConstraintManager constraintManager;
 
     private boolean traceMode;
@@ -48,6 +49,7 @@ public class SimulationManager {
         persistentParsingConf = new ParsingConf();
         embeddedParsingConf = null;
         activeSolutions = new Stack<>();
+        aliasManager = new AliasManager();
         constraintManager = new ConstraintManager();
 
         traceMode = false;
@@ -431,6 +433,10 @@ public class SimulationManager {
 
     public String getCurrentStateDiffString() {
         return statePath.getCurNode().getDiffString(statePath.getPrevNode());
+    }
+
+    public AliasManager getAliasManager() {
+        return aliasManager;
     }
 
     public ConstraintManager getConstraintManager() {
