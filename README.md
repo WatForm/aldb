@@ -23,7 +23,7 @@ This guide explains usage of ALDB, compatibility requirements for Alloy models, 
 
 ## Getting Started
 
-1. Download the latest JAR from the [releases](https://github.com/WatForm/aldb/releases) or clone this repo and build ALDB following the instructions in the [contributing guildlines](./CONTRIBUTING.md).
+1. Download the latest JAR from the [releases](https://github.com/WatForm/aldb/releases) or clone this repo and build ALDB following the instructions in the [contributing guildlines](./CONTRIBUTING.md). Note that the master branch points to the latest, unstable, development version of ALDB.
 
 2. Run ALDB from the command line:
     ```sh
@@ -79,6 +79,7 @@ Refer to the worked example in this guide for a sample of a concrete Alloy model
 
 Command | Description
 -- | --
+alias | Control the set of aliases used
 alt | Select an alternate execution path
 break | Control the set of constraints used
 current | Display the current state
@@ -95,6 +96,13 @@ trace | Load a saved Alloy XML instance
 until | Run until constraints are met
 
 ### Detailed Descriptions
+
+#### alias
+The `alias [-c] [-l] [-rm] <alias> <predicate>` command allows for assigning a shorthand alias for a predicate. These aliases can be used when adding constraints via the `break` command.
+
+Specify the `-c` option to clear all aliases.
+Specify the `-l` option to list all current aliases.
+Specify the `-rm` option to remove an alias.
 
 #### alt
 The `alt [-r]` command switches between alternative execution paths in the current trace. Multiple unique states can be reached for a given path length; this command allows the user to explore all those states.

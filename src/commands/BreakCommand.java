@@ -1,5 +1,6 @@
 package commands;
 
+import simulation.AliasManager;
 import simulation.ConstraintManager;
 import simulation.SimulationManager;
 
@@ -66,8 +67,13 @@ public class BreakCommand extends Command {
             String allConstraints = String.join(" ", Arrays.copyOfRange(input, 1, input.length));
             Matcher m = Pattern.compile(CommandConstants.CONSTRAINT_REGEX).matcher(allConstraints);
 
+            AliasManager am = simulationManager.getAliasManager();
             while (m.find()) {
                 String constraint = m.group(1).replace("\"", "");
+
+                if (am.isAlias(constraint)) {
+                    // TODO (liangdrew)
+                }
 
                 if (simulationManager.validateConstraint(constraint)) {
                     cm.addConstraint(constraint);
