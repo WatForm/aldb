@@ -47,6 +47,8 @@ public class StateGraph {
             if (nextNode == null) {
                 nextNode = node;
                 addNode(nextNode);
+            } else {
+                node.setIdentifier(nextNode.getIdentifier());
             }
 
             if (!curNode.getSteps().contains(nextNode)) {
