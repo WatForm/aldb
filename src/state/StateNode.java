@@ -7,16 +7,16 @@ import alloy.SigData;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * StateNode represents a single execution state of an Alloy transition system.
  */
 public class StateNode {
     private List<StateNode> steps; // outgoing edges (states that can be stepped to from this state)
-    private Map<String, List<String>> state; // the state that this node represents
+    private SortedMap<String, List<String>> state; // the state that this node represents
     private int id;
     private ParsingConf parsingConf;
     private SigData sigData;
@@ -25,7 +25,7 @@ public class StateNode {
         sigData = data;
         parsingConf = conf;
         steps = new ArrayList<>();
-        state = new HashMap<>();
+        state = new TreeMap<>();
 
         for (String field : sigData.getFields()) {
             state.put(field, new ArrayList<>());
@@ -94,7 +94,7 @@ public class StateNode {
             return toString();
         }
 
-        Map<String, List<String>> otherState = other.state;
+        SortedMap<String, List<String>> otherState = other.state;
 
         StringBuilder sb = new StringBuilder();
         for (String key : state.keySet()) {
@@ -157,7 +157,7 @@ public class StateNode {
      */
     public String getAlloyInitString() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, List<String>> entry : state.entrySet()) {
+        for (SortedMap.Entry<String, List<String>> entry : state.entrySet()) {
             List<String> vals = entry.getValue();
             StringBuilder alloyFormattedValsBuilder = new StringBuilder();
             String prefix = "";
