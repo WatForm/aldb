@@ -69,14 +69,22 @@ public class TestStateNode {
     public void testStringForProperty() {
         String expected = String.join("\n",
             "",
-            "string1",
-            "string2",
-            "string3",
+            "{ string1, string2, string3 }",
             ""
         );
         stateNode.addValueToField("f", "string1");
         stateNode.addValueToField("f", "string2");
         stateNode.addValueToField("f", "string3");
+        assertEquals(expected, stateNode.stringForProperty("f"));
+    }
+
+    @Test
+    public void testStringForProperty_empty() {
+        String expected = String.join("\n",
+            "",
+            "{  }",
+            ""
+        );
         assertEquals(expected, stateNode.stringForProperty("f"));
     }
 

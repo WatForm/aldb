@@ -77,12 +77,12 @@ public class StateNode {
             return "Property not found.";
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n");
-        for (String value : state.get(property)) {
-            sb.append(String.format("%s\n", value));
-        }
-        return sb.toString();
+        return String.format(
+            "\n%s %s %s\n",
+            AlloyConstants.BLOCK_INITIALIZER,
+            String.join(", ", state.get(property)),
+            AlloyConstants.BLOCK_TERMINATOR
+        );
     }
 
     /**
