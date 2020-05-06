@@ -7,10 +7,10 @@ import alloy.SigData;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * StateNode represents a single execution state of an Alloy transition system.
@@ -143,6 +143,8 @@ public class StateNode {
             if (vals == null) {
                 break;
             }
+            Collections.sort(vals);
+            Collections.sort(otherVals);
             if (!vals.equals(otherVals)) {
                 return false;
             }
