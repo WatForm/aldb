@@ -27,15 +27,15 @@ public class ScopeCommand extends Command {
 
         if (input.length == 1) {
             Map<String, List<String>> scopes = simulationManager.getScopes();
-            System.out.println(stringForScopeSet(scopes));
+            System.out.println(formattedScopes(scopes));
             return;
         }
         String sigName = input[1];
         List<String> scope = simulationManager.getScopeForSig(sigName);
-        System.out.println(stringForSig(scope));
+        System.out.println(formattedScope(scope));
     }
 
-    private String stringForScopeSet(Map<String, List<String>> scopes) {
+    private String formattedScopes(Map<String, List<String>> scopes) {
         StringBuilder sb = new StringBuilder();
         for (String label : scopes.keySet()) {
             sb.append(String.format("\n%s: %s ", label, AlloyConstants.BLOCK_INITIALIZER));
@@ -45,7 +45,7 @@ public class ScopeCommand extends Command {
         return sb.toString();
     }
 
-    private String stringForSig(List<String> scope) {
+    private String formattedScope(List<String> scope) {
         if (scope == null) {
             return CommandConstants.SIG_NOT_FOUND;
         }
