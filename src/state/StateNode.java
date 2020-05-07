@@ -6,7 +6,6 @@ import alloy.ParsingConf;
 import alloy.SigData;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -127,28 +126,7 @@ public class StateNode {
             return false;
         }
         final StateNode otherNode = (StateNode) other;
-        if (!state.keySet().equals(otherNode.state.keySet())) {
-            return false;
-        }
-        for (String key : state.keySet()) {
-            List<String> vals = state.get(key);
-            List<String> otherVals = otherNode.state.get(key);
-            if (vals == null && otherVals != null) {
-                return false;
-            }
-            if (otherVals == null && vals != null) {
-                return false;
-            }
-            if (vals == null) {
-                break;
-            }
-            Collections.sort(vals);
-            Collections.sort(otherVals);
-            if (!vals.equals(otherVals)) {
-                return false;
-            }
-        }
-        return true;
+        return state.equals(otherNode.state);
     }
 
     /**
