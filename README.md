@@ -250,6 +250,8 @@ Begin by loading the model into ALDB. There is no need for a configuration here 
 Reading model from models/river_crossing.als...done.
 (aldb) current
 
+S1
+----
 far: {  }
 near: { Chicken, Farmer, Fox, Grain }
 ```
@@ -260,6 +262,8 @@ The initial state is set as expected. Since the desired end state is known, usin
 (aldb) break "far = Object && no near"
 (aldb) until
 
+S8
+----
 far: { Chicken, Farmer, Fox, Grain }
 near: {  }
 ```
@@ -271,35 +275,49 @@ Observe that the desired state has been reached. Use the history command to show
 
 (-7)
 ----
+S1
+----
 far: {  }
 near: { Chicken, Farmer, Fox, Grain }
 
 (-6)
+----
+S2
 ----
 far: { Chicken, Farmer }
 near: { Fox, Grain }
 
 (-5)
 ----
+S3
+----
 far: { Chicken }
 near: { Farmer, Fox, Grain }
 
 (-4)
+----
+S4
 ----
 far: { Chicken, Farmer, Fox }
 near: { Grain }
 
 (-3)
 ----
+S5
+----
 far: { Fox }
 near: { Chicken, Farmer, Grain }
 
 (-2)
 ----
+S6
+----
 far: { Farmer, Fox, Grain }
 near: { Chicken }
 
 (-1)
+----
+S7
 ----
 far: { Fox, Grain }
 near: { Chicken, Farmer }
@@ -314,11 +332,15 @@ Alternatively, ALDB can incrementally explore the model’s state space by stepp
 Reading model from models/river_crossing.als...done.
 (aldb) current
 
+S1
+----
 far: {  }
 near: { Chicken, Farmer, Fox, Grain }
 
 (aldb) step
 
+S2
+----
 far: { Farmer, Grain }
 near: { Fox }
 ```
@@ -328,16 +350,22 @@ Observe that the reached state does not contain all the objects. The chicken is 
 ```
 (aldb) step
 
+S2
+----
 far: { Farmer, Grain }
 near: { Fox }
 
 (aldb) alt
 
+S3
+----
 far: { Farmer, Fox }
 near: { Chicken }
 
 (aldb) alt
 
+S4
+----
 far: { Chicken, Farmer }
 near: { Fox, Grain }
 ```
