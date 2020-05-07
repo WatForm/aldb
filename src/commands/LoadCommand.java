@@ -46,6 +46,8 @@ public class LoadCommand extends Command {
         System.out.printf(CommandConstants.READING_MODEL, filename);
 
         String tempModelFilename = TEMP_FILENAME_PREFIX + file.getName();
+        // Note that the temp model file must be created in the same directory as the input model
+        // in order for Alloy to correctly find imported submodules.
         File tempModelFile = new File(file.getParentFile(), tempModelFilename);
         tempModelFile.deleteOnExit();
 
