@@ -3,11 +3,13 @@ package commands;
 import alloy.AlloyUtils;
 import simulation.SimulationManager;
 
-import java.io.IOException;
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class LoadCommand extends Command {
+    private final static String TEMP_FILENAME_PREFIX = "_tmp_";
+
     public String getName() {
         return CommandConstants.LOAD_NAME;
     }
@@ -43,23 +45,18 @@ public class LoadCommand extends Command {
 
         System.out.printf(CommandConstants.READING_MODEL, filename);
 
-        String inputFileContents;
-        try {
-            inputFileContents = AlloyUtils.readFromFile(file);
-        } catch (IOException e) {
-            System.out.println(CommandConstants.FAILED_TO_READ_FILE);
-            return;
-        }
+        String tempModelFilename = TEMP_FILENAME_PREFIX + file.getName();
+        File tempModelFile = new File(file.getParentFile(), tempModelFilename);
+        tempModelFile.deleteOnExit();
 
-        File tmpModelFile;
         try {
-            tmpModelFile = AlloyUtils.createTmpFile(inputFileContents, file);
-        } catch (IOException e) {
+            Files.copy(file.toPath(), tempModelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
             System.out.println(CommandConstants.TMP_FILE_ERROR);
             return;
         }
 
-        if (simulationManager.initializeWithModel(tmpModelFile)) {
+        if (simulationManager.initializeWithModel(tempModelFile)) {
             System.out.println(CommandConstants.DONE);
         }
     }
