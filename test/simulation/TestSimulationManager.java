@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,6 +244,84 @@ public class TestSimulationManager {
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
         assertEquals(expectedHistory, sm.getHistory(1));
+    }
+
+    @Test
+    public void testPerformStep_withConstraintsSatisfiable() throws IOException {
+        initializeTestWithModelPath("models/river_crossing.als");
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
+        );
+        String expectedCurrentState = String.join("\n",
+            "",
+            "S3",
+            "----",
+            "far: { Chicken }",
+            "near: { Farmer, Fox, Grain }",
+            ""
+        );
+        String expectedHistory = String.join("\n",
+            "",
+            "(-2)",
+            "----",
+            "S1",
+            "----",
+            "far: {  }",
+            "near: { Chicken, Farmer, Fox, Grain }",
+            "",
+            "(-1)",
+            "----",
+            "S2",
+            "----",
+            "far: { Chicken, Farmer }",
+            "near: { Fox, Grain }",
+            ""
+        );
+
+        List<String> constraints = new ArrayList<String>(
+            Arrays.asList("Chicken in far", "(Farmer in near) and (Chicken in far)")
+        );
+        sm.initializeWithModel(modelFile);
+        sm.performStep(constraints.size(), constraints);
+        assertEquals(expectedDOTString, sm.getDOTString());
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(2));
+    }
+
+    @Test
+    public void testPerformStep_withConstraintsUnsatisfiable() throws IOException {
+        initializeTestWithModelPath("models/river_crossing.als");
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1",
+            "}",
+            ""
+        );
+        String expectedCurrentState = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "far: {  }",
+            "near: { Chicken, Farmer, Fox, Grain }",
+            ""
+        );
+        String expectedHistory = String.join("\n",
+            ""
+        );
+
+        List<String> constraints = new ArrayList<String>(
+            Arrays.asList("(Farmer in near) and (Farmer in far)")
+        );
+        sm.initializeWithModel(modelFile);
+        sm.performStep(constraints.size(), constraints);
+        assertEquals(expectedDOTString, sm.getDOTString());
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(2));
     }
 
     @Test

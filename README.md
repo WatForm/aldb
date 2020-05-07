@@ -98,7 +98,7 @@ until | Run until constraints are met
 ### Detailed Descriptions
 
 #### alias
-The `alias [-c] [-l] [-rm] <alias> <predicate>` command allows for assigning a shorthand alias for a predicate. These aliases can be used when adding constraints via the `break` command.
+The `alias [-c] [-l] [-rm] <alias> <predicate>` command allows for assigning a shorthand alias for a predicate. These aliases can be used when adding constraints via the `break` command or specifying constraints in the `step` command.
 
 Specify the `-c` option to clear all aliases.
 Specify the `-l` option to list all current aliases.
@@ -176,9 +176,13 @@ additionalSigScopes: {}
 Running `setconf` with no filename will set the above default options.
 
 #### step
-The `step [n]` command performs n state transitions from the current execution state, ending at one of the valid states for a length (current + n) state traversal from the initial state.
+The `step [n | constraints]` command performs n state transitions from the current execution state, ending at one of the valid states for a length (current + n) state traversal from the initial state.
 
 Specify an integer value of n >= 1. By default, n = 1.
+
+A list of constraints may also be specified, as a comma-separated list enclosed by square brackets.
+The number of items in the list is used to determine n.
+The i-th constraint is applied when performing the i-th transition.
 
 ![image](https://user-images.githubusercontent.com/13455356/79278678-347df000-7e7a-11ea-90d7-111733a448a6.png)
 

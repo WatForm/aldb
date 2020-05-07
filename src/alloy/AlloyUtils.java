@@ -73,33 +73,16 @@ public class AlloyUtils {
         return String.format(predicate, predicateName, stateSigName, contents);
     }
 
-    /**
-     * annotatedTransitionSystem generates Alloy code based on the following rules:
-     * 1. Use ordering module.
-     * 2. Add fact to initialize state.
-     * 3. Add fact to define state transitions.
-     * 4. Add command to run state transitions.
-     */
-    public static String annotatedTransitionSystem(String model, ParsingConf parsingConf, int steps, boolean until) {
-        String stateSigName = parsingConf.getStateSigName();
-        String initPredicateName = parsingConf.getInitPredicateName();
-        String transitionRelationName = parsingConf.getTransitionRelationName();
-        Map<String, Integer> additionalSigScopes = parsingConf.getAdditionalSigScopes();
-        String transitionRelationFact = String.format(
-            "fact { all s: %s, s': s.next { %s[s, s'] } }" + "\n\n", stateSigName, transitionRelationName
-        );
-        String sigScopes = String.format("run {%s} for exactly %d %s", until ? "break[last]" : "", steps + 1, stateSigName);
-        for (String sigScopeName : additionalSigScopes.keySet()) {
-            sigScopes += String.format(", exactly %d %s", additionalSigScopes.get(sigScopeName), sigScopeName);
-        }
-        return String.format(
-            String.format("open util/ordering[%s]" + "\n\n", stateSigName) +
-            model + "\n\n" +
-            String.format("fact { %s[first] }" + "\n\n", initPredicateName) +
-            transitionRelationFact +
-            sigScopes,
-            model
-        );
+    public static String annotatedTransitionSystem(String model, ParsingConf parsingConf, int steps) {
+        return annotatedTransitionSystem(model, parsingConf, steps, "");
+    }
+
+    public static String annotatedTransitionSystemStep(String model, ParsingConf parsingConf, int steps) {
+        return annotatedTransitionSystem(model, parsingConf, steps, "path[first]");
+    }
+
+    public static String annotatedTransitionSystemUntil(String model, ParsingConf parsingConf, int steps) {
+        return annotatedTransitionSystem(model, parsingConf, steps, "break[last]");
     }
 
     /**
@@ -124,6 +107,43 @@ public class AlloyUtils {
         );
     }
 
+    /**
+     * getPathPredicate creates a predicate that conforms to a path specified by
+     * the user.
+     * @param List<String>, SigData
+     * @return String
+     */
+    public static String getPathPredicate(List<String> rawConstraints, SigData sigData) {
+        StringBuilder sb = new StringBuilder();
+        StringBuilder stateInstanceBuilder = new StringBuilder("s");
+        List<String> auxiliaryPredicates = new ArrayList<String>();
+
+        for (int i = 0; i < rawConstraints.size(); i++) {
+            String rawConstraint = rawConstraints.get(i);
+            String auxiliaryPredicateName = String.format(AlloyConstants.PATH_AUXILIARY_PREDICATE_FORMAT, i);
+            String constraintString = getConstraint(rawConstraint, sigData.getFields());
+            String predicateBody = String.format("\t%s\n", constraintString);
+            sb.append(makeStatePredicate(
+                auxiliaryPredicateName,
+                sigData.getLabel(),
+                predicateBody
+            ));
+
+            stateInstanceBuilder.append(".next");
+            auxiliaryPredicates.add(String.format("%s[%s]", auxiliaryPredicateName, stateInstanceBuilder.toString()));
+        }
+
+        String constraintsString = String.join(String.format(" %s ", AlloyConstants.AND), auxiliaryPredicates);
+        String predicateBody = String.format("\t%s\n", constraintsString);
+
+        sb.append(makeStatePredicate(
+            AlloyConstants.PATH_PREDICATE_NAME,
+            sigData.getLabel(),
+            predicateBody
+        ));
+        return sb.toString();
+    }
+
     public static void writeToFile(String contents, File file) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write(contents);
@@ -143,6 +163,10 @@ public class AlloyUtils {
      * @return String
      */
     private static String getConstraint(String rawConstraint, Set<String> fields) {
+        if (rawConstraint.trim().isEmpty()) {
+            return AlloyConstants.ALWAYS_TRUE;
+        }
+
         StringBuilder constraint = new StringBuilder();
         StringBuilder buffer = new StringBuilder();
 
@@ -174,5 +198,34 @@ public class AlloyUtils {
         }
 
         return constraint.toString();
+    }
+
+    /**
+     * annotatedTransitionSystem generates Alloy code based on the following rules:
+     * 1. Use ordering module.
+     * 2. Add fact to initialize state.
+     * 3. Add fact to define state transitions.
+     * 4. Add command to run state transitions.
+     */
+    private static String annotatedTransitionSystem(String model, ParsingConf parsingConf, int steps, String runConstraint) {
+        String stateSigName = parsingConf.getStateSigName();
+        String initPredicateName = parsingConf.getInitPredicateName();
+        String transitionRelationName = parsingConf.getTransitionRelationName();
+        Map<String, Integer> additionalSigScopes = parsingConf.getAdditionalSigScopes();
+        String transitionRelationFact = String.format(
+            "fact { all s: %s, s': s.next { %s[s, s'] } }" + "\n\n", stateSigName, transitionRelationName
+        );
+        String sigScopes = String.format("run { %s } for exactly %d %s", runConstraint, steps + 1, stateSigName);
+        for (String sigScopeName : additionalSigScopes.keySet()) {
+            sigScopes += String.format(", exactly %d %s", additionalSigScopes.get(sigScopeName), sigScopeName);
+        }
+        return String.format(
+            String.format("open util/ordering[%s]" + "\n\n", stateSigName) +
+            model + "\n\n" +
+            String.format("fact { %s[first] }" + "\n\n", initPredicateName) +
+            transitionRelationFact +
+            sigScopes,
+            model
+        );
     }
 }
