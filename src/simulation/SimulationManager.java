@@ -191,6 +191,16 @@ public class SimulationManager {
             return false;
         }
 
+        evaluateScopes(sol);
+
+        Sig stateSig = AlloyInterface.getSigFromA4Solution(sol, getParsingConf().getStateSigName());
+        if (stateSig == null) {
+            System.out.printf("error. Sig %s not found.\n", getParsingConf().getStateSigName());
+            return false;
+        }
+
+        stateSigData = new SigData(stateSig);
+
         List<StateNode> stateNodes = getStateNodesForA4Solution(sol);
         if (stateNodes.isEmpty()) {
             return false;
