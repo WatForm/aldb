@@ -172,30 +172,6 @@ public class TestAlloyUtils {
         assertEquals(expected, AlloyUtils.getConcreteSigsDefinition(sigScopes));
     }
 
-    @Test
-    public void testCreateTmpFile() throws IOException {
-        File file = new File("/tmp/sample.als");
-        String contents = "Hello World";
-        file.createNewFile();
-        File tmpFile = AlloyUtils.createTmpFile(contents, file);
-        assertTrue(tmpFile.exists());
-        assertEquals("_tmp_" + file.getName(), tmpFile.getName());
-        assertEquals(file.getParent(), tmpFile.getParent());
-        file.delete();
-    }
-
-    @Test
-    public void testCreateTmpFile_nullParentPath() throws IOException {
-        File file = new File("sample.als");
-        String contents = "Hello World";
-        file.createNewFile();
-        File tmpFile = AlloyUtils.createTmpFile(contents, file);
-        assertTrue(tmpFile.exists());
-        assertEquals("_tmp_" + file.getName(), tmpFile.getName());
-        assertEquals(file.getParent(), tmpFile.getParent());
-        file.delete();
-    }
-
     private Sig createNewSig() {
         Sig sigA = new Sig.PrimSig("A");
         Sig sigB = new Sig.PrimSig("B");
