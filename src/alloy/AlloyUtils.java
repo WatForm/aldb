@@ -124,24 +124,6 @@ public class AlloyUtils {
         );
     }
 
-    /**
-     * createTmpFile creates a new file in the same directory as the given file.
-     * It then writes the contents into the new file and will delete it once the
-     * JVM terminates. This is required in Alloy to support models with user
-     * created imports as it can only find the submodules in the original file path.
-     * @param String, File
-     * @return File
-     */
-    public static File createTmpFile(String contents, File file) throws IOException {
-        String filename = "_tmp_" + file.getName();
-        File tmpFile = new File(file.getParentFile(), filename);
-
-        writeToFile(contents, tmpFile);
-        tmpFile.deleteOnExit();
-
-        return tmpFile;
-    }
-
     public static void writeToFile(String contents, File file) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write(contents);
