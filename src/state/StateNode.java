@@ -97,7 +97,7 @@ public class StateNode {
         SortedMap<String, List<String>> otherState = other.state;
 
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("\nS%d\n----", id));
+        sb.append(String.format("\nS%d -> S%d\n------------", other.id, id));
         for (String key : state.keySet()) {
             if (!otherState.containsKey(key)) {
                 continue;

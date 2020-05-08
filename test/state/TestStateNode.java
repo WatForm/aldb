@@ -107,8 +107,8 @@ public class TestStateNode {
         StateNode stateNode2 = new StateNode(sigData, new ParsingConf());
         String expected = String.join("\n",
             "",
-            "S1",
-            "----",
+            "S0 -> S1",
+            "------------",
             "f: { string1, string2 }",
             ""
         );
