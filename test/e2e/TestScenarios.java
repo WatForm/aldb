@@ -82,6 +82,68 @@ public class TestScenarios {
     }
 
     @Test
+    public void testTraceFGS() throws Exception {
+        runALDB(
+            "setconf traces/fgs_conf.yml",
+            "trace traces/fgs_counterexample.xml",
+            "step",
+            "step"
+        );
+        assertOutput(
+            "Setting parsing options from traces/fgs_conf.yml...done.",
+            "Reading trace from traces/fgs_counterexample.xml...done.",
+            "",
+            "FlightModes_NAV_Selected: { boolean/True }",
+            "stable: { boolean/False }",
+            "",
+            "",
+            "FlightModes_ALTSEL_Selected: { boolean/True }",
+            "FlightModes_FD_On: { boolean/True }",
+            "FlightModes_HDG_Switch_Pressed: { boolean/False }",
+            "FlightModes_Modes_On: { boolean/True }",
+            "FlightModes_NAV_Capture_Condition_Met: { boolean/True }",
+            "FlightModes_NAV_Selected: { boolean/False }",
+            "FlightModes_NAV_Switch_Pressed: { boolean/False }",
+            "FlightModes_Pilot_Flying_Transfer: { boolean/True }",
+            "FlightModes_Selected_NAV_Frequency_Changed: { boolean/False }",
+            "stable: { boolean/True }",
+            ""
+        );
+    }
+
+    @Test
+    public void testTraceFGS_afterLoad() throws Exception {
+        runALDB(
+            "load models/switch.als",
+            "setconf traces/fgs_conf.yml",
+            "trace traces/fgs_counterexample.xml",
+            "step",
+            "step"
+        );
+        assertOutput(
+            "Reading model from models/switch.als...done.",
+            "Setting parsing options from traces/fgs_conf.yml...done.",
+            "Reading trace from traces/fgs_counterexample.xml...done.",
+            "",
+            "FlightModes_NAV_Selected: { boolean/True }",
+            "stable: { boolean/False }",
+            "",
+            "",
+            "FlightModes_ALTSEL_Selected: { boolean/True }",
+            "FlightModes_FD_On: { boolean/True }",
+            "FlightModes_HDG_Switch_Pressed: { boolean/False }",
+            "FlightModes_Modes_On: { boolean/True }",
+            "FlightModes_NAV_Capture_Condition_Met: { boolean/True }",
+            "FlightModes_NAV_Selected: { boolean/False }",
+            "FlightModes_NAV_Switch_Pressed: { boolean/False }",
+            "FlightModes_Pilot_Flying_Transfer: { boolean/True }",
+            "FlightModes_Selected_NAV_Frequency_Changed: { boolean/False }",
+            "stable: { boolean/True }",
+            ""
+        );
+    }
+
+    @Test
     public void testLoadIdempotent_noEmbeddedConf() throws Exception {
         runALDB(
             "load models/river_crossing.als",
