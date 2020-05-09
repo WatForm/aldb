@@ -34,6 +34,8 @@ public class TestStateNode {
     public void testToString() {
         String expected = String.join("\n",
             "",
+            "S1",
+            "----",
             "f: { string1, string2 }",
             "g: { string }",
             ""
@@ -41,6 +43,7 @@ public class TestStateNode {
         stateNode.addValueToField("f", "string1");
         stateNode.addValueToField("f", "string2");
         stateNode.addValueToField("g", "string");
+        stateNode.setIdentifier(1);
         assertEquals(expected, stateNode.toString());
     }
 
@@ -48,6 +51,8 @@ public class TestStateNode {
     public void testAddValueToField_sortOrder() {
         String expected = String.join("\n",
             "",
+            "S2",
+            "----",
             "f: { A, B, R, a, b }",
             "g: { 1, 2, 3, 4, 5 }",
             ""
@@ -62,6 +67,7 @@ public class TestStateNode {
         stateNode.addValueToField("g", "3");
         stateNode.addValueToField("g", "1");
         stateNode.addValueToField("g", "2");
+        stateNode.setIdentifier(2);
         assertEquals(expected, stateNode.toString());
     }
 
@@ -101,11 +107,14 @@ public class TestStateNode {
         StateNode stateNode2 = new StateNode(sigData, new ParsingConf());
         String expected = String.join("\n",
             "",
+            "S0 -> S1",
+            "------------",
             "f: { string1, string2 }",
             ""
         );
         stateNode.addValueToField("f", "string1");
         stateNode.addValueToField("f", "string2");
+        stateNode.setIdentifier(1);
         assertEquals(expected, stateNode.getDiffString(stateNode2));
     }
 
@@ -113,6 +122,8 @@ public class TestStateNode {
     public void testGetDiffString_null() {
         String expected = String.join("\n",
             "",
+            "S1",
+            "----",
             "f: { string1, string2 }",
             "g: { string }",
             ""
@@ -120,6 +131,7 @@ public class TestStateNode {
         stateNode.addValueToField("f", "string1");
         stateNode.addValueToField("f", "string2");
         stateNode.addValueToField("g", "string");
+        stateNode.setIdentifier(1);
         assertEquals(expected, stateNode.getDiffString(null));
     }
 

@@ -119,6 +119,8 @@ public class TestSimulationManager {
         );
         String expectedCurrentState = String.join("\n",
             "",
+            "S1",
+            "----",
             "a: { On }",
             "b: { Off }",
             ""
@@ -127,10 +129,14 @@ public class TestSimulationManager {
             "",
             "(-2)",
             "----",
+            "S1",
+            "----",
             "a: { On }",
             "b: { Off }",
             "",
             "(-1)",
+            "----",
+            "S2",
             "----",
             "a: { Off }",
             "b: { On }",
@@ -164,6 +170,8 @@ public class TestSimulationManager {
         );
         String expectedCurrentState = String.join("\n",
             "",
+            "S3",
+            "----",
             "chairs: { Chair_0, Chair_1, Chair_2 }",
             "mode: { sitting }",
             "occupied: { Chair_0->Player_2, Chair_1->Player_1, Chair_2->Player_0 }",
@@ -174,12 +182,16 @@ public class TestSimulationManager {
             "",
             "(-2)",
             "----",
+            "S1",
+            "----",
             "chairs: { Chair_0, Chair_1, Chair_2 }",
             "mode: { start }",
             "occupied: {  }",
             "players: { Player_0, Player_1, Player_2, Player_3 }",
             "",
             "(-1)",
+            "----",
+            "S2",
             "----",
             "chairs: { Chair_0, Chair_1, Chair_2 }",
             "mode: { walking }",
@@ -208,6 +220,8 @@ public class TestSimulationManager {
         );
         String expectedCurrentState = String.join("\n",
             "",
+            "S2",
+            "----",
             "a: { On }",
             "b: { Off }",
             ""
@@ -215,6 +229,8 @@ public class TestSimulationManager {
         String expectedHistory = String.join("\n",
             "",
             "(-1)",
+            "----",
+            "S1",
             "----",
             "a: { Off }",
             "b: { On }",
@@ -241,6 +257,8 @@ public class TestSimulationManager {
         );
         String expectedCurrentState = String.join("\n",
             "",
+            "S1",
+            "----",
             "a: { On }",
             "b: { Off }",
             ""
@@ -249,10 +267,14 @@ public class TestSimulationManager {
             "",
             "(-2)",
             "----",
+            "S1",
+            "----",
             "a: { On }",
             "b: { Off }",
             "",
             "(-1)",
+            "----",
+            "S2",
             "----",
             "a: { Off }",
             "b: { On }",
@@ -278,6 +300,8 @@ public class TestSimulationManager {
         );
         String expectedCurrentState = String.join("\n",
             "",
+            "S1",
+            "----",
             "a: { Off }",
             "b: { On }",
             ""
@@ -296,12 +320,16 @@ public class TestSimulationManager {
         initializeTestWithModelPath("models/river_crossing.als");
         String expectedCurrentState = String.join("\n",
             "",
+            "S3",
+            "----",
             "far: {  }",
             "near: { Farmer, Fox, Grain }",
             ""
         );
         String expectedAlternateState = String.join("\n",
             "",
+            "S4",
+            "----",
             "far: { Grain }",
             "near: { Farmer, Fox }",
             ""
@@ -322,12 +350,16 @@ public class TestSimulationManager {
         initializeTestWithModelPath("models/river_crossing.als");
         String expectedCurrentState = String.join("\n",
             "",
+            "S3",
+            "----",
             "far: {  }",
             "near: { Farmer, Fox, Grain }",
             ""
         );
         String expectedAlternateState = String.join("\n",
             "",
+            "S4",
+            "----",
             "far: { Grain }",
             "near: { Farmer, Fox }",
             ""
@@ -378,6 +410,8 @@ public class TestSimulationManager {
         cm.addConstraint(constraint);
         String expectedCurrentState = String.join("\n",
             "",
+            "S2",
+            "----",
             "a: { Off }",
             "b: { On }",
             ""

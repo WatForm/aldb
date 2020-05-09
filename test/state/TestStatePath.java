@@ -8,15 +8,27 @@ import state.StatePath;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestStatePath {
-    StateNode n0 = new StateNode(new SigData(new PrimSig("a")), null);
-    StateNode n1 = new StateNode(new SigData(new PrimSig("b")), null);
-    StateNode n2 = new StateNode(new SigData(new PrimSig("c")), null);
+    StateNode n0;
+    StateNode n1;
+    StateNode n2;
+
+    @Before
+    public void init() {
+        n0 = new StateNode(new SigData(new PrimSig("a")), null);
+        n1 = new StateNode(new SigData(new PrimSig("b")), null);
+        n2 = new StateNode(new SigData(new PrimSig("c")), null);
+
+        n0.setIdentifier(0);
+        n1.setIdentifier(1);
+        n2.setIdentifier(2);
+    }
 
     @Test
     public void testInitWithPath() {
@@ -221,12 +233,12 @@ public class TestStatePath {
         path.add(n2);
         sp.initWithPath(path);
 
-        assertEquals("\n(-2)\n----\n\n(-1)\n----\n", sp.getHistory(3, false));
-        assertEquals("\n(-2)\n----\n\n(-1)\n----\n", sp.getHistory(3, true));
-        assertEquals("\n(-2)\n----\n\n(-1)\n----\n", sp.getHistory(2, false));
-        assertEquals("\n(-2)\n----\n\n(-1)\n----\n", sp.getHistory(2, true));
-        assertEquals("\n(-1)\n----\n", sp.getHistory(1, false));
-        assertEquals("\n(-1)\n----\n", sp.getHistory(1, true));
+        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS1\n----\n", sp.getHistory(3, false));
+        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS0 -> S1\n------------\n", sp.getHistory(3, true));
+        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS1\n----\n", sp.getHistory(2, false));
+        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS0 -> S1\n------------\n", sp.getHistory(2, true));
+        assertEquals("\n(-1)\n----\nS1\n----\n", sp.getHistory(1, false));
+        assertEquals("\n(-1)\n----\nS0 -> S1\n------------\n", sp.getHistory(1, true));
         assertEquals("", sp.getHistory(0, false));
         assertEquals("", sp.getHistory(0, true));
     }

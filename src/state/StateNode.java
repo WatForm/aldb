@@ -63,6 +63,7 @@ public class StateNode {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append(String.format("\nS%d\n----", id));
         for (String key : state.keySet()) {
             sb.append(String.format("\n%s: %s ", key, AlloyConstants.BLOCK_INITIALIZER));
             sb.append(String.format("%s %s", String.join(", ", state.get(key)), AlloyConstants.BLOCK_TERMINATOR));
@@ -96,6 +97,7 @@ public class StateNode {
         SortedMap<String, List<String>> otherState = other.state;
 
         StringBuilder sb = new StringBuilder();
+        sb.append(String.format("\nS%d -> S%d\n------------", other.id, id));
         for (String key : state.keySet()) {
             if (!otherState.containsKey(key)) {
                 continue;
