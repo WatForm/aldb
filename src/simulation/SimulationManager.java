@@ -243,9 +243,10 @@ public class SimulationManager {
     /**
      * performStep steps the transition system forward by `steps` state transitions.
      * @param steps
+     * @return boolean
      */
-    public void performStep(int steps) {
-        performStep(steps, new ArrayList<String>());
+    public boolean performStep(int steps) {
+        return performStep(steps, new ArrayList<String>());
     }
 
     /**
@@ -253,11 +254,12 @@ public class SimulationManager {
      * The i-th constraint in `constraints` is applied to the i-th transition.
      * @param steps
      * @param constraints
+     * @return boolean
      */
-    public void performStep(int steps, List<String> constraints) {
+    public boolean performStep(int steps, List<String> constraints) {
         if (isTrace()) {
             statePath.incrementPosition(steps);
-            return;
+            return true;
         }
 
         statePath.commitNodes();
@@ -276,19 +278,19 @@ public class SimulationManager {
             );
         } catch (IOException e) {
             System.out.println("Cannot perform step. I/O failed.");
-            return;
+            return false;
         }
 
         CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
         if (compModule == null) {
             System.out.println("Cannot perform step. Could not parse model.");
-            return;
+            return false;
         }
 
         A4Solution sol = AlloyInterface.run(compModule);
         if (sol == null || !sol.satisfiable()) {
             System.out.println("Cannot perform step. Transition constraint is unsatisfiable.");
-            return;
+            return false;
         }
 
         StateNode startNode = statePath.getCurNode();
@@ -305,6 +307,8 @@ public class SimulationManager {
 
         this.activeSolutions.clear();
         this.activeSolutions.push(sol);
+
+        return true;
     }
 
     public boolean selectAlternatePath(boolean reverse) {

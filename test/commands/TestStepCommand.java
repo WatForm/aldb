@@ -43,7 +43,7 @@ public class TestStepCommand extends TestCommand {
         setupStreams();
         String state = "state";
         when(simulationManager.isInitialized()).thenReturn(true);
-        doNothing().when(simulationManager).performStep(isA(Integer.class), isA(List.class));
+        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.getCurrentStateString()).thenReturn(state);
 
         String[] input = {"s", "3"};
@@ -59,7 +59,7 @@ public class TestStepCommand extends TestCommand {
         setupStreams();
         String state = "state";
 
-        doNothing().when(simulationManager).performStep(isA(Integer.class), isA(List.class));
+        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.getCurrentStateString()).thenReturn(state);
@@ -83,7 +83,7 @@ public class TestStepCommand extends TestCommand {
         setupStreams();
         String state = "state";
 
-        doNothing().when(simulationManager).performStep(isA(Integer.class), isA(List.class));
+        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.getCurrentStateString()).thenReturn(state);
@@ -107,7 +107,7 @@ public class TestStepCommand extends TestCommand {
         setupStreams();
         String state = "state";
 
-        doNothing().when(simulationManager).performStep(isA(Integer.class), isA(List.class));
+        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.getCurrentStateString()).thenReturn(state);
@@ -131,7 +131,7 @@ public class TestStepCommand extends TestCommand {
         setupStreams();
         String state = "state";
 
-        doNothing().when(simulationManager).performStep(isA(Integer.class), isA(List.class));
+        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.getCurrentStateString()).thenReturn(state);
@@ -158,7 +158,7 @@ public class TestStepCommand extends TestCommand {
         setupStreams();
         String state = "state";
 
-        doNothing().when(simulationManager).performStep(isA(Integer.class), isA(List.class));
+        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.getCurrentStateString()).thenReturn(state);
@@ -178,7 +178,7 @@ public class TestStepCommand extends TestCommand {
         String trace = "trace";
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.isTrace()).thenReturn(true);
-        doNothing().when(simulationManager).performStep(isA(Integer.class), isA(List.class));
+        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.getCurrentStateDiffString()).thenReturn(trace);
 
         String[] input = {"s", "3"};
