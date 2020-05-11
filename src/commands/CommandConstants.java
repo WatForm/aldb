@@ -92,7 +92,7 @@ public class CommandConstants {
     public final static String STEP_HELP = "Perform a state transition of n steps.\n\n" +
         "Usage: step [n | constraints]\n\n" +
         "n must be an integer >= 1. By default, n = 1.\n\n" +
-        "A list of constraints may also be specified, as a comma-separated list enclosed by square brackets.\n" +
+        "Alternatively, step constraints can be specified, as a comma-separated list enclosed by square brackets.\n" +
         "n is equal to the number of items in the list.\n" +
         "The i-th constraint is applied when performing the i-th transition.";
     public final static String[] STEP_SHORTHAND = {"s", "st"};

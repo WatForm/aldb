@@ -180,7 +180,7 @@ The `step [n | constraints]` command performs n state transitions from the curre
 
 Specify an integer value of n >= 1. By default, n = 1.
 
-A list of constraints may also be specified, as a comma-separated list enclosed by square brackets.
+Alternatively, step constraints can be specified, as a comma-separated list enclosed by square brackets.
 n is equal to the number of items in the list.
 The i-th constraint is applied when performing the i-th transition.
 
