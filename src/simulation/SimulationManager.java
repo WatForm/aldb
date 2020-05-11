@@ -145,8 +145,7 @@ public class SimulationManager {
                 AlloyUtils.annotatedTransitionSystem(
                     this.alloyModelString + this.alloyInitString,
                     getParsingConf(),
-                    0,
-                    false
+                    0
                 ),
                 alloyModelFile
             );
@@ -244,15 +243,28 @@ public class SimulationManager {
     /**
      * performStep steps the transition system forward by `steps` state transitions.
      * @param steps
+     * @return boolean
      */
-    public void performStep(int steps) {
+    public boolean performStep(int steps) {
+        return performStep(steps, new ArrayList<String>());
+    }
+
+    /**
+     * performStep steps the transition system forward by `steps` state transitions.
+     * The i-th constraint in `constraints` is applied to the i-th transition.
+     * @param steps
+     * @param constraints
+     * @return boolean
+     */
+    public boolean performStep(int steps, List<String> constraints) {
         if (isTrace()) {
             statePath.incrementPosition(steps);
-            return;
+            return true;
         }
 
         statePath.commitNodes();
 
+        String pathPredicate = AlloyUtils.getPathPredicate(constraints, stateSigData);
         try {
             String curInitString;
             if (stateGraph.size() > 1) {
@@ -261,23 +273,24 @@ public class SimulationManager {
                 curInitString = alloyInitString;
             }
             AlloyUtils.writeToFile(
-                AlloyUtils.annotatedTransitionSystem(alloyModelString + curInitString, getParsingConf(), steps, false),
+                AlloyUtils.annotatedTransitionSystemStep(alloyModelString + curInitString + pathPredicate, getParsingConf(), steps),
                 alloyModelFile
             );
         } catch (IOException e) {
             System.out.println("Cannot perform step. I/O failed.");
-            return;
+            return false;
         }
 
         CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
         if (compModule == null) {
             System.out.println("Cannot perform step. Could not parse model.");
-            return;
+            return false;
         }
 
         A4Solution sol = AlloyInterface.run(compModule);
         if (sol == null || !sol.satisfiable()) {
             System.out.println("Cannot perform step. Transition constraint is unsatisfiable.");
+            return false;
         }
 
         StateNode startNode = statePath.getCurNode();
@@ -294,6 +307,8 @@ public class SimulationManager {
 
         this.activeSolutions.clear();
         this.activeSolutions.push(sol);
+
+        return true;
     }
 
     public boolean selectAlternatePath(boolean reverse) {
@@ -351,7 +366,7 @@ public class SimulationManager {
                     curInitString = alloyInitString;
                 }
                 AlloyUtils.writeToFile(
-                    AlloyUtils.annotatedTransitionSystem(alloyModelString + curInitString + breakPredicate, getParsingConf(), steps, true),
+                    AlloyUtils.annotatedTransitionSystemUntil(alloyModelString + curInitString + breakPredicate, getParsingConf(), steps),
                     alloyModelFile
                 );
             } catch (IOException e) {

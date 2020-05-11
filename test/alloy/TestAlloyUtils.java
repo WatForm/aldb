@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,7 +34,7 @@ public class TestAlloyUtils {
     }
 
     @Test
-    public void testAnnotatedTransitionSystem_untilFalse() {
+    public void testAnnotatedTransitionSystem() {
         String model = "Some model";
         int steps = 5;
         boolean until = false;
@@ -46,22 +47,21 @@ public class TestAlloyUtils {
             "",
             "fact { all s: State, s': s.next { next[s, s'] } }",
             "",
-            "run {} for exactly 6 State"
+            "run {  } for exactly 6 State"
         );
         String result = AlloyUtils.annotatedTransitionSystem(
                             model,
                             new ParsingConf(),
-                            steps,
-                            until
+                            steps
                         );
         assertEquals(expected, result);
     }
 
     @Test
-    public void testAnnotatedTransitionSystem_untilTrue() {
+    public void testAnnotatedTransitionSystemStep() {
         String model = "Some model";
         int steps = 5;
-        boolean until = true;
+        boolean until = false;
         String expected = String.join("\n",
             "open util/ordering[State]",
             "",
@@ -71,13 +71,36 @@ public class TestAlloyUtils {
             "",
             "fact { all s: State, s': s.next { next[s, s'] } }",
             "",
-            "run {break[last]} for exactly 6 State"
+            "run { path[first] } for exactly 6 State"
         );
-        String result = AlloyUtils.annotatedTransitionSystem(
+        String result = AlloyUtils.annotatedTransitionSystemStep(
                             model,
                             new ParsingConf(),
-                            steps,
-                            until
+                            steps
+                        );
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testAnnotatedTransitionSystemUntil() {
+        String model = "Some model";
+        int steps = 5;
+        boolean until = false;
+        String expected = String.join("\n",
+            "open util/ordering[State]",
+            "",
+            "Some model",
+            "",
+            "fact { init[first] }",
+            "",
+            "fact { all s: State, s': s.next { next[s, s'] } }",
+            "",
+            "run { break[last] } for exactly 6 State"
+        );
+        String result = AlloyUtils.annotatedTransitionSystemUntil(
+                            model,
+                            new ParsingConf(),
+                            steps
                         );
         assertEquals(expected, result);
     }
@@ -110,6 +133,48 @@ public class TestAlloyUtils {
             ""
         );
         assertEquals(expected, AlloyUtils.getBreakPredicate(rawConstraints, sigData));
+    }
+
+    @Test
+    public void testGetPathPredicate() {
+        List<String> rawConstraints = new ArrayList<String>(
+            Arrays.asList("a = b", "", "c = d")
+        );
+        SigData sigData = new SigData(createNewSig());
+        String expected = String.join("\n",
+            "",
+            "pred path_c0[s: A] {",
+            "\ta = b",
+            "}",
+            "",
+            "pred path_c1[s: A] {",
+            "\tnone = none",
+            "}",
+            "",
+            "pred path_c2[s: A] {",
+            "\tc = d",
+            "}",
+            "",
+            "pred path[s: A] {",
+            "\tpath_c0[s.next] and path_c1[s.next.next] and path_c2[s.next.next.next]",
+            "}",
+            ""
+        );
+        assertEquals(expected, AlloyUtils.getPathPredicate(rawConstraints, sigData));
+    }
+
+    @Test
+    public void testGetPathPredicate_noConstraints() {
+        List<String> rawConstraints = new ArrayList<String>();
+        SigData sigData = new SigData(createNewSig());
+        String expected = String.join("\n",
+            "",
+            "pred path[s: A] {",
+            "\t",
+            "}",
+            ""
+        );
+        assertEquals(expected, AlloyUtils.getPathPredicate(rawConstraints, sigData));
     }
 
     @Test
