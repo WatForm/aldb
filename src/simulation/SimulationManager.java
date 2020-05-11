@@ -59,6 +59,10 @@ public class SimulationManager {
         return traceMode;
     }
 
+    public boolean atTraceEnd() {
+        return isTrace() && statePath.atEnd();
+    }
+
     /**
      * isInitialized returns True iff a model or trace has been loaded.
      * @return boolean

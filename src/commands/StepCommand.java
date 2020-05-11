@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class StepCommand extends Command {
+    private final static String END_OF_TRACE = "End of trace reached.";
+
     private final static String[] SHORTHAND = CommandConstants.STEP_SHORTHAND;
 
     public String getName() {
@@ -29,6 +31,11 @@ public class StepCommand extends Command {
     public void execute(String[] input, SimulationManager simulationManager) {
         if (!simulationManager.isInitialized()) {
             System.out.println(CommandConstants.NO_MODEL_LOADED);
+            return;
+        }
+
+        if (simulationManager.atTraceEnd()) {
+            System.out.println(END_OF_TRACE);
             return;
         }
 
