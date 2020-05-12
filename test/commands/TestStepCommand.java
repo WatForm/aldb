@@ -190,19 +190,6 @@ public class TestStepCommand extends TestCommand {
     }
 
     @Test
-    public void testExecute_traceEnd() {
-        setupStreams();
-        when(simulationManager.isInitialized()).thenReturn(true);
-        when(simulationManager.atTraceEnd()).thenReturn(true);
-
-        String[] input = {"s"};
-        step.execute(input, simulationManager);
-        verify(simulationManager, never()).performStep(anyInt(), anyList());
-        verify(simulationManager, never()).getCurrentStateDiffString();
-        restoreStreams();
-    }
-
-    @Test
     public void testExecute_uninitialized() {
         setupStreams();
         when(simulationManager.isInitialized()).thenReturn(false);

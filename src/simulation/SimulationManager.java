@@ -59,10 +59,6 @@ public class SimulationManager {
         return traceMode;
     }
 
-    public boolean atTraceEnd() {
-        return isTrace() && statePath.atEnd();
-    }
-
     /**
      * isInitialized returns True iff a model or trace has been loaded.
      * @return boolean
@@ -262,6 +258,10 @@ public class SimulationManager {
      */
     public boolean performStep(int steps, List<String> constraints) {
         if (isTrace()) {
+            if (statePath.atEnd()) {
+                System.out.println("Cannot perform step. End of trace reached.");
+                return false;
+            }
             statePath.incrementPosition(steps);
             return true;
         }
