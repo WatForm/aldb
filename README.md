@@ -86,6 +86,7 @@ current | Display the current state
 dot | Dump DOT graph to disk
 help | Display the list of available commands
 history | Display past states
+init | Return to the initial state of the active model
 load | Load an Alloy model
 quit | Exit ALDB
 reverse-step | Go back n steps in the current state traversal path
@@ -137,6 +138,9 @@ The `history [n]` command displays the past n consecutive states of the current 
 Specify an integer value of n >= 1. By default, n = 3.
 
 ![image](https://user-images.githubusercontent.com/13455356/77835857-59a6fa80-7127-11ea-8ba4-79563a279c47.png)
+
+#### init
+The `init` command returns the user to the initial state of the active model.
 
 #### load
 The `load <filename>` command loads and initializes the Alloy model specified by <filename> into ALDB. It will check for a {BEGIN | END}_ALDB_CONF comment block in <filename> to set the configuration, and then initialize the state graph to the initial state specified by the equivalent `init` predicate in the model.

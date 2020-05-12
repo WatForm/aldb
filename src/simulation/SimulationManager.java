@@ -405,6 +405,10 @@ public class SimulationManager {
         return false;
     }
 
+    public void resetPathToInit() {
+        statePath.decrementPosition(statePath.getPosition(), traceMode);
+    }
+
     /**
      * validateConstraint validates a user-entered constraint by transforming
      * the constraint into a predicate and verifying that the model compiles

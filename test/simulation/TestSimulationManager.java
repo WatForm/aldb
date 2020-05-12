@@ -501,6 +501,43 @@ public class TestSimulationManager {
     }
 
     @Test
+    public void testResetToInit() throws IOException {
+        initializeTestWithModelPath("models/river_crossing.als");
+        String expectedCurrentState = String.join("\n",
+                "",
+                "S1",
+                "----",
+                "far: {  }",
+                "near: { Chicken, Farmer, Fox, Grain }",
+                ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.performStep(2));
+        sm.resetPathToInit();
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+    }
+
+    @Test
+    public void testResetToInit_trace() throws IOException {
+        File traceFile = createTrace();
+        String expectedCurrentState = String.join("\n",
+                "",
+                "S1",
+                "----",
+                "a: { Off }",
+                "b: { On }",
+                ""
+        );
+
+        assertTrue(sm.initializeWithTrace(traceFile));
+        assertTrue(sm.isTrace());
+        assertTrue(sm.performStep(1));
+        sm.resetPathToInit();
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+    }
+
+    @Test
     public void testValidateConstraint() throws IOException {
         initializeTestWithModelPath("models/switch.als");
         sm.initializeWithModel(modelFile);
