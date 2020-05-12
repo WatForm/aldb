@@ -130,6 +130,7 @@ public class TestStatePath {
         sp.initWithPath(path);
         sp.setPosition(0);
         assertEquals(0, sp.getPosition());
+        assertFalse(sp.atEnd());
 
         sp.incrementPosition(1);
         assertEquals(1, sp.getPosition());
