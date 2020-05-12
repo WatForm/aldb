@@ -39,6 +39,7 @@ public class TestStatePath {
         sp.initWithPath(path);
 
         assertFalse(sp.isEmpty());
+        assertTrue(sp.atEnd());
         assertEquals(n0, sp.getNode(0));
         assertEquals(n1, sp.getNode(1));
         assertEquals(1, sp.getPosition());
@@ -46,6 +47,7 @@ public class TestStatePath {
         // Should be idempotent with the same input path.
         sp.initWithPath(path);
         assertFalse(sp.isEmpty());
+        assertTrue(sp.atEnd());
         assertEquals(n0, sp.getNode(0));
         assertEquals(n1, sp.getNode(1));
         assertEquals(1, sp.getPosition());
@@ -132,6 +134,7 @@ public class TestStatePath {
         sp.incrementPosition(1);
         assertEquals(1, sp.getPosition());
         assertEquals(n0, sp.getPrevNode());
+        assertTrue(sp.atEnd());
     }
 
     @Test
