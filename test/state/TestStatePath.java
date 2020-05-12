@@ -127,6 +127,8 @@ public class TestStatePath {
         List<StateNode> path = new ArrayList<StateNode>();
         path.add(n0);
         path.add(n1);
+        path.add(n2);
+
         sp.initWithPath(path);
         sp.setPosition(0);
         assertEquals(0, sp.getPosition());
@@ -135,6 +137,11 @@ public class TestStatePath {
         sp.incrementPosition(1);
         assertEquals(1, sp.getPosition());
         assertEquals(n0, sp.getPrevNode());
+        assertFalse(sp.atEnd());
+
+        sp.incrementPosition(1);
+        assertEquals(2, sp.getPosition());
+        assertEquals(n1, sp.getPrevNode());
         assertTrue(sp.atEnd());
     }
 
