@@ -58,6 +58,42 @@ public class TestAlloyUtils {
     }
 
     @Test
+    public void testAnnotatedTransitionSystem_customParsingConf() {
+        String model = "Some model";
+        int steps = 5;
+        boolean until = false;
+
+        Map<String, Integer> sigScopes = new TreeMap<String, Integer>();
+        sigScopes.put("Player", 4);
+        sigScopes.put("Chair", 3);
+        sigScopes.put("Int", 6);
+
+        ParsingConf pc = new ParsingConf();
+        pc.setStateSigName("Snapshot");
+        pc.setInitPredicateName("initialize");
+        pc.setTransitionRelationName("trans");
+        pc.setAdditionalSigScopes(sigScopes);
+
+        String expected = String.join("\n",
+            "open util/ordering[Snapshot]",
+            "",
+            "Some model",
+            "",
+            "fact { initialize[first] }",
+            "",
+            "fact { all s: Snapshot, s': s.next { trans[s, s'] } }",
+            "",
+            "run {  } for exactly 6 Snapshot, exactly 3 Chair, 6 Int, exactly 4 Player"
+        );
+        String result = AlloyUtils.annotatedTransitionSystem(
+                            model,
+                            pc,
+                            steps
+                        );
+        assertEquals(expected, result);
+    }
+
+    @Test
     public void testAnnotatedTransitionSystemStep() {
         String model = "Some model";
         int steps = 5;
@@ -197,6 +233,7 @@ public class TestAlloyUtils {
         Map<String, Integer> sigScopes = new TreeMap<String, Integer>();
         sigScopes.put("Player", 4);
         sigScopes.put("Chair", 3);
+        sigScopes.put("Int", 6);
 
         String expected = String.join("\n",
             "one sig Chair_0, Chair_1, Chair_2 extends Chair {}",

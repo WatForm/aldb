@@ -51,7 +51,14 @@ public class AlloyUtils {
             if (entry.getValue() == 0) {
                 continue;
             }
+
             String sigName = entry.getKey();
+            // The scope of Int specifies bitwidth and does not require the
+            // creation of concrete signatures.
+            if (sigName.equals(AlloyConstants.INT)) {
+                continue;
+            }
+
             StringBuilder sigNamesSb = new StringBuilder();
             sigNamesSb.append(String.format(concreteSigNameFormat, sigName, 0));
             for (int i = 1; i < entry.getValue(); i++) {
@@ -217,7 +224,11 @@ public class AlloyUtils {
         );
         String sigScopes = String.format("run { %s } for exactly %d %s", runConstraint, steps + 1, stateSigName);
         for (String sigScopeName : additionalSigScopes.keySet()) {
-            sigScopes += String.format(", exactly %d %s", additionalSigScopes.get(sigScopeName), sigScopeName);
+            // Alloy does not accept "exactly" for Int scope.
+            String scopeFormat = (sigScopeName.equals(AlloyConstants.INT)) ?
+                                     ", %d %s" :
+                                     ", exactly %d %s";
+            sigScopes += String.format(scopeFormat, additionalSigScopes.get(sigScopeName), sigScopeName);
         }
         return String.format(
             String.format("open util/ordering[%s]" + "\n\n", stateSigName) +

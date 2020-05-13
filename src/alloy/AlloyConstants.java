@@ -6,6 +6,7 @@ public class AlloyConstants {
     public static final String AND = "and";
     public static final String BLOCK_INITIALIZER = "{";
     public static final String BLOCK_TERMINATOR = "}";
+    public static final String INT = "Int";
     public static final String NONE = "none";
     public static final String TRACE_SOURCE_TAG = "source";
     public static final String TRACE_FILENAME_ATTR = "filename";

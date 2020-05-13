@@ -221,6 +221,55 @@ public class TestSimulationManager {
     }
 
     @Test
+    public void testPerformStep_modelWithIntScope() throws IOException {
+        initializeTestWithModelPath("models/counter.als");
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3 -> S4",
+            "\tS4 -> S5",
+            "\tS5 -> S6",
+            "\tS6 -> S7",
+            "\tS7 -> S8",
+            "\tS8 -> S9",
+            "\tS9 -> S10",
+            "\tS10 -> S11",
+            "\tS11",
+            "}",
+            ""
+        );
+        String expectedCurrentState = String.join("\n",
+            "",
+            "S11",
+            "----",
+            "i: { 20 }",
+            ""
+        );
+        String expectedHistory = String.join("\n",
+            "",
+            "(-2)",
+            "----",
+            "S9",
+            "----",
+            "i: { 16 }",
+            "",
+            "(-1)",
+            "----",
+            "S10",
+            "----",
+            "i: { 18 }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        sm.performStep(10);
+        assertEquals(expectedDOTString, sm.getDOTString());
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(2));
+    }
+
+    @Test
     public void testPerformStep_trace() throws IOException {
         File traceFile = createTrace();
         String expectedDOTString = String.join("\n",
