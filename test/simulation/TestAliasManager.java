@@ -10,39 +10,39 @@ public class TestAliasManager {
     @Test
     public void testAddAlias() {
         AliasManager am = new AliasManager();
-        String alias = "p1";
-        String alias2 = "p2";
-        String predicate = "a=b";
+        String alias = "f1";
+        String alias2 = "f2";
+        String formula = "a=b";
 
-        am.addAlias(alias, predicate);
+        am.addAlias(alias, formula);
         assertTrue(am.isAlias(alias));
-        assertEquals(predicate, am.getPredicate(alias));
-        assertEquals(null, am.getPredicate(alias2));
+        assertEquals(formula, am.getFormula(alias));
+        assertEquals(null, am.getFormula(alias2));
         assertFalse(am.isAlias(alias2));
 
-        am.addAlias(alias2, predicate);
+        am.addAlias(alias2, formula);
         assertTrue(am.isAlias(alias));
         assertTrue(am.isAlias(alias2));
-        assertEquals(predicate, am.getPredicate(alias));
-        assertEquals(predicate, am.getPredicate(alias2));
+        assertEquals(formula, am.getFormula(alias));
+        assertEquals(formula, am.getFormula(alias2));
 
         // Test overwriting.
-        String predicate2 = "c=d";
-        am.addAlias(alias2, predicate2);
+        String formula2 = "c=d";
+        am.addAlias(alias2, formula2);
         assertTrue(am.isAlias(alias));
         assertTrue(am.isAlias(alias2));
-        assertEquals(predicate, am.getPredicate(alias));
-        assertEquals(predicate2, am.getPredicate(alias2));
+        assertEquals(formula, am.getFormula(alias));
+        assertEquals(formula2, am.getFormula(alias2));
     }
 
     @Test
     public void testRemoveAlias() {
         AliasManager am = new AliasManager();
-        String alias = "p1";
-        String predicate = "a=b";
+        String alias = "f1";
+        String formula = "a=b";
 
         assertFalse(am.removeAlias(alias));
-        am.addAlias(alias, predicate);
+        am.addAlias(alias, formula);
         assertTrue(am.removeAlias(alias));
         assertFalse(am.isAlias(alias));
         assertFalse(am.removeAlias(alias));
@@ -51,12 +51,12 @@ public class TestAliasManager {
     @Test
     public void testClearAliases() {
         AliasManager am = new AliasManager();
-        String alias = "p1";
-        String alias2 = "p2";
-        String predicate = "a=b";
+        String alias = "f1";
+        String alias2 = "f2";
+        String formula = "a=b";
 
-        am.addAlias(alias, predicate);
-        am.addAlias(alias2, predicate);
+        am.addAlias(alias, formula);
+        am.addAlias(alias2, formula);
         am.clearAliases();
         assertFalse(am.isAlias(alias));
         assertFalse(am.isAlias(alias2));
@@ -65,13 +65,13 @@ public class TestAliasManager {
     @Test
     public void testGetFormattedAliases() {
         AliasManager am = new AliasManager();
-        String alias = "p1";
-        String alias2 = "p2";
-        String predicate = "a=b";
+        String alias = "f1";
+        String alias2 = "f2";
+        String formula = "a=b";
 
-        am.addAlias(alias, predicate);
-        am.addAlias(alias2, predicate);
-        String expected = "\nAlias           Predicate\np1              a=b\np2              a=b\n";
+        am.addAlias(alias, formula);
+        am.addAlias(alias2, formula);
+        String expected = "\nAlias           Formula\nf1              a=b\nf2              a=b\n";
         assertEquals(expected, am.getFormattedAliases());
     }
 }

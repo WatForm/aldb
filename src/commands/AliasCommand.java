@@ -56,17 +56,17 @@ public class AliasCommand extends Command {
                 return;
             }
 
-            String predicate = String.join(" ", Arrays.copyOfRange(input, 2, input.length));
-            Matcher m = Pattern.compile(CommandConstants.CONSTRAINT_REGEX).matcher(predicate);
+            String formula = String.join(" ", Arrays.copyOfRange(input, 2, input.length));
+            Matcher m = Pattern.compile(CommandConstants.CONSTRAINT_REGEX).matcher(formula);
 
             if (m.find()) {
-                // Only one predicate should be specified.
+                // Only one formula should be specified.
                 if (!m.hitEnd()) {
                     System.out.println(CommandConstants.ALIAS_HELP);
                     return;
                 }
-                predicate = m.group(1).replace("\"", "");
-                am.addAlias(arg, predicate);
+                formula = m.group(1).replace("\"", "");
+                am.addAlias(arg, formula);
             }
         }
     }

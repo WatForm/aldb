@@ -240,10 +240,14 @@ public class TestSimulationManager {
 
         assertTrue(sm.initializeWithTrace(traceFile));
         assertTrue(sm.isTrace());
-        sm.performStep(1);
+        assertTrue(sm.performStep(1));
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
         assertEquals(expectedHistory, sm.getHistory(1));
+
+        // End of trace reached.
+        assertFalse(sm.performStep(1));
+        assertFalse(sm.performStep(2));
     }
 
     @Test

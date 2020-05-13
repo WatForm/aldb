@@ -45,9 +45,9 @@ public class TestAliasCommand extends TestCommand {
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(am.removeAlias(anyString())).thenReturn(true);
 
-        String[] input = {"alias", "-rm", "p1"};
+        String[] input = {"alias", "-rm", "f1"};
         aliasCommand.execute(input, simulationManager);
-        verify(am).removeAlias("p1");
+        verify(am).removeAlias("f1");
         restoreStreams();
     }
 
@@ -102,19 +102,19 @@ public class TestAliasCommand extends TestCommand {
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
 
-        String[] input = {"alias", "p1", "a=b"};
-        String[] input2 = {"alias", "p2", "\"c = d\""};
+        String[] input = {"alias", "f1", "a=b"};
+        String[] input2 = {"alias", "f2", "\"c = d\""};
         aliasCommand.execute(input, simulationManager);
-        verify(am).addAlias("p1", "a=b");
+        verify(am).addAlias("f1", "a=b");
         aliasCommand.execute(input2, simulationManager);
-        verify(am).addAlias("p2", "c = d");
+        verify(am).addAlias("f2", "c = d");
         restoreStreams();
     }
 
     @Test
-    public void testExecute_addAlias_no_predicate() {
+    public void testExecute_addAlias_no_formula() {
         setupStreams();
-        String[] input = {"alias", "p1"};
+        String[] input = {"alias", "f1"};
         String errMsg = CommandConstants.ALIAS_HELP + "\n";
         aliasCommand.execute(input, simulationManager);
         assertEquals(errMsg, outContent.toString());
@@ -122,9 +122,9 @@ public class TestAliasCommand extends TestCommand {
     }
 
     @Test
-    public void testExecute_addAlias_multiple_pred() {
+    public void testExecute_addAlias_multiple_formulas() {
         setupStreams();
-        String[] input = {"alias", "p1", "a=b", "c=d"};
+        String[] input = {"alias", "f1", "a=b", "c=d"};
         String errMsg = CommandConstants.ALIAS_HELP + "\n";
         aliasCommand.execute(input, simulationManager);
         assertEquals(errMsg, outContent.toString());
