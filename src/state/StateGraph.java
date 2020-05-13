@@ -42,6 +42,10 @@ public class StateGraph {
         // add it to the nodes list and then add the edge. Set the current node
         // to the one we transitioned to.
         StateNode curNode = getExistingNode(startNode);
+        if (curNode == null) {
+            addNode(startNode);
+            curNode = startNode;
+        }
         for (StateNode node : nodes) {
             StateNode nextNode = getExistingNode(node);
             if (nextNode == null) {

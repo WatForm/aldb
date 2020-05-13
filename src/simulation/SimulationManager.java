@@ -178,6 +178,7 @@ public class SimulationManager {
 
         this.traceMode = false;
         this.activeSolutions.clear();
+        this.activeSolutions.push(sol);
 
         return true;
     }
@@ -335,9 +336,6 @@ public class SimulationManager {
         }
 
         List<StateNode> stateNodes = getStateNodesForA4Solution(activeSolution);
-
-        // Filter out the initial node to avoid re-adding it to statePath.
-        stateNodes.remove(0);
 
         statePath.clearTempPath();
         StateNode startNode = statePath.getCurNode();

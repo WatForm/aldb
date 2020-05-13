@@ -425,6 +425,43 @@ public class TestSimulationManager {
     }
 
     @Test
+    public void testSelectAlternatePath_atInit() throws IOException {
+        initializeTestWithModelPath("models/counter.als");
+        String expectedCurrentState = String.join("\n",
+                "",
+                "S1",
+                "----",
+                "i: { 0 }",
+                ""
+        );
+        String expectedAlternateState = String.join("\n",
+                "",
+                "S2",
+                "----",
+                "i: { 1 }",
+                ""
+        );
+        String expectedCurrentStateAfterStep = String.join("\n",
+                "",
+                "S3",
+                "----",
+                "i: { 3 }",
+                ""
+        );
+
+        sm.initializeWithModel(modelFile);
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(expectedAlternateState, sm.getCurrentStateString());
+
+        // No more alternate initial states.
+        assertFalse(sm.selectAlternatePath(false));
+        assertEquals(expectedAlternateState, sm.getCurrentStateString());
+        assertTrue(sm.performStep(1));
+        assertEquals(expectedCurrentStateAfterStep, sm.getCurrentStateString());
+    }
+
+    @Test
     public void testSelectAlternatePath_reverse() throws IOException {
         initializeTestWithModelPath("models/river_crossing.als");
         String expectedCurrentState = String.join("\n",
