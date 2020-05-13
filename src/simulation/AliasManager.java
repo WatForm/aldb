@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * AliasManager manages aliases for predicates which can be used as syntactic shortcuts.
+ * AliasManager manages aliases for formulas which can be used as syntactic shortcuts.
  */
 public class AliasManager {
     private Map<String, String> aliases;
     private final static String ALIAS_HEADER = "Alias";
-    private final static String PREDICATE_HEADER = "Predicate";
+    private final static String FORMULA_HEADER = "Formula";
 
     public AliasManager() {
         aliases = new HashMap<>();
@@ -19,8 +19,8 @@ public class AliasManager {
         return aliases.containsKey(alias);
     }
 
-    public void addAlias(String alias, String predicate) {
-        aliases.put(alias, predicate);
+    public void addAlias(String alias, String formula) {
+        aliases.put(alias, formula);
     }
 
     public boolean removeAlias(String alias) {
@@ -31,13 +31,13 @@ public class AliasManager {
         aliases.clear();
     }
 
-    public String getPredicate(String alias) {
+    public String getFormula(String alias) {
         return aliases.get(alias);
     }
 
     public String getFormattedAliases() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("\n%-16s%s\n", ALIAS_HEADER, PREDICATE_HEADER));
+        sb.append(String.format("\n%-16s%s\n", ALIAS_HEADER, FORMULA_HEADER));
         for (String alias : aliases.keySet()) {
             sb.append(String.format("%-16s%s\n", alias, aliases.get(alias)));
         }

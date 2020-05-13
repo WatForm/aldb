@@ -138,9 +138,9 @@ public class TestStepCommand extends TestCommand {
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         when(am.isAlias(anyString())).thenReturn(true);
-        when(am.getPredicate(anyString())).thenReturn("a");
+        when(am.getFormula(anyString())).thenReturn("a");
 
-        String rawInput = "s [p1]";
+        String rawInput = "s [f1]";
         int expectedSteps = 1;
         List<String> expectedConstraints = new ArrayList<String>(
             Arrays.asList("a")
