@@ -431,6 +431,14 @@ public class TestSimulationManager {
     @Test
     public void testSelectAlternatePath_atInit() throws IOException {
         initializeTestWithModelPath("models/counter.als");
+        String expectedDOTString = String.join("\n",
+                "digraph graphname {",
+                "\tS1 -> S2",
+                "\tS2 -> S3",
+                "\tS3",
+                "}",
+                ""
+        );
         String expectedCurrentState = String.join("\n",
                 "",
                 "S1",
@@ -462,6 +470,7 @@ public class TestSimulationManager {
         assertFalse(sm.selectAlternatePath(false));
         assertEquals(expectedAlternateState, sm.getCurrentStateString());
         assertTrue(sm.performStep(1));
+        assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentStateAfterStep, sm.getCurrentStateString());
     }
 
