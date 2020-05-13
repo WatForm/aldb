@@ -96,14 +96,14 @@ public class TestBreakCommand extends TestCommand {
         when(simulationManager.getConstraintManager()).thenReturn(cm);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
-        String alias = "p1";
-        String predicate = "a=b";
+        String alias = "f1";
+        String formula = "a=b";
         when(am.isAlias(alias)).thenReturn(true);
-        when(am.getPredicate(alias)).thenReturn(predicate);
+        when(am.getFormula(alias)).thenReturn(formula);
         String[] input = {"break", alias};
 
         breakCommand.execute(input, simulationManager);
-        verify(cm).addConstraint(predicate);
+        verify(cm).addConstraint(formula);
     }
 
     @Test

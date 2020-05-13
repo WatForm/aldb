@@ -72,7 +72,7 @@ public class BreakCommand extends Command {
                 String constraint = m.group(1).replace("\"", "");
 
                 if (am.isAlias(constraint)) {
-                    constraint = am.getPredicate(constraint);
+                    constraint = am.getFormula(constraint);
                 }
 
                 if (simulationManager.validateConstraint(constraint)) {
