@@ -258,6 +258,10 @@ public class SimulationManager {
      */
     public boolean performStep(int steps, List<String> constraints) {
         if (isTrace()) {
+            if (statePath.atEnd()) {
+                System.out.println("Cannot perform step. End of trace reached.");
+                return false;
+            }
             statePath.incrementPosition(steps);
             return true;
         }

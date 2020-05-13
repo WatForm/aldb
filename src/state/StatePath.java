@@ -33,6 +33,10 @@ public class StatePath {
         return path.isEmpty();
     }
 
+    public boolean atEnd() {
+        return position == path.size() - 1;
+    }
+
     public StateNode getNode(int pos) {
         if (pos < 0 || pos >= path.size()) {
             return null;
