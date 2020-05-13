@@ -94,6 +94,17 @@ public class TestSimulationManager {
     }
 
     @Test
+    public void testInitializeWithModel_historyDeleted() throws IOException {
+        initializeTestWithModelPath("models/switch.als");
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.performStep(1));
+
+        initializeTestWithModelPath("models/counter.als");
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertEquals("", sm.getHistory(3));
+    }
+
+    @Test
     public void testInitializeWithTrace() throws IOException {
         File traceFile = createTrace();
 
@@ -421,11 +432,11 @@ public class TestSimulationManager {
         sm.initializeWithModel(modelFile);
         sm.performStep(2);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
-        String history = sm.getHistory(2);
+        String history = sm.getHistory(3);
         assertTrue(sm.selectAlternatePath(false));
         assertEquals(expectedAlternateState, sm.getCurrentStateString());
         // History should still be unchanged.
-        assertEquals(history, sm.getHistory(2));
+        assertEquals(history, sm.getHistory(3));
     }
 
     @Test
@@ -433,7 +444,7 @@ public class TestSimulationManager {
         initializeTestWithModelPath("models/counter.als");
         String expectedDOTString = String.join("\n",
                 "digraph graphname {",
-                "\tS1 -> S2",
+                "\tS1",
                 "\tS2 -> S3",
                 "\tS3",
                 "}",
@@ -460,6 +471,15 @@ public class TestSimulationManager {
                 "i: { 3 }",
                 ""
         );
+        String expectedHistory = String.join("\n",
+                "",
+                "(-1)",
+                "----",
+                "S2",
+                "----",
+                "i: { 1 }",
+                ""
+        );
 
         sm.initializeWithModel(modelFile);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
@@ -472,6 +492,7 @@ public class TestSimulationManager {
         assertTrue(sm.performStep(1));
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentStateAfterStep, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(3));
     }
 
     @Test
@@ -497,13 +518,13 @@ public class TestSimulationManager {
         sm.initializeWithModel(modelFile);
         sm.performStep(2);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
-        String history = sm.getHistory(2);
+        String history = sm.getHistory(3);
         assertTrue(sm.selectAlternatePath(false));
         assertTrue(sm.selectAlternatePath(false));
         assertTrue(sm.selectAlternatePath(true));
         assertEquals(expectedAlternateState, sm.getCurrentStateString());
         // History should still be unchanged.
-        assertEquals(history, sm.getHistory(2));
+        assertEquals(history, sm.getHistory(3));
     }
 
     @Test
@@ -568,7 +589,7 @@ public class TestSimulationManager {
 
     private void initializeTestWithModelPath(String modelPath) throws IOException {
         File file = new File(modelPath);
-        modelFile = tempFolder.newFile("test.als");
+        modelFile = tempFolder.newFile(String.format("test_%s.als", file.getName()));
         Files.copy(file.toPath(), modelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 

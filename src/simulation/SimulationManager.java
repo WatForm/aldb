@@ -173,7 +173,8 @@ public class SimulationManager {
         stateSigData = new SigData(stateSig);
 
         List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
-        statePath.initWithPath(initialNodes);
+        statePath.clearPath();
+        statePath.setTempPath(initialNodes);
         stateGraph.initWithNodes(initialNodes);
 
         this.traceMode = false;
@@ -340,10 +341,15 @@ public class SimulationManager {
         }
 
         List<StateNode> stateNodes = getStateNodesForA4Solution(activeSolution);
+        StateNode startNode = stateNodes.get(0);
+        stateNodes.remove(0);
 
         statePath.clearTempPath();
-        StateNode startNode = statePath.getCurNode();
-        statePath.setTempPath(stateNodes);
+        if (stateNodes.isEmpty()) {
+            statePath.setTempPath(Arrays.asList(startNode));
+        } else {
+            statePath.setTempPath(stateNodes);
+        }
 
         stateGraph.addNodes(startNode, stateNodes);
 
