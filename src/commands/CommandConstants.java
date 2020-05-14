@@ -26,9 +26,9 @@ public class CommandConstants {
 
     public final static String ALIAS_NAME = "alias";
     public final static String ALIAS_DESCRIPTION = "Control the set of aliases used";
-    public final static String ALIAS_HELP = "Control the set of predicate aliases used.\n\n" +
+    public final static String ALIAS_HELP = "Control the set of formula aliases used.\n\n" +
             "Usage:\n\n" +
-            "alias <alias> <predicate>  -- Add an alias\n" +
+            "alias <alias> <formula>    -- Add an alias\n" +
             "alias -rm <alias>          -- Remove an alias\n" +
             "alias -l                   -- List all aliases\n" +
             "alias -c                   -- Clear aliases";

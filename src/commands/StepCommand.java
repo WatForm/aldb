@@ -49,7 +49,7 @@ public class StepCommand extends Command {
                     }
 
                     if (am.isAlias(constraint)) {
-                        constraint = am.getPredicate(constraint);
+                        constraint = am.getFormula(constraint);
                     }
 
                     if (simulationManager.validateConstraint(constraint)) {

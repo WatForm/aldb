@@ -99,7 +99,7 @@ until | Run until constraints are met
 ### Detailed Descriptions
 
 #### alias
-The `alias [-c] [-l] [-rm] <alias> <predicate>` command allows for assigning a shorthand alias for a predicate. These aliases can be used when adding constraints via the `break` command or specifying constraints in the `step` command.
+The `alias [-c] [-l] [-rm] <alias> <formula>` command allows for assigning a shorthand alias for a formula. These aliases can be used when adding constraints via the `break` command or specifying constraints in the `step` command.
 
 Specify the `-c` option to clear all aliases.
 Specify the `-l` option to list all current aliases.
