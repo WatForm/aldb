@@ -346,6 +346,8 @@ public class SimulationManager {
 
         statePath.clearTempPath();
         if (stateNodes.isEmpty()) {
+            // Note: this branch should only be reached when an alternate path
+            // is selected for an initial state.
             statePath.setTempPath(Arrays.asList(startNode));
         } else {
             statePath.setTempPath(stateNodes);
