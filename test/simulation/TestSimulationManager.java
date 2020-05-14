@@ -222,7 +222,7 @@ public class TestSimulationManager {
 
     @Test
     public void testPerformStep_modelWithIntScope() throws IOException {
-        initializeTestWithModelPath("models/counter.als");
+        initializeTestWithModelPath("models/even_odd.als");
         String expectedDOTString = String.join("\n",
             "digraph graphname {",
             "\tS1 -> S2",
