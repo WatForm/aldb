@@ -25,6 +25,8 @@ public class InitCommand extends Command {
             return;
         }
 
-        simulationManager.resetPathToInit();
+        if (simulationManager.setToInit()) {
+            System.out.println(simulationManager.getCurrentStateString());
+        };
     }
 }

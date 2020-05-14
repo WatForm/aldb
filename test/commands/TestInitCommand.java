@@ -45,7 +45,7 @@ public class TestInitCommand extends TestCommand {
         String[] input = {"init"};
         initCommand.execute(input, simulationManager);
         assertEquals(CommandConstants.NO_MODEL_LOADED + "\n", outContent.toString());
-        verify(simulationManager, never()).resetPathToInit();
+        verify(simulationManager, never()).setToInit();
         restoreStreams();
     }
 
@@ -56,7 +56,7 @@ public class TestInitCommand extends TestCommand {
 
         String[] input = {"init"};
         initCommand.execute(input, simulationManager);
-        verify(simulationManager).resetPathToInit();
+        verify(simulationManager).setToInit();
         restoreStreams();
     }
 }
