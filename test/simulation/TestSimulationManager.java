@@ -688,6 +688,7 @@ public class TestSimulationManager {
 
         assertTrue(sm.performStep(1));
         assertEquals(state3, sm.getCurrentStateString());
+        assertEquals(dotString3, sm.getDOTString());
     }
 
     @Test
