@@ -24,8 +24,7 @@ public class StatePath {
     }
 
     public void initWithPath(List<StateNode> path) {
-        this.path.clear();
-        tempPathSize = 0;
+        clearPath();
         appendPath(path);
     }
 
@@ -95,6 +94,11 @@ public class StatePath {
             path.remove(path.size() - 1);
         }
 
+        tempPathSize = 0;
+    }
+
+    public void clearPath() {
+        path.clear();
         tempPathSize = 0;
     }
 

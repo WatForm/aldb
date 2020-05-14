@@ -173,11 +173,13 @@ public class SimulationManager {
         stateSigData = new SigData(stateSig);
 
         List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
-        statePath.initWithPath(initialNodes);
+        statePath.clearPath();
+        statePath.setTempPath(initialNodes);
         stateGraph.initWithNodes(initialNodes);
 
         this.traceMode = false;
         this.activeSolutions.clear();
+        this.activeSolutions.push(sol);
 
         return true;
     }
@@ -339,13 +341,17 @@ public class SimulationManager {
         }
 
         List<StateNode> stateNodes = getStateNodesForA4Solution(activeSolution);
-
-        // Filter out the initial node to avoid re-adding it to statePath.
+        StateNode startNode = stateNodes.get(0);
         stateNodes.remove(0);
 
         statePath.clearTempPath();
-        StateNode startNode = statePath.getCurNode();
-        statePath.setTempPath(stateNodes);
+        if (stateNodes.isEmpty()) {
+            // This branch should only be reached when an alternate path
+            // is selected for an initial state.
+            statePath.setTempPath(Arrays.asList(startNode));
+        } else {
+            statePath.setTempPath(stateNodes);
+        }
 
         stateGraph.addNodes(startNode, stateNodes);
 

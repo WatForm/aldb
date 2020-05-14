@@ -231,6 +231,22 @@ public class TestStatePath {
     }
 
     @Test
+    public void testClearPath() {
+        StatePath sp = new StatePath();
+        sp.clearPath();
+        assertTrue(sp.isEmpty());
+
+        List<StateNode> tempPath = new ArrayList<StateNode>();
+        tempPath.add(n0);
+        tempPath.add(n1);
+        sp.setTempPath(tempPath);
+
+        assertFalse(sp.isEmpty());
+        sp.clearPath();
+        assertTrue(sp.isEmpty());
+    }
+
+    @Test
     public void testGetHistory() {
         StatePath sp = new StatePath();
         assertEquals("", sp.getHistory(0, false));
