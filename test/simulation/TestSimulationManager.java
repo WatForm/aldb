@@ -640,6 +640,16 @@ public class TestSimulationManager {
             "}",
             ""
         );
+        String dotString3 = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "\tS4 -> S5",
+            "\tS5",
+            "}",
+            ""
+        );
         String state1 = String.join("\n",
             "",
             "S1",
@@ -678,6 +688,54 @@ public class TestSimulationManager {
 
         assertTrue(sm.performStep(1));
         assertEquals(state3, sm.getCurrentStateString());
+    }
+
+    @Test
+    public void testSetToInit_setToOriginalInitialState() throws IOException {
+        initializeTestWithModelPath("models/even_odd.als");
+        String dotString1 = String.join("\n",
+            "digraph graphname {",
+            "\tS1",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
+        );
+        String state1 = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "i: { 0 }",
+            ""
+        );
+        String state2 = String.join("\n",
+            "",
+            "S2",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+        String state3 = String.join("\n",
+            "",
+            "S3",
+            "----",
+            "i: { 3 }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertEquals(state1, sm.getCurrentStateString());
+
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(state2, sm.getCurrentStateString());
+
+        assertTrue(sm.performStep(1));
+        assertEquals(state3, sm.getCurrentStateString());
+
+        assertTrue(sm.setToInit());
+        assertEquals(state1, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(dotString1, sm.getDOTString());
     }
 
     @Test
