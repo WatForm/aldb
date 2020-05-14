@@ -492,42 +492,42 @@ public class TestSimulationManager {
     public void testSelectAlternatePath_atInit() throws IOException {
         initializeTestWithModelPath("models/even_odd.als");
         String expectedDOTString = String.join("\n",
-                "digraph graphname {",
-                "\tS1",
-                "\tS2 -> S3",
-                "\tS3",
-                "}",
-                ""
+            "digraph graphname {",
+            "\tS1",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
         );
         String expectedCurrentState = String.join("\n",
-                "",
-                "S1",
-                "----",
-                "i: { 0 }",
-                ""
+            "",
+            "S1",
+            "----",
+            "i: { 0 }",
+            ""
         );
         String expectedAlternateState = String.join("\n",
-                "",
-                "S2",
-                "----",
-                "i: { 1 }",
-                ""
+            "",
+            "S2",
+            "----",
+            "i: { 1 }",
+            ""
         );
         String expectedCurrentStateAfterStep = String.join("\n",
-                "",
-                "S3",
-                "----",
-                "i: { 3 }",
-                ""
+            "",
+            "S3",
+            "----",
+            "i: { 3 }",
+            ""
         );
         String expectedHistory = String.join("\n",
-                "",
-                "(-1)",
-                "----",
-                "S2",
-                "----",
-                "i: { 1 }",
-                ""
+            "",
+            "(-1)",
+            "----",
+            "S2",
+            "----",
+            "i: { 1 }",
+            ""
         );
 
         sm.initializeWithModel(modelFile);
@@ -632,13 +632,13 @@ public class TestSimulationManager {
             ""
         );
         String dotString2 = String.join("\n",
-                "digraph graphname {",
-                "\tS1 -> S2",
-                "\tS2 -> S3",
-                "\tS3",
-                "\tS4",
-                "}",
-                ""
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "\tS4",
+            "}",
+            ""
         );
         String state1 = String.join("\n",
             "",
