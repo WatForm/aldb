@@ -53,10 +53,25 @@ public class TestInitCommand extends TestCommand {
     public void testExecute() {
         setupStreams();
         when(simulationManager.isInitialized()).thenReturn(true);
+        when(simulationManager.setToInit()).thenReturn(true);
 
         String[] input = {"init"};
         initCommand.execute(input, simulationManager);
         verify(simulationManager).setToInit();
+        verify(simulationManager).getCurrentStateString();
+        restoreStreams();
+    }
+
+    @Test
+    public void testExecute_initFailed() {
+        setupStreams();
+        when(simulationManager.isInitialized()).thenReturn(true);
+        when(simulationManager.setToInit()).thenReturn(false);
+
+        String[] input = {"init"};
+        initCommand.execute(input, simulationManager);
+        verify(simulationManager).setToInit();
+        verify(simulationManager, never()).getCurrentStateString();
         restoreStreams();
     }
 }
