@@ -99,7 +99,7 @@ public class TestSimulationManager {
         assertTrue(sm.initializeWithModel(modelFile));
         assertTrue(sm.performStep(1));
 
-        initializeTestWithModelPath("models/counter.als");
+        initializeTestWithModelPath("models/even_odd.als");
         assertTrue(sm.initializeWithModel(modelFile));
         assertEquals("", sm.getHistory(3));
     }
@@ -441,7 +441,7 @@ public class TestSimulationManager {
 
     @Test
     public void testSelectAlternatePath_atInit() throws IOException {
-        initializeTestWithModelPath("models/counter.als");
+        initializeTestWithModelPath("models/even_odd.als");
         String expectedDOTString = String.join("\n",
                 "digraph graphname {",
                 "\tS1",
