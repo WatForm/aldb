@@ -1,3 +1,12 @@
+/*  BEGIN_ALDB_CONF
+ *
+ *  # Additional Alloy sig scopes to specify.
+ *  additionalSigScopes:
+ *    Int: 6
+ *
+ *  END_ALDB_CONF
+ */
+
 sig State {
     i: Int
 }
