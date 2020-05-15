@@ -104,7 +104,7 @@ public class StatePath {
             } else {
                 sb.insert(0, path.get(j).toString());
             }
-            sb.insert(0, String.format("\n(-%d)\n----", i - j + 1));
+            sb.insert(0, String.format("\n(-%d)\n****", i - j + 1));
             j--;
         }
         return sb.toString();
