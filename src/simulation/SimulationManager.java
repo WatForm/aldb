@@ -239,6 +239,7 @@ public class SimulationManager {
         while (!statePath.getCurNode().equals(targetNode)) {
             selectAlternatePath(false);
         }
+
         // Ensure the ID is set when reverse-stepping back to an alternative initial state.
         statePath.getCurNode().setIdentifier(targetNode.getIdentifier());
     }
