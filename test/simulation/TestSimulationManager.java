@@ -221,7 +221,7 @@ public class TestSimulationManager {
     }
 
     @Test
-    public void testPerformStep_modelWithIntScope() throws IOException {
+    public void testPerformStep_modelWithBitwidthScope() throws IOException {
         initializeTestWithModelPath("models/even_odd.als");
         String expectedDOTString = String.join("\n",
             "digraph graphname {",

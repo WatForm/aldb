@@ -3,6 +3,7 @@
  *  # Additional Alloy sig scopes to specify.
  *  additionalSigScopes:
  *    Int: 6
+ *    seq: 6
  *
  *  END_ALDB_CONF
  */
