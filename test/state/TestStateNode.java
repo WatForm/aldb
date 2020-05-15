@@ -48,6 +48,23 @@ public class TestStateNode {
     }
 
     @Test
+    public void testToHistoryString() {
+        String expected = String.join("\n",
+            "",
+            "S1 (-1)",
+            "---------",
+            "f: { string1, string2 }",
+            "g: { string }",
+            ""
+        );
+        stateNode.addValueToField("f", "string1");
+        stateNode.addValueToField("f", "string2");
+        stateNode.addValueToField("g", "string");
+        stateNode.setIdentifier(1);
+        assertEquals(expected, stateNode.toHistoryString(1));
+    }
+
+    @Test
     public void testAddValueToField_sortOrder() {
         String expected = String.join("\n",
             "",
@@ -134,6 +151,41 @@ public class TestStateNode {
         stateNode.setIdentifier(1);
         assertEquals(expected, stateNode.getDiffString(null));
     }
+
+    @Test
+    public void testGetHistoryDiffString() {
+        SigData sigData = new SigData(createNewSig());
+        StateNode stateNode2 = new StateNode(sigData, new ParsingConf());
+        String expected = String.join("\n",
+            "",
+            "S0 -> S1 (-1)",
+            "-----------------",
+            "f: { string1, string2 }",
+            ""
+        );
+        stateNode.addValueToField("f", "string1");
+        stateNode.addValueToField("f", "string2");
+        stateNode.setIdentifier(1);
+        assertEquals(expected, stateNode.getHistoryDiffString(stateNode2, 1));
+    }
+
+    @Test
+    public void testGetHistoryDiffString_null() {
+        String expected = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "f: { string1, string2 }",
+            "g: { string }",
+            ""
+        );
+        stateNode.addValueToField("f", "string1");
+        stateNode.addValueToField("f", "string2");
+        stateNode.addValueToField("g", "string");
+        stateNode.setIdentifier(1);
+        assertEquals(expected, stateNode.getHistoryDiffString(null, 1));
+    }
+
 
     @Test
     public void testEquals() {

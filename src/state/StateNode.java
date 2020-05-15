@@ -62,14 +62,11 @@ public class StateNode {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("\nS%d\n----", id));
-        for (String key : state.keySet()) {
-            sb.append(String.format("\n%s: %s ", key, AlloyConstants.BLOCK_INITIALIZER));
-            sb.append(String.format("%s %s", String.join(", ", state.get(key)), AlloyConstants.BLOCK_TERMINATOR));
-        }
-        sb.append("\n");
-        return sb.toString();
+        return String.format("\nS%d\n----%s", id, nodeToString());
+    }
+
+    public String toHistoryString(int n) {
+        return String.format("\nS%d (-%d)\n---------%s", id, n, nodeToString());
     }
 
     public String stringForProperty(String property) {
@@ -94,27 +91,15 @@ public class StateNode {
             return toString();
         }
 
-        SortedMap<String, List<String>> otherState = other.state;
+        return String.format("\nS%d -> S%d\n------------%s", other.id, id, getDiffState(other));
+    }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("\nS%d -> S%d\n------------", other.id, id));
-        for (String key : state.keySet()) {
-            if (!otherState.containsKey(key)) {
-                continue;
-            }
-
-            List<String> thisKeyContents = state.get(key);
-            List<String> otherKeyContents = otherState.get(key);
-
-            if (thisKeyContents.equals(otherKeyContents)) {
-                continue;
-            }
-
-            sb.append(String.format("\n%s: %s ", key, AlloyConstants.BLOCK_INITIALIZER));
-            sb.append(String.format("%s %s", String.join(", ", state.get(key)), AlloyConstants.BLOCK_TERMINATOR));
+    public String getHistoryDiffString(StateNode other, int n) {
+        if (other == null) {
+            return toString();
         }
-        sb.append("\n");
-        return sb.toString();
+
+        return String.format("\nS%d -> S%d (-%d)\n-----------------%s", other.id, id, n, getDiffState(other));
     }
 
     /**
@@ -173,5 +158,38 @@ public class StateNode {
 
     public void setIdentifier(int id) {
         this.id = id;
+    }
+
+    private String nodeToString() {
+        StringBuilder sb = new StringBuilder();
+        for (String key : state.keySet()) {
+            sb.append(String.format("\n%s: %s ", key, AlloyConstants.BLOCK_INITIALIZER));
+            sb.append(String.format("%s %s", String.join(", ", state.get(key)), AlloyConstants.BLOCK_TERMINATOR));
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    private String getDiffState(StateNode other) {
+        SortedMap<String, List<String>> otherState = other.state;
+
+        StringBuilder sb = new StringBuilder();
+        for (String key : state.keySet()) {
+            if (!otherState.containsKey(key)) {
+                continue;
+            }
+
+            List<String> thisKeyContents = state.get(key);
+            List<String> otherKeyContents = otherState.get(key);
+
+            if (thisKeyContents.equals(otherKeyContents)) {
+                continue;
+            }
+
+            sb.append(String.format("\n%s: %s ", key, AlloyConstants.BLOCK_INITIALIZER));
+            sb.append(String.format("%s %s", String.join(", ", state.get(key)), AlloyConstants.BLOCK_TERMINATOR));
+        }
+        sb.append("\n");
+        return sb.toString();
     }
 }

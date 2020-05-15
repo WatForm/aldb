@@ -105,14 +105,15 @@ public class StatePath {
     public String getHistory(int n, boolean traceMode) {
         int i = position - 1;
         int j = i;
+        int pos;
         StringBuilder sb = new StringBuilder();
         while (j >= 0 && i - j < n) {
+            pos = i - j + 1;
             if (traceMode && j != 0) {
-                sb.insert(0, path.get(j).getDiffString(path.get(j - 1)));
+                sb.insert(0, path.get(j).getHistoryDiffString(path.get(j - 1), pos));
             } else {
-                sb.insert(0, path.get(j).toString());
+                sb.insert(0, path.get(j).toHistoryString(pos));
             }
-            sb.insert(0, String.format("\n(-%d)\n****", i - j + 1));
             j--;
         }
         return sb.toString();
