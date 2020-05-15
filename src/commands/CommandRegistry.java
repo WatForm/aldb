@@ -11,6 +11,7 @@ public final class CommandRegistry {
         new DotCommand(),
         new HelpCommand(),
         new HistoryCommand(),
+        new InitCommand(),
         new LoadCommand(),
         new QuitCommand(),
         new ReverseStepCommand(),

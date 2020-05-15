@@ -47,6 +47,11 @@ public class CommandConstants {
     public final static String[] HELP_SHORTHAND = {"h"};
     public final static String HELP_COMMAND_END_STR = "\nType \"help\" followed by a command name for full documentation.";
 
+    public final static String INIT_NAME = "init";
+    public final static String INIT_DESCRIPTION = "Return to the initial state of the active model";
+    public final static String INIT_HELP = "Return to the initial state of the active model.\n\nUsage: init";
+    public final static String[] INIT_SHORTHAND = {"i"};
+
     public final static String LOAD_NAME = "load";
     public final static String LOAD_DESCRIPTION = "Load an Alloy model";
     public final static String LOAD_HELP = "Load an Alloy model.\n\n" +

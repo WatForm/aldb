@@ -416,6 +416,50 @@ public class SimulationManager {
     }
 
     /**
+     * setToInit sets SimulationManager's internal state to point to the initial state of the
+     * active model or trace.
+     * @return boolean
+     */
+    public boolean setToInit() {
+        if (traceMode) {
+            statePath.decrementPosition(statePath.getPosition(), traceMode);
+            return true;
+        }
+        try {
+            AlloyUtils.writeToFile(
+                AlloyUtils.annotatedTransitionSystem(
+                    this.alloyModelString + this.alloyInitString,
+                    getParsingConf(),
+                    0
+                ),
+                alloyModelFile
+            );
+        } catch (IOException e) {
+            System.out.println("error. I/O failed, cannot re-initialize model.");
+            return false;
+        }
+
+        CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
+        if (compModule == null) {
+            System.out.println("error. Could not parse model.");
+            return false;
+        }
+
+        A4Solution sol = AlloyInterface.run(compModule);
+        List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
+        // We don't re-add this initial node to the StateGraph, so manually set its identifier here.
+        initialNodes.get(0).setIdentifier(1);
+
+        statePath.clearPath();
+        statePath.setTempPath(initialNodes);
+
+        activeSolutions.clear();
+        activeSolutions.push(sol);
+
+        return true;
+    }
+
+    /**
      * validateConstraint validates a user-entered constraint by transforming
      * the constraint into a predicate and verifying that the model compiles
      * after the introduction of the new predicate.
