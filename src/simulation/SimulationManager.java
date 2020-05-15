@@ -228,8 +228,8 @@ public class SimulationManager {
         if (initialPos <= steps) {
             setToInit();
         } else {
-            // Perform a "0-step" here to set the internal state properly for an alternate path
-            // to be selected.
+            // To set the internal state properly for an alternate path to be selected, perform
+            // a step from the position one step behind the expected final position.
             statePath.decrementPosition(steps + 1, traceMode);
             performStep(1);
         }
@@ -238,9 +238,9 @@ public class SimulationManager {
         // to the correct StateNode.
         while (!statePath.getCurNode().equals(targetNode)) {
             selectAlternatePath(false);
-            // Ensure the ID is set when reverse-stepping back to an alternative initial state.
-            statePath.getCurNode().setIdentifier(targetNode.getIdentifier());
         }
+        // Ensure the ID is set when reverse-stepping back to an alternative initial state.
+        statePath.getCurNode().setIdentifier(targetNode.getIdentifier());
     }
 
     /**
