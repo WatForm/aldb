@@ -225,21 +225,23 @@ public class SimulationManager {
         int initialPos = statePath.getPosition();
         StateNode targetNode = statePath.getNode(initialPos < steps ? 0 : initialPos - steps);
 
-        // Decrement the position by (steps + 1) and then, if we're not past the beginning,
-        // step forward by 1, resulting in overall decrementing by (steps). It is done this way
-        // because the forward step gives us the A4Solution for a node, simplifyng the implementation
-        // for the `alt` command.
-        statePath.decrementPosition(steps + 1, traceMode);
         if (initialPos <= steps) {
-            return;
+            setToInit();
+        } else {
+            // To set the internal state properly for an alternate path to be selected, perform
+            // a step from the position one step behind the expected final position.
+            statePath.decrementPosition(steps + 1, traceMode);
+            performStep(1);
         }
-        performStep(1);
 
         // If the user was on some alternate path, we need to perform `alt` until we get back
         // to the correct StateNode.
         while (!statePath.getCurNode().equals(targetNode)) {
             selectAlternatePath(false);
         }
+
+        // Ensure the ID is set when reverse-stepping back to an alternative initial state.
+        statePath.getCurNode().setIdentifier(targetNode.getIdentifier());
     }
 
     /**
