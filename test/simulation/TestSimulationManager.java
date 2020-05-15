@@ -432,6 +432,159 @@ public class TestSimulationManager {
     }
 
     @Test
+    public void testPerformReverseStep_reverseThenAltAtInit() throws IOException {
+        // Tests the sequence: s 2, r 2, a, s
+        initializeTestWithModelPath("models/even_odd.als");
+        String dotString1 = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
+        );
+        String dotString2 = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "\tS4",
+            "}",
+            ""
+        );
+        String dotString3 = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "\tS4 -> S5",
+            "\tS5",
+            "}",
+            ""
+        );
+        String state1 = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "i: { 0 }",
+            ""
+        );
+        String state2 = String.join("\n",
+            "",
+            "S4",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+        String state3 = String.join("\n",
+            "",
+            "S5",
+            "----",
+            "i: { 3 }",
+            ""
+        );
+        String history = String.join("\n",
+            "",
+            "(-1)",
+            "----",
+            "S4",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.performStep(2));
+        sm.performReverseStep(2);
+        assertEquals(state1, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(dotString1, sm.getDOTString());
+
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(state2, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(dotString2, sm.getDOTString());
+
+        assertTrue(sm.performStep(1));
+        assertEquals(state3, sm.getCurrentStateString());
+        assertEquals(history, sm.getHistory(3));
+        assertEquals(dotString3, sm.getDOTString());
+    }
+
+    @Test
+    public void testPerformReverseStep_altThenReverseToInit() throws IOException {
+        // Tests the sequence: a, s 2, r 2, s 3
+        initializeTestWithModelPath("models/even_odd.als");
+        String dotString1 = String.join("\n",
+            "digraph graphname {",
+            "\tS1",
+            "\tS2 -> S3",
+            "\tS3 -> S4",
+            "\tS4",
+            "}",
+            ""
+        );
+        String dotString2 = String.join("\n",
+            "digraph graphname {",
+            "\tS1",
+            "\tS2 -> S3",
+            "\tS3 -> S4",
+            "\tS4 -> S5",
+            "\tS5",
+            "}",
+            ""
+        );
+        String state1 = String.join("\n",
+            "",
+            "S2",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+        String state2 = String.join("\n",
+            "",
+            "S5",
+            "----",
+            "i: { 7 }",
+            ""
+        );
+        String history = String.join("\n",
+            "",
+            "(-3)",
+            "----",
+            "S2",
+            "----",
+            "i: { 1 }",
+            "",
+            "(-2)",
+            "----",
+            "S3",
+            "----",
+            "i: { 3 }",
+            "",
+            "(-1)",
+            "----",
+            "S4",
+            "----",
+            "i: { 5 }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.selectAlternatePath(false));
+        assertTrue(sm.performStep(2));
+        sm.performReverseStep(2);
+        assertEquals(state1, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(dotString1, sm.getDOTString());
+
+        assertTrue(sm.performStep(3));
+        assertEquals(state2, sm.getCurrentStateString());
+        assertEquals(history, sm.getHistory(4));
+        assertEquals(dotString2, sm.getDOTString());
+    }
+
+    @Test
     public void testPerformReverseStep_trace() throws IOException {
         File traceFile = createTrace();
         String expectedDOTString = String.join("\n",
