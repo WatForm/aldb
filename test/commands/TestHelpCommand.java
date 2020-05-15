@@ -20,6 +20,7 @@ public class TestHelpCommand extends TestCommand {
         "dot            -- Dump DOT graph to disk",
         "help           -- Display the list of available commands",
         "history        -- Display past states",
+        "init           -- Return to the initial state of the active model",
         "load           -- Load an Alloy model",
         "quit           -- Exit ALDB",
         "reverse-step   -- Go back n steps in the current state traversal path",

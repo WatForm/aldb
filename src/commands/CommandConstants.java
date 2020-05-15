@@ -26,9 +26,9 @@ public class CommandConstants {
 
     public final static String ALIAS_NAME = "alias";
     public final static String ALIAS_DESCRIPTION = "Control the set of aliases used";
-    public final static String ALIAS_HELP = "Control the set of predicate aliases used.\n\n" +
+    public final static String ALIAS_HELP = "Control the set of formula aliases used.\n\n" +
             "Usage:\n\n" +
-            "alias <alias> <predicate>  -- Add an alias\n" +
+            "alias <alias> <formula>    -- Add an alias\n" +
             "alias -rm <alias>          -- Remove an alias\n" +
             "alias -l                   -- List all aliases\n" +
             "alias -c                   -- Clear aliases";
@@ -46,6 +46,11 @@ public class CommandConstants {
     public final static String HELP_DESCRIPTION = "Display the list of available commands";
     public final static String[] HELP_SHORTHAND = {"h"};
     public final static String HELP_COMMAND_END_STR = "\nType \"help\" followed by a command name for full documentation.";
+
+    public final static String INIT_NAME = "init";
+    public final static String INIT_DESCRIPTION = "Return to the initial state of the active model";
+    public final static String INIT_HELP = "Return to the initial state of the active model.\n\nUsage: init";
+    public final static String[] INIT_SHORTHAND = {"i"};
 
     public final static String LOAD_NAME = "load";
     public final static String LOAD_DESCRIPTION = "Load an Alloy model";
@@ -90,8 +95,11 @@ public class CommandConstants {
     public final static String STEP_NAME = "step";
     public final static String STEP_DESCRIPTION = "Perform a state transition of n steps";
     public final static String STEP_HELP = "Perform a state transition of n steps.\n\n" +
-        "Usage: step [n]\n\n" +
-        "n must be an integer >= 1. By default, n = 1.";
+        "Usage: step [n | constraints]\n\n" +
+        "n must be an integer >= 1. By default, n = 1.\n\n" +
+        "Alternatively, step constraints can be specified, as a comma-separated list enclosed by square brackets.\n" +
+        "n is equal to the number of items in the list.\n" +
+        "The i-th constraint is applied when performing the i-th transition.";
     public final static String[] STEP_SHORTHAND = {"s", "st"};
 
     public final static String TRACE_NAME = "trace";

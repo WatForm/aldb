@@ -86,6 +86,7 @@ current | Display the current state
 dot | Dump DOT graph to disk
 help | Display the list of available commands
 history | Display past states
+init | Return to the initial state of the active model
 load | Load an Alloy model
 quit | Exit ALDB
 reverse-step | Go back n steps in the current state traversal path
@@ -98,7 +99,7 @@ until | Run until constraints are met
 ### Detailed Descriptions
 
 #### alias
-The `alias [-c] [-l] [-rm] <alias> <predicate>` command allows for assigning a shorthand alias for a predicate. These aliases can be used when adding constraints via the `break` command.
+The `alias [-c] [-l] [-rm] <alias> <formula>` command allows for assigning a shorthand alias for a formula. These aliases can be used when adding constraints via the `break` command or specifying constraints in the `step` command.
 
 Specify the `-c` option to clear all aliases.
 Specify the `-l` option to list all current aliases.
@@ -138,6 +139,9 @@ Specify an integer value of n >= 1. By default, n = 3.
 
 ![image](https://user-images.githubusercontent.com/13455356/77835857-59a6fa80-7127-11ea-8ba4-79563a279c47.png)
 
+#### init
+The `init` command returns the user to the initial state of the active model.
+
 #### load
 The `load <filename>` command loads and initializes the Alloy model specified by <filename> into ALDB. It will check for a {BEGIN | END}_ALDB_CONF comment block in <filename> to set the configuration, and then initialize the state graph to the initial state specified by the equivalent `init` predicate in the model.
 
@@ -176,9 +180,13 @@ additionalSigScopes: {}
 Running `setconf` with no filename will set the above default options.
 
 #### step
-The `step [n]` command performs n state transitions from the current execution state, ending at one of the valid states for a length (current + n) state traversal from the initial state.
+The `step [n | constraints]` command performs n state transitions from the current execution state, ending at one of the valid states for a length (current + n) state traversal from the initial state.
 
 Specify an integer value of n >= 1. By default, n = 1.
+
+Alternatively, step constraints can be specified, as a comma-separated list enclosed by square brackets.
+n is equal to the number of items in the list.
+The i-th constraint is applied when performing the i-th transition.
 
 ![image](https://user-images.githubusercontent.com/13455356/79278678-347df000-7e7a-11ea-90d7-111733a448a6.png)
 

@@ -145,8 +145,7 @@ public class SimulationManager {
                 AlloyUtils.annotatedTransitionSystem(
                     this.alloyModelString + this.alloyInitString,
                     getParsingConf(),
-                    0,
-                    false
+                    0
                 ),
                 alloyModelFile
             );
@@ -174,11 +173,13 @@ public class SimulationManager {
         stateSigData = new SigData(stateSig);
 
         List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
-        statePath.initWithPath(initialNodes);
+        statePath.clearPath();
+        statePath.setTempPath(initialNodes);
         stateGraph.initWithNodes(initialNodes);
 
         this.traceMode = false;
         this.activeSolutions.clear();
+        this.activeSolutions.push(sol);
 
         return true;
     }
@@ -244,15 +245,32 @@ public class SimulationManager {
     /**
      * performStep steps the transition system forward by `steps` state transitions.
      * @param steps
+     * @return boolean
      */
-    public void performStep(int steps) {
+    public boolean performStep(int steps) {
+        return performStep(steps, new ArrayList<String>());
+    }
+
+    /**
+     * performStep steps the transition system forward by `steps` state transitions.
+     * The i-th constraint in `constraints` is applied to the i-th transition.
+     * @param steps
+     * @param constraints
+     * @return boolean
+     */
+    public boolean performStep(int steps, List<String> constraints) {
         if (isTrace()) {
+            if (statePath.atEnd()) {
+                System.out.println("Cannot perform step. End of trace reached.");
+                return false;
+            }
             statePath.incrementPosition(steps);
-            return;
+            return true;
         }
 
         statePath.commitNodes();
 
+        String pathPredicate = AlloyUtils.getPathPredicate(constraints, stateSigData);
         try {
             String curInitString;
             if (stateGraph.size() > 1) {
@@ -261,23 +279,24 @@ public class SimulationManager {
                 curInitString = alloyInitString;
             }
             AlloyUtils.writeToFile(
-                AlloyUtils.annotatedTransitionSystem(alloyModelString + curInitString, getParsingConf(), steps, false),
+                AlloyUtils.annotatedTransitionSystemStep(alloyModelString + curInitString + pathPredicate, getParsingConf(), steps),
                 alloyModelFile
             );
         } catch (IOException e) {
             System.out.println("Cannot perform step. I/O failed.");
-            return;
+            return false;
         }
 
         CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
         if (compModule == null) {
             System.out.println("Cannot perform step. Could not parse model.");
-            return;
+            return false;
         }
 
         A4Solution sol = AlloyInterface.run(compModule);
         if (sol == null || !sol.satisfiable()) {
             System.out.println("Cannot perform step. Transition constraint is unsatisfiable.");
+            return false;
         }
 
         StateNode startNode = statePath.getCurNode();
@@ -294,6 +313,8 @@ public class SimulationManager {
 
         this.activeSolutions.clear();
         this.activeSolutions.push(sol);
+
+        return true;
     }
 
     public boolean selectAlternatePath(boolean reverse) {
@@ -320,13 +341,17 @@ public class SimulationManager {
         }
 
         List<StateNode> stateNodes = getStateNodesForA4Solution(activeSolution);
-
-        // Filter out the initial node to avoid re-adding it to statePath.
+        StateNode startNode = stateNodes.get(0);
         stateNodes.remove(0);
 
         statePath.clearTempPath();
-        StateNode startNode = statePath.getCurNode();
-        statePath.setTempPath(stateNodes);
+        if (stateNodes.isEmpty()) {
+            // This branch should only be reached when an alternate path
+            // is selected for an initial state.
+            statePath.setTempPath(Arrays.asList(startNode));
+        } else {
+            statePath.setTempPath(stateNodes);
+        }
 
         stateGraph.addNodes(startNode, stateNodes);
 
@@ -351,7 +376,7 @@ public class SimulationManager {
                     curInitString = alloyInitString;
                 }
                 AlloyUtils.writeToFile(
-                    AlloyUtils.annotatedTransitionSystem(alloyModelString + curInitString + breakPredicate, getParsingConf(), steps, true),
+                    AlloyUtils.annotatedTransitionSystemUntil(alloyModelString + curInitString + breakPredicate, getParsingConf(), steps),
                     alloyModelFile
                 );
             } catch (IOException e) {
@@ -388,6 +413,50 @@ public class SimulationManager {
         }
 
         return false;
+    }
+
+    /**
+     * setToInit sets SimulationManager's internal state to point to the initial state of the
+     * active model or trace.
+     * @return boolean
+     */
+    public boolean setToInit() {
+        if (traceMode) {
+            statePath.decrementPosition(statePath.getPosition(), traceMode);
+            return true;
+        }
+        try {
+            AlloyUtils.writeToFile(
+                AlloyUtils.annotatedTransitionSystem(
+                    this.alloyModelString + this.alloyInitString,
+                    getParsingConf(),
+                    0
+                ),
+                alloyModelFile
+            );
+        } catch (IOException e) {
+            System.out.println("error. I/O failed, cannot re-initialize model.");
+            return false;
+        }
+
+        CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
+        if (compModule == null) {
+            System.out.println("error. Could not parse model.");
+            return false;
+        }
+
+        A4Solution sol = AlloyInterface.run(compModule);
+        List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
+        // We don't re-add this initial node to the StateGraph, so manually set its identifier here.
+        initialNodes.get(0).setIdentifier(1);
+
+        statePath.clearPath();
+        statePath.setTempPath(initialNodes);
+
+        activeSolutions.clear();
+        activeSolutions.push(sol);
+
+        return true;
     }
 
     /**

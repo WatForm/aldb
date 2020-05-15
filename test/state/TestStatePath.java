@@ -39,6 +39,7 @@ public class TestStatePath {
         sp.initWithPath(path);
 
         assertFalse(sp.isEmpty());
+        assertTrue(sp.atEnd());
         assertEquals(n0, sp.getNode(0));
         assertEquals(n1, sp.getNode(1));
         assertEquals(1, sp.getPosition());
@@ -46,6 +47,7 @@ public class TestStatePath {
         // Should be idempotent with the same input path.
         sp.initWithPath(path);
         assertFalse(sp.isEmpty());
+        assertTrue(sp.atEnd());
         assertEquals(n0, sp.getNode(0));
         assertEquals(n1, sp.getNode(1));
         assertEquals(1, sp.getPosition());
@@ -125,13 +127,22 @@ public class TestStatePath {
         List<StateNode> path = new ArrayList<StateNode>();
         path.add(n0);
         path.add(n1);
+        path.add(n2);
+
         sp.initWithPath(path);
         sp.setPosition(0);
         assertEquals(0, sp.getPosition());
+        assertFalse(sp.atEnd());
 
         sp.incrementPosition(1);
         assertEquals(1, sp.getPosition());
         assertEquals(n0, sp.getPrevNode());
+        assertFalse(sp.atEnd());
+
+        sp.incrementPosition(1);
+        assertEquals(2, sp.getPosition());
+        assertEquals(n1, sp.getPrevNode());
+        assertTrue(sp.atEnd());
     }
 
     @Test
@@ -217,6 +228,22 @@ public class TestStatePath {
         assertEquals(1, sp.getPosition());
         assertEquals(null, sp.getPrevNode());
         assertEquals(n1, sp.getCurNode());
+    }
+
+    @Test
+    public void testClearPath() {
+        StatePath sp = new StatePath();
+        sp.clearPath();
+        assertTrue(sp.isEmpty());
+
+        List<StateNode> tempPath = new ArrayList<StateNode>();
+        tempPath.add(n0);
+        tempPath.add(n1);
+        sp.setTempPath(tempPath);
+
+        assertFalse(sp.isEmpty());
+        sp.clearPath();
+        assertTrue(sp.isEmpty());
     }
 
     @Test

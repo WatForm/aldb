@@ -1,6 +1,11 @@
 package commands;
 
+import simulation.AliasManager;
 import simulation.SimulationManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StepCommand extends Command {
     private final static String[] SHORTHAND = CommandConstants.STEP_SHORTHAND;
@@ -28,12 +33,41 @@ public class StepCommand extends Command {
         }
 
         int steps = 1;
+        List<String> constraints = new ArrayList<String>();
+
         if (input.length > 1) {
-            try {
-                steps = Integer.parseInt(input[1]);
-            } catch (NumberFormatException e) {
-                System.out.println(CommandConstants.INTEGER_ERROR);
-                return;
+            String params = String.join(" ", Arrays.copyOfRange(input, 1, input.length)).trim();
+            // Check if a list of constraints is specified.
+            if (params.matches("\\[.*\\]")) {
+                params = params.substring(1, params.length() - 1);
+
+                AliasManager am = simulationManager.getAliasManager();
+                for (String constraint : params.split(",", -1)) {
+                    constraint = constraint.trim();
+                    if (constraint.matches("\".*\"")) {
+                        constraint = constraint.substring(1, constraint.length() - 1);
+                    }
+
+                    if (am.isAlias(constraint)) {
+                        constraint = am.getFormula(constraint);
+                    }
+
+                    if (simulationManager.validateConstraint(constraint)) {
+                        constraints.add(constraint);
+                    } else {
+                        System.out.println(String.format(CommandConstants.INVALID_CONSTRAINT, constraint));
+                        return;
+                    }
+                }
+
+                steps = constraints.size();
+            } else {
+                try {
+                    steps = Integer.parseInt(input[1]);
+                } catch (NumberFormatException e) {
+                    System.out.println(CommandConstants.INTEGER_ERROR);
+                    return;
+                }
             }
         }
 
@@ -42,7 +76,9 @@ public class StepCommand extends Command {
             return;
         }
 
-        simulationManager.performStep(steps);
+        if (!simulationManager.performStep(steps, constraints)) {
+            return;
+        }
 
         if (simulationManager.isTrace()) {
             System.out.println(simulationManager.getCurrentStateDiffString());

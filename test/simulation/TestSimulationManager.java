@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,17 @@ public class TestSimulationManager {
         initializeTestWithModelString(invalidModel);
         assertFalse(sm.initializeWithModel(modelFile));
         assertFalse(sm.isInitialized());
+    }
+
+    @Test
+    public void testInitializeWithModel_historyDeleted() throws IOException {
+        initializeTestWithModelPath("models/switch.als");
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.performStep(1));
+
+        initializeTestWithModelPath("models/even_odd.als");
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertEquals("", sm.getHistory(3));
     }
 
     @Test
@@ -209,6 +221,55 @@ public class TestSimulationManager {
     }
 
     @Test
+    public void testPerformStep_modelWithIntScope() throws IOException {
+        initializeTestWithModelPath("models/even_odd.als");
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3 -> S4",
+            "\tS4 -> S5",
+            "\tS5 -> S6",
+            "\tS6 -> S7",
+            "\tS7 -> S8",
+            "\tS8 -> S9",
+            "\tS9 -> S10",
+            "\tS10 -> S11",
+            "\tS11",
+            "}",
+            ""
+        );
+        String expectedCurrentState = String.join("\n",
+            "",
+            "S11",
+            "----",
+            "i: { 20 }",
+            ""
+        );
+        String expectedHistory = String.join("\n",
+            "",
+            "(-2)",
+            "----",
+            "S9",
+            "----",
+            "i: { 16 }",
+            "",
+            "(-1)",
+            "----",
+            "S10",
+            "----",
+            "i: { 18 }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        sm.performStep(10);
+        assertEquals(expectedDOTString, sm.getDOTString());
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(2));
+    }
+
+    @Test
     public void testPerformStep_trace() throws IOException {
         File traceFile = createTrace();
         String expectedDOTString = String.join("\n",
@@ -239,10 +300,92 @@ public class TestSimulationManager {
 
         assertTrue(sm.initializeWithTrace(traceFile));
         assertTrue(sm.isTrace());
-        sm.performStep(1);
+        assertTrue(sm.performStep(1));
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
         assertEquals(expectedHistory, sm.getHistory(1));
+
+        // End of trace reached.
+        assertFalse(sm.performStep(1));
+        assertFalse(sm.performStep(2));
+    }
+
+    @Test
+    public void testPerformStep_withConstraintsSatisfiable() throws IOException {
+        initializeTestWithModelPath("models/river_crossing.als");
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
+        );
+        String expectedCurrentState = String.join("\n",
+            "",
+            "S3",
+            "----",
+            "far: { Chicken }",
+            "near: { Farmer, Fox, Grain }",
+            ""
+        );
+        String expectedHistory = String.join("\n",
+            "",
+            "(-2)",
+            "----",
+            "S1",
+            "----",
+            "far: {  }",
+            "near: { Chicken, Farmer, Fox, Grain }",
+            "",
+            "(-1)",
+            "----",
+            "S2",
+            "----",
+            "far: { Chicken, Farmer }",
+            "near: { Fox, Grain }",
+            ""
+        );
+
+        List<String> constraints = new ArrayList<String>(
+            Arrays.asList("Chicken in far", "(Farmer in near) and (Chicken in far)")
+        );
+        sm.initializeWithModel(modelFile);
+        sm.performStep(constraints.size(), constraints);
+        assertEquals(expectedDOTString, sm.getDOTString());
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(2));
+    }
+
+    @Test
+    public void testPerformStep_withConstraintsUnsatisfiable() throws IOException {
+        initializeTestWithModelPath("models/river_crossing.als");
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1",
+            "}",
+            ""
+        );
+        String expectedCurrentState = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "far: {  }",
+            "near: { Chicken, Farmer, Fox, Grain }",
+            ""
+        );
+        String expectedHistory = String.join("\n",
+            ""
+        );
+
+        List<String> constraints = new ArrayList<String>(
+            Arrays.asList("(Farmer in near) and (Farmer in far)")
+        );
+        sm.initializeWithModel(modelFile);
+        sm.performStep(constraints.size(), constraints);
+        assertEquals(expectedDOTString, sm.getDOTString());
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(2));
     }
 
     @Test
@@ -338,11 +481,67 @@ public class TestSimulationManager {
         sm.initializeWithModel(modelFile);
         sm.performStep(2);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
-        String history = sm.getHistory(2);
+        String history = sm.getHistory(3);
         assertTrue(sm.selectAlternatePath(false));
         assertEquals(expectedAlternateState, sm.getCurrentStateString());
         // History should still be unchanged.
-        assertEquals(history, sm.getHistory(2));
+        assertEquals(history, sm.getHistory(3));
+    }
+
+    @Test
+    public void testSelectAlternatePath_atInit() throws IOException {
+        initializeTestWithModelPath("models/even_odd.als");
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
+        );
+        String expectedCurrentState = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "i: { 0 }",
+            ""
+        );
+        String expectedAlternateState = String.join("\n",
+            "",
+            "S2",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+        String expectedCurrentStateAfterStep = String.join("\n",
+            "",
+            "S3",
+            "----",
+            "i: { 3 }",
+            ""
+        );
+        String expectedHistory = String.join("\n",
+            "",
+            "(-1)",
+            "----",
+            "S2",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+
+        sm.initializeWithModel(modelFile);
+        assertEquals(expectedCurrentState, sm.getCurrentStateString());
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(expectedAlternateState, sm.getCurrentStateString());
+
+        // No more alternate initial states.
+        assertFalse(sm.selectAlternatePath(false));
+        assertEquals(expectedAlternateState, sm.getCurrentStateString());
+        assertTrue(sm.performStep(1));
+        assertEquals(expectedDOTString, sm.getDOTString());
+        assertEquals(expectedCurrentStateAfterStep, sm.getCurrentStateString());
+        assertEquals(expectedHistory, sm.getHistory(3));
     }
 
     @Test
@@ -368,13 +567,13 @@ public class TestSimulationManager {
         sm.initializeWithModel(modelFile);
         sm.performStep(2);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
-        String history = sm.getHistory(2);
+        String history = sm.getHistory(3);
         assertTrue(sm.selectAlternatePath(false));
         assertTrue(sm.selectAlternatePath(false));
         assertTrue(sm.selectAlternatePath(true));
         assertEquals(expectedAlternateState, sm.getCurrentStateString());
         // History should still be unchanged.
-        assertEquals(history, sm.getHistory(2));
+        assertEquals(history, sm.getHistory(3));
     }
 
     @Test
@@ -422,6 +621,168 @@ public class TestSimulationManager {
     }
 
     @Test
+    public void testSetToInit() throws IOException {
+        initializeTestWithModelPath("models/even_odd.als");
+        String dotString1 = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
+        );
+        String dotString2 = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "\tS4",
+            "}",
+            ""
+        );
+        String dotString3 = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2 -> S3",
+            "\tS3",
+            "\tS4 -> S5",
+            "\tS5",
+            "}",
+            ""
+        );
+        String state1 = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "i: { 0 }",
+            ""
+        );
+        String state2 = String.join("\n",
+            "",
+            "S4",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+        String state3 = String.join("\n",
+            "",
+            "S5",
+            "----",
+            "i: { 3 }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertEquals(state1, sm.getCurrentStateString());
+
+        assertTrue(sm.performStep(2));
+        assertTrue(sm.setToInit());
+        assertEquals(state1, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(dotString1, sm.getDOTString());
+
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(state2, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(dotString2, sm.getDOTString());
+
+        assertTrue(sm.performStep(1));
+        assertEquals(state3, sm.getCurrentStateString());
+        assertEquals(dotString3, sm.getDOTString());
+    }
+
+    @Test
+    public void testSetToInit_setToOriginalInitialState() throws IOException {
+        initializeTestWithModelPath("models/even_odd.als");
+        String dotString1 = String.join("\n",
+            "digraph graphname {",
+            "\tS1",
+            "\tS2 -> S3",
+            "\tS3",
+            "}",
+            ""
+        );
+        String state1 = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "i: { 0 }",
+            ""
+        );
+        String state2 = String.join("\n",
+            "",
+            "S2",
+            "----",
+            "i: { 1 }",
+            ""
+        );
+        String state3 = String.join("\n",
+            "",
+            "S3",
+            "----",
+            "i: { 3 }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithModel(modelFile));
+        assertEquals(state1, sm.getCurrentStateString());
+
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(state2, sm.getCurrentStateString());
+
+        assertTrue(sm.performStep(1));
+        assertEquals(state3, sm.getCurrentStateString());
+
+        assertTrue(sm.setToInit());
+        assertEquals(state1, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(dotString1, sm.getDOTString());
+    }
+
+    @Test
+    public void testSetToInit_trace() throws IOException {
+        File traceFile = createTrace();
+        String expectedDOTString = String.join("\n",
+            "digraph graphname {",
+            "\tS1 -> S2",
+            "\tS2",
+            "}",
+            ""
+        );
+        String state1 = String.join("\n",
+            "",
+            "S1",
+            "----",
+            "a: { Off }",
+            "b: { On }",
+            ""
+        );
+        String state2 = String.join("\n",
+            "",
+            "S2",
+            "----",
+            "a: { On }",
+            "b: { Off }",
+            ""
+        );
+
+        assertTrue(sm.initializeWithTrace(traceFile));
+        assertTrue(sm.isTrace());
+        assertEquals(state1, sm.getCurrentStateString());
+
+        assertTrue(sm.performStep(1));
+        assertEquals(state2, sm.getCurrentStateString());
+
+        assertTrue(sm.setToInit());
+        assertEquals(state1, sm.getCurrentStateString());
+        assertEquals("", sm.getHistory(3));
+        assertEquals(expectedDOTString, sm.getDOTString());
+
+        assertTrue(sm.performStep(1));
+        assertEquals(state2, sm.getCurrentStateString());
+    }
+
+    @Test
     public void testValidateConstraint() throws IOException {
         initializeTestWithModelPath("models/switch.als");
         sm.initializeWithModel(modelFile);
@@ -439,7 +800,7 @@ public class TestSimulationManager {
 
     private void initializeTestWithModelPath(String modelPath) throws IOException {
         File file = new File(modelPath);
-        modelFile = tempFolder.newFile("test.als");
+        modelFile = tempFolder.newFile(String.format("test_%s.als", file.getName()));
         Files.copy(file.toPath(), modelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
