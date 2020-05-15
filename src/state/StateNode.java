@@ -62,11 +62,11 @@ public class StateNode {
 
     @Override
     public String toString() {
-        return String.format("\nS%d\n----%s", id, nodeToString());
+        return String.format("\nS%d\n----%s", id, getStateString());
     }
 
     public String toHistoryString(int n) {
-        return String.format("\nS%d (-%d)\n---------%s", id, n, nodeToString());
+        return String.format("\nS%d (-%d)\n---------%s", id, n, getStateString());
     }
 
     public String stringForProperty(String property) {
@@ -160,7 +160,7 @@ public class StateNode {
         this.id = id;
     }
 
-    private String nodeToString() {
+    private String getStateString() {
         StringBuilder sb = new StringBuilder();
         for (String key : state.keySet()) {
             sb.append(String.format("\n%s: %s ", key, AlloyConstants.BLOCK_INITIALIZER));
