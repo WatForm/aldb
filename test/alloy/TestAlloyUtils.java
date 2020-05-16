@@ -67,6 +67,7 @@ public class TestAlloyUtils {
         sigScopes.put("Player", 4);
         sigScopes.put("Chair", 3);
         sigScopes.put("Int", 6);
+        sigScopes.put("seq", 6);
 
         ParsingConf pc = new ParsingConf();
         pc.setStateSigName("Snapshot");
@@ -83,7 +84,7 @@ public class TestAlloyUtils {
             "",
             "fact { all s: Snapshot, s': s.next { trans[s, s'] } }",
             "",
-            "run {  } for exactly 6 Snapshot, exactly 3 Chair, 6 Int, exactly 4 Player"
+            "run {  } for exactly 6 Snapshot, exactly 3 Chair, 6 Int, exactly 4 Player, 6 seq"
         );
         String result = AlloyUtils.annotatedTransitionSystem(
                             model,
@@ -234,6 +235,7 @@ public class TestAlloyUtils {
         sigScopes.put("Player", 4);
         sigScopes.put("Chair", 3);
         sigScopes.put("Int", 6);
+        sigScopes.put("seq", 6);
 
         String expected = String.join("\n",
             "one sig Chair_0, Chair_1, Chair_2 extends Chair {}",
