@@ -106,9 +106,11 @@ public class TestAlloyUtils {
             "",
             "fact { init[first] }",
             "",
+            "fact { path[first] }",
+            "",
             "fact { all s: State, s': s.next { next[s, s'] } }",
             "",
-            "run { path[first] } for exactly 6 State"
+            "run {  } for exactly 6 State"
         );
         String result = AlloyUtils.annotatedTransitionSystemStep(
                             model,
@@ -130,9 +132,11 @@ public class TestAlloyUtils {
             "",
             "fact { init[first] }",
             "",
+            "fact { break[last] }",
+            "",
             "fact { all s: State, s': s.next { next[s, s'] } }",
             "",
-            "run { break[last] } for exactly 6 State"
+            "run {  } for exactly 6 State"
         );
         String result = AlloyUtils.annotatedTransitionSystemUntil(
                             model,

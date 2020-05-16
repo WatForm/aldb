@@ -215,15 +215,16 @@ public class AlloyUtils {
      * 3. Add fact to define state transitions.
      * 4. Add command to run state transitions.
      */
-    private static String annotatedTransitionSystem(String model, ParsingConf parsingConf, int steps, String runConstraint) {
+    private static String annotatedTransitionSystem(String model, ParsingConf parsingConf, int steps, String additionalConstraint) {
         String stateSigName = parsingConf.getStateSigName();
         String initPredicateName = parsingConf.getInitPredicateName();
         String transitionRelationName = parsingConf.getTransitionRelationName();
         Map<String, Integer> additionalSigScopes = parsingConf.getAdditionalSigScopes();
+        String additionalConstraintFact = additionalConstraint.trim().isEmpty() ? "" : String.format("fact { %s }" + "\n\n", additionalConstraint);
         String transitionRelationFact = String.format(
             "fact { all s: %s, s': s.next { %s[s, s'] } }" + "\n\n", stateSigName, transitionRelationName
         );
-        String sigScopes = String.format("run { %s } for exactly %d %s", runConstraint, steps + 1, stateSigName);
+        String sigScopes = String.format("run {  } for exactly %d %s", steps + 1, stateSigName);
         for (String sigScopeName : additionalSigScopes.keySet()) {
             String scopeFormat = (AlloyConstants.BITWIDTH_SCOPED_SIGS.contains(sigScopeName)) ?
                                      ", %d %s" :
@@ -234,6 +235,7 @@ public class AlloyUtils {
             String.format("open util/ordering[%s]" + "\n\n", stateSigName) +
             model + "\n\n" +
             String.format("fact { %s[first] }" + "\n\n", initPredicateName) +
+            additionalConstraintFact +
             transitionRelationFact +
             sigScopes,
             model
