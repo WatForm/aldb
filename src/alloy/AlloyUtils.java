@@ -125,9 +125,12 @@ public class AlloyUtils {
 
         for (int i = 0; i < rawConstraints.size(); i++) {
             String rawConstraint = rawConstraints.get(i);
-            String auxiliaryPredicateName = String.format(AlloyConstants.PATH_AUXILIARY_PREDICATE_FORMAT, i);
             String constraintString = getConstraint(rawConstraint, sigData.getFields());
             String predicateBody = String.format("\t%s\n", constraintString);
+
+            // Use (i + 1) to refer to the state number because State 0 (the init state) is not subject to a path constraint.
+            String auxiliaryPredicateName = String.format(AlloyConstants.PATH_AUXILIARY_PREDICATE_FORMAT, i + 1);
+
             sb.append(makeStatePredicate(
                 auxiliaryPredicateName,
                 sigData.getLabel(),
