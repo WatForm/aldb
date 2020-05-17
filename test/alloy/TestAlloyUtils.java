@@ -67,6 +67,7 @@ public class TestAlloyUtils {
         sigScopes.put("Player", 4);
         sigScopes.put("Chair", 3);
         sigScopes.put("Int", 6);
+        sigScopes.put("seq", 6);
 
         ParsingConf pc = new ParsingConf();
         pc.setStateSigName("Snapshot");
@@ -83,7 +84,7 @@ public class TestAlloyUtils {
             "",
             "fact { all s: Snapshot, s': s.next { trans[s, s'] } }",
             "",
-            "run {  } for exactly 6 Snapshot, exactly 3 Chair, 6 Int, exactly 4 Player"
+            "run {  } for exactly 6 Snapshot, exactly 3 Chair, 6 Int, exactly 4 Player, 6 seq"
         );
         String result = AlloyUtils.annotatedTransitionSystem(
                             model,
@@ -105,9 +106,11 @@ public class TestAlloyUtils {
             "",
             "fact { init[first] }",
             "",
+            "fact { path[first] }",
+            "",
             "fact { all s: State, s': s.next { next[s, s'] } }",
             "",
-            "run { path[first] } for exactly 6 State"
+            "run {  } for exactly 6 State"
         );
         String result = AlloyUtils.annotatedTransitionSystemStep(
                             model,
@@ -129,9 +132,11 @@ public class TestAlloyUtils {
             "",
             "fact { init[first] }",
             "",
+            "fact { break[last] }",
+            "",
             "fact { all s: State, s': s.next { next[s, s'] } }",
             "",
-            "run { break[last] } for exactly 6 State"
+            "run {  } for exactly 6 State"
         );
         String result = AlloyUtils.annotatedTransitionSystemUntil(
                             model,
@@ -179,20 +184,20 @@ public class TestAlloyUtils {
         SigData sigData = new SigData(createNewSig());
         String expected = String.join("\n",
             "",
-            "pred path_c0[s: A] {",
+            "pred state_s1[s: A] {",
             "\ta = b",
             "}",
             "",
-            "pred path_c1[s: A] {",
+            "pred state_s2[s: A] {",
             "\tnone = none",
             "}",
             "",
-            "pred path_c2[s: A] {",
+            "pred state_s3[s: A] {",
             "\tc = d",
             "}",
             "",
             "pred path[s: A] {",
-            "\tpath_c0[s.next] and path_c1[s.next.next] and path_c2[s.next.next.next]",
+            "\tstate_s1[s.next] and state_s2[s.next.next] and state_s3[s.next.next.next]",
             "}",
             ""
         );
@@ -234,6 +239,7 @@ public class TestAlloyUtils {
         sigScopes.put("Player", 4);
         sigScopes.put("Chair", 3);
         sigScopes.put("Int", 6);
+        sigScopes.put("seq", 6);
 
         String expected = String.join("\n",
             "one sig Chair_0, Chair_1, Chair_2 extends Chair {}",

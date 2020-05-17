@@ -53,9 +53,7 @@ public class AlloyUtils {
             }
 
             String sigName = entry.getKey();
-            // The scope of Int specifies bitwidth and does not require the
-            // creation of concrete signatures.
-            if (sigName.equals(AlloyConstants.INT)) {
+            if (AlloyConstants.BITWIDTH_SCOPED_SIGS.contains(sigName)) {
                 continue;
             }
 
@@ -127,9 +125,12 @@ public class AlloyUtils {
 
         for (int i = 0; i < rawConstraints.size(); i++) {
             String rawConstraint = rawConstraints.get(i);
-            String auxiliaryPredicateName = String.format(AlloyConstants.PATH_AUXILIARY_PREDICATE_FORMAT, i);
             String constraintString = getConstraint(rawConstraint, sigData.getFields());
             String predicateBody = String.format("\t%s\n", constraintString);
+
+            // Use (i + 1) to refer to the state number because State 0 (the init state) is not subject to a path constraint.
+            String auxiliaryPredicateName = String.format(AlloyConstants.PATH_AUXILIARY_PREDICATE_FORMAT, i + 1);
+
             sb.append(makeStatePredicate(
                 auxiliaryPredicateName,
                 sigData.getLabel(),
@@ -214,18 +215,18 @@ public class AlloyUtils {
      * 3. Add fact to define state transitions.
      * 4. Add command to run state transitions.
      */
-    private static String annotatedTransitionSystem(String model, ParsingConf parsingConf, int steps, String runConstraint) {
+    private static String annotatedTransitionSystem(String model, ParsingConf parsingConf, int steps, String additionalConstraint) {
         String stateSigName = parsingConf.getStateSigName();
         String initPredicateName = parsingConf.getInitPredicateName();
         String transitionRelationName = parsingConf.getTransitionRelationName();
         Map<String, Integer> additionalSigScopes = parsingConf.getAdditionalSigScopes();
+        String additionalConstraintFact = additionalConstraint.trim().isEmpty() ? "" : String.format("fact { %s }" + "\n\n", additionalConstraint);
         String transitionRelationFact = String.format(
             "fact { all s: %s, s': s.next { %s[s, s'] } }" + "\n\n", stateSigName, transitionRelationName
         );
-        String sigScopes = String.format("run { %s } for exactly %d %s", runConstraint, steps + 1, stateSigName);
+        String sigScopes = String.format("run {  } for exactly %d %s", steps + 1, stateSigName);
         for (String sigScopeName : additionalSigScopes.keySet()) {
-            // Alloy does not accept "exactly" for Int scope.
-            String scopeFormat = (sigScopeName.equals(AlloyConstants.INT)) ?
+            String scopeFormat = (AlloyConstants.BITWIDTH_SCOPED_SIGS.contains(sigScopeName)) ?
                                      ", %d %s" :
                                      ", exactly %d %s";
             sigScopes += String.format(scopeFormat, additionalSigScopes.get(sigScopeName), sigScopeName);
@@ -234,6 +235,7 @@ public class AlloyUtils {
             String.format("open util/ordering[%s]" + "\n\n", stateSigName) +
             model + "\n\n" +
             String.format("fact { %s[first] }" + "\n\n", initPredicateName) +
+            additionalConstraintFact +
             transitionRelationFact +
             sigScopes,
             model
