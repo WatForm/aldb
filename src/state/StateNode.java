@@ -91,7 +91,7 @@ public class StateNode {
             return toString();
         }
 
-        return String.format("\nS%d -> S%d\n------------%s", other.id, id, getDiffState(other));
+        return String.format("\nS%d -> S%d\n------------%s", other.id, id, getDiffStateString(other));
     }
 
     public String getHistoryDiffString(StateNode other, int n) {
@@ -99,7 +99,7 @@ public class StateNode {
             return toString();
         }
 
-        return String.format("\nS%d -> S%d (-%d)\n-----------------%s", other.id, id, n, getDiffState(other));
+        return String.format("\nS%d -> S%d (-%d)\n-----------------%s", other.id, id, n, getDiffStateString(other));
     }
 
     /**
@@ -170,7 +170,7 @@ public class StateNode {
         return sb.toString();
     }
 
-    private String getDiffState(StateNode other) {
+    private String getDiffStateString(StateNode other) {
         SortedMap<String, List<String>> otherState = other.state;
 
         StringBuilder sb = new StringBuilder();
