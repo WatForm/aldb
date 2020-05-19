@@ -281,52 +281,38 @@ Observe that the desired state has been reached. Use the history command to show
 ```
 (aldb) history 10
 
-(-7)
-----
-S1
-----
+S1 (-7)
+---------
 far: {  }
 near: { Chicken, Farmer, Fox, Grain }
 
-(-6)
-----
-S2
-----
+S2 (-6)
+---------
 far: { Chicken, Farmer }
 near: { Fox, Grain }
 
-(-5)
-----
-S3
-----
+S3 (-5)
+---------
 far: { Chicken }
 near: { Farmer, Fox, Grain }
 
-(-4)
-----
-S4
-----
+S4 (-4)
+---------
 far: { Chicken, Farmer, Fox }
 near: { Grain }
 
-(-3)
-----
-S5
-----
+S5 (-3)
+---------
 far: { Fox }
 near: { Chicken, Farmer, Grain }
 
-(-2)
-----
-S6
-----
+S6 (-2)
+---------
 far: { Farmer, Fox, Grain }
 near: { Chicken }
 
-(-1)
-----
-S7
-----
+S7 (-1)
+---------
 far: { Fox, Grain }
 near: { Chicken, Farmer }
 ```
@@ -417,8 +403,8 @@ I/O failed, cannot initialize model. | Restart ALDB and try again. If this error
 ## Reporting Issues
 
 If you discover an issue, please report it by creating a GitHub issue. In the issue, please be descriptive and include as much of the following information as possible:
- 
-1. ALDB version 
+
+1. ALDB version
 2. Java version
 3. OS version
 4. Reproduction steps

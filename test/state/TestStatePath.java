@@ -260,12 +260,12 @@ public class TestStatePath {
         path.add(n2);
         sp.initWithPath(path);
 
-        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS1\n----\n", sp.getHistory(3, false));
-        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS0 -> S1\n------------\n", sp.getHistory(3, true));
-        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS1\n----\n", sp.getHistory(2, false));
-        assertEquals("\n(-2)\n----\nS0\n----\n\n(-1)\n----\nS0 -> S1\n------------\n", sp.getHistory(2, true));
-        assertEquals("\n(-1)\n----\nS1\n----\n", sp.getHistory(1, false));
-        assertEquals("\n(-1)\n----\nS0 -> S1\n------------\n", sp.getHistory(1, true));
+        assertEquals("\nS0 (-2)\n---------\n\nS1 (-1)\n---------\n", sp.getHistory(3, false));
+        assertEquals("\nS0 (-2)\n---------\n\nS0 -> S1 (-1)\n-----------------\n", sp.getHistory(3, true));
+        assertEquals("\nS0 (-2)\n---------\n\nS1 (-1)\n---------\n", sp.getHistory(2, false));
+        assertEquals("\nS0 (-2)\n---------\n\nS0 -> S1 (-1)\n-----------------\n", sp.getHistory(2, true));
+        assertEquals("\nS1 (-1)\n---------\n", sp.getHistory(1, false));
+        assertEquals("\nS0 -> S1 (-1)\n-----------------\n", sp.getHistory(1, true));
         assertEquals("", sp.getHistory(0, false));
         assertEquals("", sp.getHistory(0, true));
     }
