@@ -1,6 +1,6 @@
 # ALDB
 
-## Introduction
+![CI](https://github.com/WatForm/aldb/workflows/CI/badge.svg)
 
 Alloy Debugger (ALDB) is a command-line debugger for transition systems modelled in Alloy. Transition systems are composed of some state that changes based on a transition relation.
 
@@ -8,7 +8,7 @@ ALDB allows for incremental state-space exploration of Alloy transition systems,
 
 This guide explains usage of ALDB, compatibility requirements for Alloy models, and troubleshooting. It also includes an illustrative example of stepping through a concrete transition system using ALDB.
 
-### Table of Contents
+## Table of Contents
 
 * [Getting Started](#getting-started)
 * [Model and Configuration Format](#model-and-configuration-format)
@@ -79,31 +79,31 @@ Refer to the worked example in this guide for a sample of a concrete Alloy model
 
 Command | Description
 -- | --
-alias | Control the set of aliases used
-alt | Select an alternate execution path
-break | Control the set of constraints used
-current | Display the current state
-dot | Dump DOT graph to disk
-help | Display the list of available commands
-history | Display past states
-init | Return to the initial state of the active model
-load | Load an Alloy model
-quit | Exit ALDB
-reverse-step | Go back n steps in the current state traversal path
-set | Set ALDB options
-scope | Display scope set
-step | Perform a state transition of n steps
-trace | Load a saved Alloy XML instance
-until | Run until constraints are met
+[alias](#alias) | Control the set of aliases used
+[alt](#alt) | Select an alternate execution path
+[break](#break) | Control the set of constraints used
+[current](#current) | Display the current state
+[dot](#dot) | Dump DOT graph to disk
+[help](#help) | Display the list of available commands
+[history](#history) | Display past states
+[init](#init) | Return to the initial state of the active model
+[load](#load) | Load an Alloy model
+[quit](#quit) | Exit ALDB
+[reverse-step](#reverse-step) | Go back n steps in the current state traversal path
+[scope](#scope) | Display scope set
+[set](#set) | Set ALDB options
+[step](#step) | Perform a state transition of n steps
+[trace](#trace) | Load a saved Alloy XML instance
+[until](#until) | Run until constraints are met
 
 ### Detailed Descriptions
 
 #### alias
-The `alias [-c] [-l] [-rm] <alias> <formula>` command allows for assigning a shorthand alias for a formula. These aliases can be used when adding constraints via the `break` command or specifying constraints in the `step` command.
+The `alias [-c] [-l] [-rm alias] [alias formula]` command allows for assigning a shorthand alias for a formula. These aliases can be used when adding constraints via the `break` command or specifying constraints in the `step` command.
 
 Specify the `-c` option to clear all aliases.
 Specify the `-l` option to list all current aliases.
-Specify the `-rm` option to remove an alias.
+Specify the `-rm alias` option to remove an alias.
 
 #### alt
 The `alt [-r]` command switches between alternative execution paths in the current trace. Multiple unique states can be reached for a given path length; this command allows the user to explore all those states.
@@ -113,11 +113,11 @@ Specify the `-r` option to go back to the previous execution state.
 ![image](https://user-images.githubusercontent.com/13455356/79278612-08626f00-7e7a-11ea-98b8-f8e59e8d12f5.png)
 
 #### break
-The `break [-c] [-l] [-rm] <constraint>` command allows for specifying an execution constraint (breakpoint). Use these constraints to control certain parameters and invariants throughout the model’s execution. When stepping through the model, execution will halt if and when the constraint is satisfied. Running the command multiple times will result in a super-constraint composed of a disjunction of each individually-specified constraint.
+The `break [-c] [-l] [-rm num] [constraint]` command allows for specifying an execution constraint (breakpoint). Use these constraints to control certain parameters and invariants throughout the model’s execution. When stepping through the model, execution will halt if and when the constraint is satisfied. Running the command multiple times will result in a super-constraint composed of a disjunction of each individually-specified constraint.
 
 Specify the `-c` option to clear all constraints.
 Specify the `-l` option to list all current constraints.
-Specify the `-rm` option to remove a constraint.
+Specify the `-rm num` option to remove a constraint.
 
 #### current
 The `current [property]` command displays the values of all properties at the present execution state.
@@ -160,7 +160,6 @@ The `scope [sig-name]` command displays the scope set for all signatures in the 
 Specify a sig-name to view the scope only for that specific signature.
 
 #### set
-
 The `set <option> <value>` command allows users to modify ALDB options.
 
 ##### Available options:
@@ -364,7 +363,7 @@ In the first alternate state, the farmer took the fox, leaving the chicken to ea
 
 The Alloy Analyzer is able to generate counterexamples when inconsistencies are found during model checking. The counterexample is specified as an XML file, and then loaded into ALDB for exploration.
 
-Use the `trace <filename>` command to load the counterexample into ALDB. There is no need to provide a configuration. Now it is possible to incrementally explore the counterexample states using the usual ALDB functions.
+Use the `trace <filename>` command to load the counterexample into ALDB. Now it is possible to incrementally explore the counterexample states using the usual ALDB functions.
 
 Note that the original Alloy model from which the counterexample was generated need not be provided. If it is not, ALDB is unable to find alternate states or step beyond the final state of the counterexample.
 
