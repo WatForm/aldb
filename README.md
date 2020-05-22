@@ -34,8 +34,8 @@ This guide explains usage of ALDB, compatibility requirements for Alloy models, 
 
 ALDB supports transition systems modelled in a certain style in Alloy. As such, there are certain signatures and predicates that are expected to exist, whose names can be stored in a custom configuration.
 
-The configuration must be defined in YAML. It can be specified within a comment block in the model file (to be applied for that model only), or set via passing a separate YAML file to the `setconf` command.
-When using the `setconf` command, the configuration will last for the entire ALDB session.
+The configuration must be defined in YAML. It can be specified within a comment block in the model file (to be applied for that model only), or set via passing a separate YAML file to the `set conf` command.
+When using the `set conf` command, the configuration will last for the entire ALDB session.
 
 The default configuration looks like the following:
 
@@ -90,8 +90,8 @@ init | Return to the initial state of the active model
 load | Load an Alloy model
 quit | Exit ALDB
 reverse-step | Go back n steps in the current state traversal path
+set | Set ALDB options
 scope | Display scope set
-setconf | Set parsing options for an Alloy model
 step | Perform a state transition of n steps
 trace | Load a saved Alloy XML instance
 until | Run until constraints are met
@@ -159,25 +159,15 @@ The `scope [sig-name]` command displays the scope set for all signatures in the 
 
 Specify a sig-name to view the scope only for that specific signature.
 
-#### setconf
-The `setconf [filename]` command sets custom parsing options for the current session. The file must be specified in YAML. The following properties are set by default:
+#### set
 
-```yml
-stateSigName: State
-initPredicateName: init
-transitionConstraintName: next
-additionalSigScopes: {}
-```
+The `set <option> <value>` command allows users to modify ALDB options.
 
-`stateSigName` is the name of the signature in the model that represents the state as it changes throughout the transition system’s execution.
+##### Available options:
 
-`initPredicateName` is the name of the predicate that initializes the first state.
+1) `set conf [filename]`
 
-`transitionConstraintName` is the name of the transition function that alters the state.
-
-`additionalSigScopes` allows for specifying the cardinalities of signatures that are used during execution of the transition system.
-
-Running `setconf` with no filename will set the above default options.
+    This command sets the custom parsing configuration for the current session. For more information, see [Model and Configuration Format](#model-and-configuration-format).
 
 #### step
 The `step [n | constraints]` command performs n state transitions from the current execution state, ending at one of the valid states for a length (current + n) state traversal from the initial state.

@@ -59,7 +59,7 @@ public class CommandConstants {
         "The specified file must be an Alloy (.als) file.\n\n" +
         "You can also specify custom parsing options for this Alloy model as a comment.\n" +
         "The comment block needs to have a header as: BEGIN_ALDB_CONF and a footer as: END_ALDB_CONF.\n" +
-        "The configuration format follows the YAML format for the setconf command.";
+        "The configuration format follows the YAML format for the set conf command.";
     public final static String[] LOAD_SHORTHAND = {"l", "ld"};
 
     public final static String QUIT_NAME = "quit";
@@ -77,20 +77,22 @@ public class CommandConstants {
         "Usage: reverse-step [n]\n\n" +
         "n is an integer >= 1. By default, n = 1.";
 
-    public final static String SETCONF_NAME = "setconf";
-    public final static String SETCONF_DESCRIPTION = "Set parsing options for the current session";
-    public final static String SETCONF_HELP = "Set custom parsing options for the current session.\n\n" +
-        "Usage: setconf [filename]\n\n" +
-        "The specified file must be in YAML. The following (customizable) properties are set by default:\n\n" +
-        "# Name of the sig representing the main state in the Alloy model.\n" +
-        "stateSigName: State\n" +
-        "# Name of the predicate which defines the initial state in the Alloy model.\n" +
-        "initPredicateName: init\n" +
-        "# Name of the transition relation in the Alloy model.\n" +
-        "transitionRelationName: next\n" +
-        "# Additional Alloy sig scopes to specify.\n" +
-        "additionalSigScopes: {}\n\n" +
-        "Running setconf with no filename will set the above default options.";
+    public final static String SET_NAME = "set";
+    public final static String SET_DESCRIPTION = "Set ALDB options";
+    public final static String SET_HELP = "Set ALDB options.\n\n" +
+        "Available options:\n\n" +
+        "set conf [filename]\n\n" +
+        "    Set the parsing configuration for the current session.\n\n" +
+        "    The specified file must be in YAML. The following (customizable) properties are set by default:\n\n" +
+        "    # Name of the sig representing the main state in the Alloy model.\n" +
+        "    stateSigName: State\n" +
+        "    # Name of the predicate which defines the initial state in the Alloy model.\n" +
+        "    initPredicateName: init\n" +
+        "    # Name of the transition relation in the Alloy model.\n" +
+        "    transitionRelationName: next\n" +
+        "    # Additional Alloy sig scopes to specify.\n" +
+        "    additionalSigScopes: {}\n\n" +
+        "    Running set conf with no filename will set the above default options.";
 
     public final static String STEP_NAME = "step";
     public final static String STEP_DESCRIPTION = "Perform a state transition of n steps";

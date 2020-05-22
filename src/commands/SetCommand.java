@@ -10,34 +10,48 @@ import java.nio.file.Files;
 
 import org.yaml.snakeyaml.error.YAMLException;
 
-public class SetConfCommand extends Command {
-    public SetConfCommand() {}
+public class SetCommand extends Command {
+    private final static String CONF_OPTION = "conf";
 
     public String getName() {
-        return CommandConstants.SETCONF_NAME;
+        return CommandConstants.SET_NAME;
     }
 
     public String getDescription() {
-        return CommandConstants.SETCONF_DESCRIPTION;
+        return CommandConstants.SET_DESCRIPTION;
     }
 
     public String getHelp() {
-        return CommandConstants.SETCONF_HELP;
-    }
-
-    public boolean requiresFile() {
-        return true;
+        return CommandConstants.SET_HELP;
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
-        if (input.length < 2) {
+        if (input.length < 2 || input.length > 3) {
+            System.out.println(getHelp());
+            return;
+        }
+
+        String option = input[1];
+
+        switch (option) {
+            case CONF_OPTION:
+                setConf(input, simulationManager);
+                break;
+            default:
+                System.out.println(getHelp());
+        }
+    }
+
+    private void setConf(String[] input, SimulationManager simulationManager) {
+        // Omitting a filename will set the default conf.
+        if (input.length < 3) {
             System.out.print(CommandConstants.SETTING_PARSING_OPTIONS);
             simulationManager.setParsingConf(new ParsingConf());
             System.out.println(CommandConstants.DONE);
             return;
         }
 
-        String filename = input[1];
+        String filename = input[2];
         File file = new File(filename);
 
         System.out.printf(CommandConstants.SETTING_PARSING_OPTIONS_FROM, filename);

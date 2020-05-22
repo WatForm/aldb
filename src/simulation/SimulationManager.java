@@ -31,7 +31,7 @@ public class SimulationManager {
     private String alloyModelString;
     private String alloyInitString;
     private SortedMap<String, List<String>> scopes;
-    private ParsingConf persistentParsingConf;  // Set by setconf - used across multiple models.
+    private ParsingConf persistentParsingConf;  // Set by set conf - used across multiple models.
     private ParsingConf embeddedParsingConf;  // Set by load - used for the current model only.
     private SigData stateSigData;
     private StatePath statePath;
