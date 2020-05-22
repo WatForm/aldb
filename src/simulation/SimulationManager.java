@@ -79,6 +79,9 @@ public class SimulationManager {
     public boolean initialize(File file, boolean isTrace) {
         ParsingConf oldEmbeddedParsingConf = embeddedParsingConf;
 
+        // Ensure any embedded ParsingConf from a previously loaded model is removed.
+        embeddedParsingConf = null;
+
         boolean res = isTrace ? initializeWithTrace(file) : initializeWithModel(file);
         if (!res) {
             // The embedded conf of the new model shouldn't persist if load fails.
@@ -413,11 +416,7 @@ public class SimulationManager {
         }
 
         String configString = ParsingConf.getConfStringFromFileString(modelString).trim();
-        if (configString.isEmpty()) {
-            // If the new model has no embedded ParsingConf, make sure any existing embedded
-            // ParsingConf for the previous model is removed.
-            embeddedParsingConf = null;
-        } else {
+        if (!configString.isEmpty()) {
             try {
                 embeddedParsingConf = ParsingConf.initializeWithYaml(configString);
             } catch (YAMLException e) {
@@ -512,9 +511,6 @@ public class SimulationManager {
     }
 
     private boolean initializeWithTrace(File trace) {
-        // Ensure any embedded ParsingConf from a previously loaded model is removed.
-        embeddedParsingConf = null;
-
         A4Solution sol;
         try {
             sol = AlloyInterface.solutionFromXMLFile(trace);
