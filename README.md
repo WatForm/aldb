@@ -90,7 +90,7 @@ init | Return to the initial state of the active model
 load | Load an Alloy model
 quit | Exit ALDB
 reverse-step | Go back n steps in the current state traversal path
-set| Set ALDB options
+set | Set ALDB options
 scope | Display scope set
 step | Perform a state transition of n steps
 trace | Load a saved Alloy XML instance
