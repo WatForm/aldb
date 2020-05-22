@@ -57,7 +57,7 @@ public class TestTraceCommand extends TestCommand {
     @Test
     public void testExecute() throws IOException {
         setupStreams();
-        when(simulationManager.initializeWithTrace(any(File.class))).thenReturn(true);
+        when(simulationManager.initialize(any(File.class), eq(true))).thenReturn(true);
         File file = createFileWithContent("");
 
         String[] input = {"t", file.getPath()};
@@ -72,7 +72,7 @@ public class TestTraceCommand extends TestCommand {
     @Test
     public void testExecute_invalidTrace() throws IOException {
         setupStreams();
-        when(simulationManager.initializeWithTrace(any(File.class))).thenReturn(false);
+        when(simulationManager.initialize(any(File.class), eq(true))).thenReturn(false);
         File file = createFileWithContent("");
 
         String[] input = {"t", file.getPath()};

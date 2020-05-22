@@ -58,7 +58,7 @@ public class LoadCommand extends Command {
             return;
         }
 
-        if (simulationManager.initializeWithModel(tempModelFile)) {
+        if (simulationManager.initialize(tempModelFile, false)) {
             System.out.println(CommandConstants.DONE);
         }
     }
