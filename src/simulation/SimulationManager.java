@@ -69,7 +69,6 @@ public class SimulationManager {
 
     public void setParsingConf(ParsingConf conf) {
         persistentParsingConf = conf;
-        embeddedParsingConf = null;
     }
 
     public boolean initializeWithModel(File model) {
@@ -186,6 +185,9 @@ public class SimulationManager {
     }
 
     public boolean initializeWithTrace(File trace) {
+        // Ensure any embedded ParsingConf from a previously loaded model is removed.
+        embeddedParsingConf = null;
+
         A4Solution sol;
         try {
             sol = AlloyInterface.solutionFromXMLFile(trace);
