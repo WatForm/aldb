@@ -54,7 +54,7 @@ public class SimulationManager {
         constraintManager = new ConstraintManager();
 
         traceMode = false;
-        diffMode = false;
+        diffMode = true;
     }
 
     public boolean isTrace() {

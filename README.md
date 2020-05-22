@@ -171,7 +171,7 @@ The `set <option> <value>` command allows users to modify ALDB options.
 
 2) `set diff <on | off>`
 
-    This command turns on/off differential output for [`step`](#step) and [`alt`](#alt). When enabled, only fields that have changed between the previous and current state are displayed. By default, this option is disabled.
+    This command turns on/off differential output for [`step`](#step) and [`alt`](#alt). When enabled, only fields that have changed between the previous and current state are displayed. By default, this option is enabled.
 
 #### step
 The `step [n | constraints]` command performs n state transitions from the current execution state, ending at one of the valid states for a length (current + n) state traversal from the initial state.

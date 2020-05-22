@@ -96,7 +96,7 @@ public class CommandConstants {
         "set diff <on | off>\n\n" +
         "    Turn on/off differential output mode.\n\n" +
         "    When enabled, only fields that have changed between the previous and current state are displayed when executing step or alt.\n" +
-        "    By default, this option is disabled.";
+        "    By default, this option is enabled.";
 
     public final static String STEP_NAME = "step";
     public final static String STEP_DESCRIPTION = "Perform a state transition of n steps";

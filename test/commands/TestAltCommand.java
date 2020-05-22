@@ -43,27 +43,28 @@ public class TestAltCommand extends TestCommand {
         String res = "Response";
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.selectAlternatePath(anyBoolean())).thenReturn(true);
-        when(simulationManager.getCurrentStateString()).thenReturn(res);
-
-        String[] input = {"alt"};
-        alt.execute(input, simulationManager);
-        verify(simulationManager).getCurrentStateString();
-        assertEquals(res + "\n", outContent.toString());
-        restoreStreams();
-    }
-
-    @Test
-    public void testExecute_diffMode() {
-        setupStreams();
-        String res = "Response";
-        when(simulationManager.isInitialized()).thenReturn(true);
-        when(simulationManager.selectAlternatePath(anyBoolean())).thenReturn(true);
         when(simulationManager.isDiffMode()).thenReturn(true);
         when(simulationManager.getCurrentStateDiffString(1)).thenReturn(res);
 
         String[] input = {"alt"};
         alt.execute(input, simulationManager);
         verify(simulationManager).getCurrentStateDiffString(1);
+        assertEquals(res + "\n", outContent.toString());
+        restoreStreams();
+    }
+
+    @Test
+    public void testExecute_diffModeOff() {
+        setupStreams();
+        String res = "Response";
+        when(simulationManager.isInitialized()).thenReturn(true);
+        when(simulationManager.selectAlternatePath(anyBoolean())).thenReturn(true);
+        when(simulationManager.isDiffMode()).thenReturn(false);
+        when(simulationManager.getCurrentStateString()).thenReturn(res);
+
+        String[] input = {"alt"};
+        alt.execute(input, simulationManager);
+        verify(simulationManager).getCurrentStateString();
         assertEquals(res + "\n", outContent.toString());
         restoreStreams();
     }
