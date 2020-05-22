@@ -42,14 +42,16 @@ public class TestStepCommand extends TestCommand {
     public void testExecute_integer() {
         setupStreams();
         String state = "state";
+        int expectedSteps = 3;
+
         when(simulationManager.isInitialized()).thenReturn(true);
-        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
-        when(simulationManager.getCurrentStateString()).thenReturn(state);
+        when(simulationManager.performStep(eq(expectedSteps), anyList())).thenReturn(true);
+        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
 
         String[] input = {"s", "3"};
         step.execute(input, simulationManager);
-        verify(simulationManager).performStep(3, new ArrayList<String>());
-        verify(simulationManager).getCurrentStateString();
+        verify(simulationManager).performStep(expectedSteps, new ArrayList<String>());
+        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -58,22 +60,22 @@ public class TestStepCommand extends TestCommand {
     public void testExecute_constraints() {
         setupStreams();
         String state = "state";
+        int expectedSteps = 4;
 
-        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
+        when(simulationManager.performStep(eq(expectedSteps), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
-        when(simulationManager.getCurrentStateString()).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         String rawInput = "s [a, \"b and c\", d, \"e\"]";
-        int expectedSteps = 4;
         List<String> expectedConstraints = new ArrayList<String>(
             Arrays.asList("a", "b and c", "d", "e")
         );
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateString();
+        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -82,22 +84,22 @@ public class TestStepCommand extends TestCommand {
     public void testExecute_constraintsEmpty() {
         setupStreams();
         String state = "state";
+        int expectedSteps = 1;
 
-        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
+        when(simulationManager.performStep(eq(expectedSteps), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
-        when(simulationManager.getCurrentStateString()).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         String rawInput = "s []";
-        int expectedSteps = 1;
         List<String> expectedConstraints = new ArrayList<String>(
             Arrays.asList("")
         );
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateString();
+        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -106,22 +108,22 @@ public class TestStepCommand extends TestCommand {
     public void testExecute_constraintsBlank() {
         setupStreams();
         String state = "state";
+        int expectedSteps = 5;
 
-        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
+        when(simulationManager.performStep(eq(expectedSteps), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
-        when(simulationManager.getCurrentStateString()).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         String rawInput = "s [\"\", ,, \"\",]";
-        int expectedSteps = 5;
         List<String> expectedConstraints = new ArrayList<String>(
             Arrays.asList("", "", "", "", "")
         );
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateString();
+        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -130,25 +132,25 @@ public class TestStepCommand extends TestCommand {
     public void testExecute_constraintsAlias() {
         setupStreams();
         String state = "state";
+        int expectedSteps = 1;
 
-        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
+        when(simulationManager.performStep(eq(expectedSteps), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
-        when(simulationManager.getCurrentStateString()).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         when(am.isAlias(anyString())).thenReturn(true);
         when(am.getFormula(anyString())).thenReturn("a");
 
         String rawInput = "s [f1]";
-        int expectedSteps = 1;
         List<String> expectedConstraints = new ArrayList<String>(
             Arrays.asList("a")
         );
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateString();
+        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -161,31 +163,15 @@ public class TestStepCommand extends TestCommand {
         when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
-        when(simulationManager.getCurrentStateString()).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffString(anyInt())).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(false);
 
         String rawInput = "s [a]";
         String expectedOutput = String.format(CommandConstants.INVALID_CONSTRAINT, "a") + "\n";
 
         step.execute(rawInput.split(" "), simulationManager);
+        verify(simulationManager, never()).getCurrentStateDiffString(anyInt());
         assertEquals(expectedOutput, outContent.toString());
-        restoreStreams();
-    }
-
-    @Test
-    public void testExecute_isTrace() {
-        setupStreams();
-        String trace = "trace";
-        when(simulationManager.isInitialized()).thenReturn(true);
-        when(simulationManager.isTrace()).thenReturn(true);
-        when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString()).thenReturn(trace);
-
-        String[] input = {"s", "3"};
-        step.execute(input, simulationManager);
-        verify(simulationManager).performStep(3, new ArrayList<String>());
-        verify(simulationManager).getCurrentStateDiffString();
-        assertEquals(trace + "\n", outContent.toString());
         restoreStreams();
     }
 

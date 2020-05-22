@@ -512,8 +512,8 @@ public class SimulationManager {
         return statePath.getCurNode().stringForProperty(property);
     }
 
-    public String getCurrentStateDiffString() {
-        return statePath.getCurNode().getDiffString(statePath.getPrevNode());
+    public String getCurrentStateDiffString(int steps) {
+        return statePath.getCurNode().getDiffString(statePath.getNode(statePath.getPosition() - steps));
     }
 
     public AliasManager getAliasManager() {

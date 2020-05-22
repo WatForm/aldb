@@ -76,15 +76,8 @@ public class StepCommand extends Command {
             return;
         }
 
-        if (!simulationManager.performStep(steps, constraints)) {
-            return;
+        if (simulationManager.performStep(steps, constraints)) {
+            System.out.println(simulationManager.getCurrentStateDiffString(steps));
         }
-
-        if (simulationManager.isTrace()) {
-            System.out.println(simulationManager.getCurrentStateDiffString());
-            return;
-        }
-
-        System.out.println(simulationManager.getCurrentStateString());
     }
 }

@@ -94,7 +94,7 @@ public class CommandConstants {
 
     public final static String STEP_NAME = "step";
     public final static String STEP_DESCRIPTION = "Perform a state transition of n steps";
-    public final static String STEP_HELP = "Perform a state transition of n steps.\n\n" +
+    public final static String STEP_HELP = "Perform a state transition of n steps. The differential output between the previous and new state is displayed.\n\n" +
         "Usage: step [n | constraints]\n\n" +
         "n must be an integer >= 1. By default, n = 1.\n\n" +
         "Alternatively, step constraints can be specified, as a comma-separated list enclosed by square brackets.\n" +

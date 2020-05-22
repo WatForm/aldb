@@ -181,6 +181,7 @@ Running `setconf` with no filename will set the above default options.
 
 #### step
 The `step [n | constraints]` command performs n state transitions from the current execution state, ending at one of the valid states for a length (current + n) state traversal from the initial state.
+The **differential output** between the previous and new state is displayed. To see the full state output, use the [`current`](#current) command.
 
 Specify an integer value of n >= 1. By default, n = 1.
 
