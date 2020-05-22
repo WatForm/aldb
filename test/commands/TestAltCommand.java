@@ -53,6 +53,22 @@ public class TestAltCommand extends TestCommand {
     }
 
     @Test
+    public void testExecute_diffMode() {
+        setupStreams();
+        String res = "Response";
+        when(simulationManager.isInitialized()).thenReturn(true);
+        when(simulationManager.selectAlternatePath(anyBoolean())).thenReturn(true);
+        when(simulationManager.isDiffMode()).thenReturn(true);
+        when(simulationManager.getCurrentStateDiffString(1)).thenReturn(res);
+
+        String[] input = {"alt"};
+        alt.execute(input, simulationManager);
+        verify(simulationManager).getCurrentStateDiffString(1);
+        assertEquals(res + "\n", outContent.toString());
+        restoreStreams();
+    }
+
+    @Test
     public void testExecute_invalidInput() {
         setupStreams();
         when(simulationManager.isInitialized()).thenReturn(true);

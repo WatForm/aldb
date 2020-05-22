@@ -41,6 +41,7 @@ public class SimulationManager {
     private ConstraintManager constraintManager;
 
     private boolean traceMode;
+    private boolean diffMode;  // Whether differential output is enabled.
 
     public SimulationManager() {
         scopes = new TreeMap<>();
@@ -53,10 +54,19 @@ public class SimulationManager {
         constraintManager = new ConstraintManager();
 
         traceMode = false;
+        diffMode = false;
     }
 
     public boolean isTrace() {
         return traceMode;
+    }
+
+    public void setDiffMode(boolean b) {
+        diffMode = b;
+    }
+
+    public boolean isDiffMode() {
+        return diffMode;
     }
 
     /**
@@ -385,8 +395,9 @@ public class SimulationManager {
         return statePath.getCurNode().stringForProperty(property);
     }
 
-    public String getCurrentStateDiffString() {
-        return statePath.getCurNode().getDiffString(statePath.getPrevNode());
+    public String getCurrentStateDiffString(int delta) {
+        StateNode prev = statePath.getNode(statePath.getPosition() - delta);
+        return statePath.getCurNode().getDiffString(prev);
     }
 
     public AliasManager getAliasManager() {

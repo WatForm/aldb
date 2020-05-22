@@ -42,6 +42,10 @@ public class AltCommand extends Command {
             return;
         }
 
-        System.out.println(simulationManager.getCurrentStateString());
+        if (simulationManager.isDiffMode()) {
+            System.out.println(simulationManager.getCurrentStateDiffString(1));
+        } else {
+            System.out.println(simulationManager.getCurrentStateString());
+        }
     }
 }

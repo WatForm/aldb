@@ -9,7 +9,6 @@ import java.util.List;
 public class StatePath {
     private List<StateNode> path;
     int tempPathSize;
-    private StateNode prev;
     private int position;
 
     public StatePath() {
@@ -47,12 +46,7 @@ public class StatePath {
         return path.isEmpty() ? null : path.get(position);
     }
 
-    public StateNode getPrevNode() {
-        return prev;
-    }
-
     public void setPosition(int position) {
-        prev = getCurNode();
         this.position = position;
     }
 
@@ -67,15 +61,9 @@ public class StatePath {
     public void decrementPosition(int steps, boolean traceMode) {
         int newPos = position < steps ? 0 : position - steps;
         setPosition(newPos);
-        if (position == 0) {
-            prev = null;
-        } else {
-            prev = path.get(position - 1);
+        if (!traceMode) {
+            path = path.subList(0, newPos + 1);
         }
-        if (traceMode) {
-            return;
-        }
-        path = path.subList(0, newPos + 1);
     }
 
     public void commitNodes() {

@@ -12,6 +12,10 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 public class SetCommand extends Command {
     private final static String CONF_OPTION = "conf";
+    private final static String DIFF_OPTION = "diff";
+
+    private final static String ON = "on";
+    private final static String OFF = "off";
 
     public String getName() {
         return CommandConstants.SET_NAME;
@@ -36,6 +40,9 @@ public class SetCommand extends Command {
         switch (option) {
             case CONF_OPTION:
                 setConf(input, simulationManager);
+                break;
+            case DIFF_OPTION:
+                setDiffMode(input, simulationManager);
                 break;
             default:
                 System.out.println(getHelp());
@@ -71,5 +78,21 @@ public class SetCommand extends Command {
             return;
         }
         System.out.println(CommandConstants.DONE);
+    }
+
+    private void setDiffMode(String[] input, SimulationManager simulationManager) {
+        if (input.length < 3) {
+            System.out.println(getHelp());
+            return;
+        }
+
+        String value = input[2];
+        if (value.equals(ON)) {
+            simulationManager.setDiffMode(true);
+        } else if (value.equals(OFF)) {
+            simulationManager.setDiffMode(false);
+        } else {
+            System.out.println(getHelp());
+        }
     }
 }

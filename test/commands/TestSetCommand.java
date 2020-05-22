@@ -129,4 +129,50 @@ public class TestSetCommand extends TestCommand {
         file.delete();
         restoreStreams();
     }
+
+    @Test
+    public void testExecute_setDiffModeNoValue() throws IOException {
+        setupStreams();
+
+        String[] input = {"set", "diff"};
+        set.execute(input, simulationManager);
+        verifyZeroInteractions(simulationManager);
+        assertEquals(set.getHelp() + "\n", outContent.toString());
+
+        restoreStreams();
+    }
+
+    @Test
+    public void testExecute_setDiffModeInvalidValue() throws IOException {
+        setupStreams();
+
+        String[] input = {"set", "diff", "foo"};
+        set.execute(input, simulationManager);
+        verifyZeroInteractions(simulationManager);
+        assertEquals(set.getHelp() + "\n", outContent.toString());
+
+        restoreStreams();
+    }
+
+    @Test
+    public void testExecute_setDiffModeOn() throws IOException {
+        setupStreams();
+
+        String[] input = {"set", "diff", "on"};
+        set.execute(input, simulationManager);
+        verify(simulationManager).setDiffMode(true);
+
+        restoreStreams();
+    }
+
+    @Test
+    public void testExecute_setDiffModeOff() throws IOException {
+        setupStreams();
+
+        String[] input = {"set", "diff", "off"};
+        set.execute(input, simulationManager);
+        verify(simulationManager).setDiffMode(false);
+
+        restoreStreams();
+    }
 }

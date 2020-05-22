@@ -89,6 +89,7 @@ public class TestScenarios {
     public void testTraceFGS() throws Exception {
         runALDB(
             "set conf traces/fgs_conf.yml",
+            "set diff on",
             "trace traces/fgs_counterexample.xml",
             "step",
             "step"
@@ -124,6 +125,7 @@ public class TestScenarios {
         runALDB(
             "load models/switch.als",
             "set conf traces/fgs_conf.yml",
+            "set diff on",
             "trace traces/fgs_counterexample.xml",
             "step",
             "step"
@@ -160,6 +162,7 @@ public class TestScenarios {
         runALDB(
             "load models/musical_chairs.als",
             "set conf traces/fgs_conf.yml",
+            "set diff on",
             "trace traces/fgs_counterexample.xml",
             "step",
             "step"

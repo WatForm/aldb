@@ -80,11 +80,11 @@ public class StepCommand extends Command {
             return;
         }
 
-        if (simulationManager.isTrace()) {
-            System.out.println(simulationManager.getCurrentStateDiffString());
-            return;
-        }
+        if (simulationManager.isDiffMode()) {
+            System.out.println(simulationManager.getCurrentStateDiffString(steps));
+        } else {
+            System.out.println(simulationManager.getCurrentStateString());
 
-        System.out.println(simulationManager.getCurrentStateString());
+        }
     }
 }

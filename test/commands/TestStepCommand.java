@@ -173,19 +173,19 @@ public class TestStepCommand extends TestCommand {
     }
 
     @Test
-    public void testExecute_isTrace() {
+    public void testExecute_isDiffMode() {
         setupStreams();
-        String trace = "trace";
+        String state = "state";
         when(simulationManager.isInitialized()).thenReturn(true);
-        when(simulationManager.isTrace()).thenReturn(true);
+        when(simulationManager.isDiffMode()).thenReturn(true);
         when(simulationManager.performStep(anyInt(), anyList())).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString()).thenReturn(trace);
+        when(simulationManager.getCurrentStateDiffString(3)).thenReturn(state);
 
         String[] input = {"s", "3"};
         step.execute(input, simulationManager);
         verify(simulationManager).performStep(3, new ArrayList<String>());
-        verify(simulationManager).getCurrentStateDiffString();
-        assertEquals(trace + "\n", outContent.toString());
+        verify(simulationManager).getCurrentStateDiffString(3);
+        assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
 
