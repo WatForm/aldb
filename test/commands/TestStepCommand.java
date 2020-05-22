@@ -174,7 +174,7 @@ public class TestStepCommand extends TestCommand {
         String expectedOutput = String.format(CommandConstants.INVALID_CONSTRAINT, "a") + "\n";
 
         step.execute(rawInput.split(" "), simulationManager);
-        verify(simulationManager, never()).getCurrentStateDiffString(anyInt());
+        verify(simulationManager, never()).getCurrentStateDiffString();
         assertEquals(expectedOutput, outContent.toString());
         restoreStreams();
     }

@@ -395,6 +395,21 @@ public class SimulationManager {
         return statePath.getCurNode().stringForProperty(property);
     }
 
+    /**
+     * getCurrentStateDiffString returns the diff between the current and the previous last-committed state.
+     * @return String
+     */
+    public String getCurrentStateDiffString() {
+        StateNode prev = statePath.getNode(statePath.getPosition() - statePath.getTempPathSize());
+        return statePath.getCurNode().getDiffString(prev);
+    }
+
+    /**
+     * getCurrentStateDiffString returns the diff between the current state and the state at the
+     * (current - delta) position in the path.
+     * @param int delta
+     * @return String
+     */
     public String getCurrentStateDiffString(int delta) {
         StateNode prev = statePath.getNode(statePath.getPosition() - delta);
         return statePath.getCurNode().getDiffString(prev);

@@ -43,7 +43,7 @@ public class AltCommand extends Command {
         }
 
         if (simulationManager.isDiffMode()) {
-            System.out.println(simulationManager.getCurrentStateDiffString(1));
+            System.out.println(simulationManager.getCurrentStateDiffString());
         } else {
             System.out.println(simulationManager.getCurrentStateString());
         }

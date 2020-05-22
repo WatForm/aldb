@@ -54,6 +54,10 @@ public class StatePath {
         return position;
     }
 
+    public int getTempPathSize() {
+        return tempPathSize;
+    }
+
     public void incrementPosition(int steps) {
         setPosition(position + steps);
     }

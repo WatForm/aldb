@@ -44,11 +44,11 @@ public class TestAltCommand extends TestCommand {
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.selectAlternatePath(anyBoolean())).thenReturn(true);
         when(simulationManager.isDiffMode()).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString(1)).thenReturn(res);
+        when(simulationManager.getCurrentStateDiffString()).thenReturn(res);
 
         String[] input = {"alt"};
         alt.execute(input, simulationManager);
-        verify(simulationManager).getCurrentStateDiffString(1);
+        verify(simulationManager).getCurrentStateDiffString();
         assertEquals(res + "\n", outContent.toString());
         restoreStreams();
     }

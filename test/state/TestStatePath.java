@@ -175,6 +175,7 @@ public class TestStatePath {
         sp.setTempPath(tempPath);
         assertEquals(1, sp.getPosition());
         assertEquals(n1, sp.getCurNode());
+        assertEquals(tempPath.size(), sp.getTempPathSize());
     }
 
     @Test
@@ -189,6 +190,7 @@ public class TestStatePath {
         sp.clearTempPath();
         assertEquals(-1, sp.getPosition());
         assertEquals(null, sp.getCurNode());
+        assertEquals(0, sp.getTempPathSize());
 
         // Clear temp path with an initial path set.
         sp.initWithPath(tempPath);
@@ -197,11 +199,13 @@ public class TestStatePath {
         sp.clearTempPath();
         assertEquals(1, sp.getPosition());
         assertEquals(n1, sp.getCurNode());
+        assertEquals(0, sp.getTempPathSize());
 
         sp.setTempPath(tempPath);
         sp.clearTempPath();
         assertEquals(1, sp.getPosition());
         assertEquals(n1, sp.getCurNode());
+        assertEquals(0, sp.getTempPathSize());
     }
 
     @Test
@@ -209,6 +213,7 @@ public class TestStatePath {
         StatePath sp = new StatePath();
         sp.clearPath();
         assertTrue(sp.isEmpty());
+        assertEquals(0, sp.getTempPathSize());
 
         List<StateNode> tempPath = new ArrayList<StateNode>();
         tempPath.add(n0);
@@ -218,6 +223,7 @@ public class TestStatePath {
         assertFalse(sp.isEmpty());
         sp.clearPath();
         assertTrue(sp.isEmpty());
+        assertEquals(0, sp.getTempPathSize());
     }
 
     @Test
