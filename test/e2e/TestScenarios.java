@@ -159,7 +159,7 @@ public class TestScenarios {
     public void testTraceFGS_afterLoadWithEmbeddedConf() throws Exception {
         runALDB(
             "load models/musical_chairs.als",
-            "setconf traces/fgs_conf.yml",
+            "set conf traces/fgs_conf.yml",
             "trace traces/fgs_counterexample.xml",
             "step",
             "step"
