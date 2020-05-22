@@ -69,6 +69,7 @@ public class SimulationManager {
 
     public void setParsingConf(ParsingConf conf) {
         persistentParsingConf = conf;
+        embeddedParsingConf = null;
     }
 
     public boolean initializeWithModel(File model) {
