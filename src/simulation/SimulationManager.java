@@ -71,150 +71,23 @@ public class SimulationManager {
         persistentParsingConf = conf;
     }
 
-    public boolean initializeWithModel(File model) {
-        if (AlloyInterface.compile(model.getPath()) == null) {
-            System.out.println("error. Could not parse model.");
-            return false;
+    /**
+     * initialize is a wrapper for initializing a model or trace which cleans up internal state if
+     * initialization fails.
+     * @return boolean
+     */
+    public boolean initialize(File file, boolean isTrace) {
+        ParsingConf oldEmbeddedParsingConf = embeddedParsingConf;
+
+        // Ensure any embedded ParsingConf from a previously loaded model is removed.
+        embeddedParsingConf = null;
+
+        boolean res = isTrace ? initializeWithTrace(file) : initializeWithModel(file);
+        if (!res) {
+            // The embedded conf of the new model shouldn't persist if load fails.
+            embeddedParsingConf = oldEmbeddedParsingConf;
         }
-
-        String modelString;
-        try {
-            modelString = AlloyUtils.readFromFile(model);
-        } catch (IOException e) {
-            System.out.println("error. Failed to read file.");
-            return false;
-        }
-
-        String configString = ParsingConf.getConfStringFromFileString(modelString).trim();
-        if (configString.isEmpty()) {
-            // If the new model has no embedded ParsingConf, make sure any existing embedded
-            // ParsingConf for the previous model is removed.
-            embeddedParsingConf = null;
-        } else {
-            try {
-                embeddedParsingConf = ParsingConf.initializeWithYaml(configString);
-            } catch (YAMLException e) {
-                System.out.println("error. Invalid configuration.");
-                return false;
-            }
-        }
-
-        int initStartIndex = modelString.indexOf(String.format("pred %s", getParsingConf().getInitPredicateName()));
-        if (initStartIndex == -1) {
-            System.out.printf("error. Predicate %s not found.\n", getParsingConf().getInitPredicateName());
-            return false;
-        }
-
-        // Count the number of BLOCK_INITIALIZERs and BLOCK_TERMINATORs to
-        // determine the end of the init predicate.
-        int blocks = 0;
-        int initEndIndex = -1;
-        for (int i = initStartIndex; i < modelString.length(); i++) {
-            String c = String.valueOf(modelString.charAt(i));
-            if (c.equals(AlloyConstants.BLOCK_INITIALIZER)) {
-                blocks += 1;
-            } else if (c.equals(AlloyConstants.BLOCK_TERMINATOR)) {
-                blocks -= 1;
-                if (blocks == 0) {
-                    // When all blocks are closed, the end of the predicate has
-                    // been found.
-                    initEndIndex = i;
-                    break;
-                } else if (blocks < 0) {
-                    // More BLOCK_TERMINATORs than BLOCK_INITIALIZERs is a
-                    // syntax error.
-                    break;
-                }
-            }
-        }
-
-        if (initEndIndex == -1) {
-            System.out.printf("error. Issue parsing predicate %s.\n", getParsingConf().getInitPredicateName());
-            return false;
-        }
-
-        this.alloyModelFile = model;
-        this.alloyInitString = modelString.substring(initStartIndex, initEndIndex + 1);
-        this.alloyModelString =
-            modelString.substring(0, initStartIndex) +
-            AlloyUtils.getConcreteSigsDefinition(getParsingConf().getAdditionalSigScopes()) +
-            modelString.substring(initEndIndex + 1, modelString.length());
-
-        try {
-            AlloyUtils.writeToFile(
-                AlloyUtils.annotatedTransitionSystem(
-                    this.alloyModelString + this.alloyInitString,
-                    getParsingConf(),
-                    0
-                ),
-                alloyModelFile
-            );
-        } catch (IOException e) {
-            System.out.println("error. I/O failed, cannot initialize model.");
-            return false;
-        }
-
-        CompModule compModule = AlloyInterface.compile(model.getAbsolutePath());
-        if (compModule == null) {
-            System.out.println("error. Could not parse model.");
-            return false;
-        }
-
-        A4Solution sol = AlloyInterface.run(compModule);
-
-        evaluateScopes(sol);
-
-        Sig stateSig = AlloyInterface.getSigFromA4Solution(sol, getParsingConf().getStateSigName());
-        if (stateSig == null) {
-            System.out.printf("error. Sig %s not found.\n", getParsingConf().getStateSigName());
-            return false;
-        }
-
-        stateSigData = new SigData(stateSig);
-
-        List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
-        statePath.clearPath();
-        statePath.setTempPath(initialNodes);
-        stateGraph.initWithNodes(initialNodes);
-
-        this.traceMode = false;
-        this.activeSolutions.clear();
-        this.activeSolutions.push(sol);
-
-        return true;
-    }
-
-    public boolean initializeWithTrace(File trace) {
-        A4Solution sol;
-        try {
-            sol = AlloyInterface.solutionFromXMLFile(trace);
-        } catch (Exception e) {
-            return false;
-        }
-
-        evaluateScopes(sol);
-
-        Sig stateSig = AlloyInterface.getSigFromA4Solution(sol, getParsingConf().getStateSigName());
-        if (stateSig == null) {
-            System.out.printf("error. Sig %s not found.\n", getParsingConf().getStateSigName());
-            return false;
-        }
-
-        stateSigData = new SigData(stateSig);
-
-        List<StateNode> stateNodes = getStateNodesForA4Solution(sol);
-        if (stateNodes.isEmpty()) {
-            return false;
-        }
-
-        statePath.initWithPath(stateNodes);
-        statePath.setPosition(0);
-        stateGraph.initWithNodes(stateNodes);
-
-        this.traceMode = true;
-        this.activeSolutions.clear();
-
-        return true;
+        return res;
     }
 
     /**
@@ -526,6 +399,148 @@ public class SimulationManager {
 
     public String getWorkingDirPath() {
         return System.getProperty("user.dir");
+    }
+
+    private boolean initializeWithModel(File model) {
+        if (AlloyInterface.compile(model.getPath()) == null) {
+            System.out.println("error. Could not parse model.");
+            return false;
+        }
+
+        String modelString;
+        try {
+            modelString = AlloyUtils.readFromFile(model);
+        } catch (IOException e) {
+            System.out.println("error. Failed to read file.");
+            return false;
+        }
+
+        String configString = ParsingConf.getConfStringFromFileString(modelString).trim();
+        if (!configString.isEmpty()) {
+            try {
+                embeddedParsingConf = ParsingConf.initializeWithYaml(configString);
+            } catch (YAMLException e) {
+                System.out.println("error. Invalid configuration.");
+                return false;
+            }
+        }
+
+        int initStartIndex = modelString.indexOf(String.format("pred %s", getParsingConf().getInitPredicateName()));
+        if (initStartIndex == -1) {
+            System.out.printf("error. Predicate %s not found.\n", getParsingConf().getInitPredicateName());
+            return false;
+        }
+
+        // Count the number of BLOCK_INITIALIZERs and BLOCK_TERMINATORs to
+        // determine the end of the init predicate.
+        int blocks = 0;
+        int initEndIndex = -1;
+        for (int i = initStartIndex; i < modelString.length(); i++) {
+            String c = String.valueOf(modelString.charAt(i));
+            if (c.equals(AlloyConstants.BLOCK_INITIALIZER)) {
+                blocks += 1;
+            } else if (c.equals(AlloyConstants.BLOCK_TERMINATOR)) {
+                blocks -= 1;
+                if (blocks == 0) {
+                    // When all blocks are closed, the end of the predicate has
+                    // been found.
+                    initEndIndex = i;
+                    break;
+                } else if (blocks < 0) {
+                    // More BLOCK_TERMINATORs than BLOCK_INITIALIZERs is a
+                    // syntax error.
+                    break;
+                }
+            }
+        }
+
+        if (initEndIndex == -1) {
+            System.out.printf("error. Issue parsing predicate %s.\n", getParsingConf().getInitPredicateName());
+            return false;
+        }
+
+        this.alloyModelFile = model;
+        this.alloyInitString = modelString.substring(initStartIndex, initEndIndex + 1);
+        this.alloyModelString =
+            modelString.substring(0, initStartIndex) +
+                AlloyUtils.getConcreteSigsDefinition(getParsingConf().getAdditionalSigScopes()) +
+                modelString.substring(initEndIndex + 1, modelString.length());
+
+        try {
+            AlloyUtils.writeToFile(
+                AlloyUtils.annotatedTransitionSystem(
+                    this.alloyModelString + this.alloyInitString,
+                    getParsingConf(),
+                    0
+                ),
+                alloyModelFile
+            );
+        } catch (IOException e) {
+            System.out.println("error. I/O failed, cannot initialize model.");
+            return false;
+        }
+
+        CompModule compModule = AlloyInterface.compile(model.getAbsolutePath());
+        if (compModule == null) {
+            System.out.println("error. Could not parse model.");
+            return false;
+        }
+
+        A4Solution sol = AlloyInterface.run(compModule);
+
+        evaluateScopes(sol);
+
+        Sig stateSig = AlloyInterface.getSigFromA4Solution(sol, getParsingConf().getStateSigName());
+        if (stateSig == null) {
+            System.out.printf("error. Sig %s not found.\n", getParsingConf().getStateSigName());
+            return false;
+        }
+
+        stateSigData = new SigData(stateSig);
+
+        List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
+        statePath.clearPath();
+        statePath.setTempPath(initialNodes);
+        stateGraph.initWithNodes(initialNodes);
+
+        this.traceMode = false;
+        this.activeSolutions.clear();
+        this.activeSolutions.push(sol);
+
+        return true;
+    }
+
+    private boolean initializeWithTrace(File trace) {
+        A4Solution sol;
+        try {
+            sol = AlloyInterface.solutionFromXMLFile(trace);
+        } catch (Exception e) {
+            return false;
+        }
+
+        evaluateScopes(sol);
+
+        Sig stateSig = AlloyInterface.getSigFromA4Solution(sol, getParsingConf().getStateSigName());
+        if (stateSig == null) {
+            System.out.printf("error. Sig %s not found.\n", getParsingConf().getStateSigName());
+            return false;
+        }
+
+        stateSigData = new SigData(stateSig);
+
+        List<StateNode> stateNodes = getStateNodesForA4Solution(sol);
+        if (stateNodes.isEmpty()) {
+            return false;
+        }
+
+        statePath.initWithPath(stateNodes);
+        statePath.setPosition(0);
+        stateGraph.initWithNodes(stateNodes);
+
+        this.traceMode = true;
+        this.activeSolutions.clear();
+
+        return true;
     }
 
     private List<StateNode> getStateNodesForA4Solution(A4Solution sol) {
