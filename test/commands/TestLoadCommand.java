@@ -44,14 +44,14 @@ public class TestLoadCommand extends TestCommand {
     public void testExecute() throws IOException {
         setupStreams();
         File file = createFileWithContent("content");
-        when(simulationManager.initializeWithModel(any(File.class))).thenReturn(true);
+        when(simulationManager.initialize(any(File.class), eq(false))).thenReturn(true);
 
         String[] input = {"load", file.getPath()};
         load.execute(input, simulationManager);
         String msg = String.format(CommandConstants.READING_MODEL, input[1]);
         msg += CommandConstants.DONE + "\n";
         assertEquals(msg, outContent.toString());
-        verify(simulationManager).initializeWithModel(any(File.class));
+        verify(simulationManager).initialize(any(File.class), eq(false));
         file.delete();
         restoreStreams();
     }
@@ -67,14 +67,14 @@ public class TestLoadCommand extends TestCommand {
             "some alloy model here"
         );
         File file = createFileWithContent(content);
-        when(simulationManager.initializeWithModel(any(File.class))).thenReturn(true);
+        when(simulationManager.initialize(any(File.class), eq(false))).thenReturn(true);
 
         String[] input = {"load", file.getPath()};
         load.execute(input, simulationManager);
         String msg = String.format(CommandConstants.READING_MODEL, input[1]);
         msg += CommandConstants.DONE + "\n";
         assertEquals(msg, outContent.toString());
-        verify(simulationManager).initializeWithModel(any(File.class));
+        verify(simulationManager).initialize(any(File.class), eq(false));
         file.delete();
         restoreStreams();
     }

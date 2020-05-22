@@ -44,7 +44,7 @@ public class TestSimulationManager {
             "}",
             ""
         );
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         assertTrue(sm.isInitialized());
         assertFalse(sm.isTrace());
         assertEquals(expectedDOTString, sm.getDOTString());
@@ -53,7 +53,7 @@ public class TestSimulationManager {
     @Test
     public void testInitializeWithModel_nonexistantFile() {
         File nonexistantFile = new File("nonexistant-file");
-        assertFalse(sm.initializeWithModel(nonexistantFile));
+        assertFalse(sm.initialize(nonexistantFile, false));
         assertFalse(sm.isInitialized());
     }
 
@@ -65,7 +65,7 @@ public class TestSimulationManager {
             ""
         );
         initializeTestWithModelString(noInitModel);
-        assertFalse(sm.initializeWithModel(modelFile));
+        assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
     }
 
@@ -77,7 +77,7 @@ public class TestSimulationManager {
             ""
         );
         initializeTestWithModelString(noNextModel);
-        assertFalse(sm.initializeWithModel(modelFile));
+        assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
     }
 
@@ -89,18 +89,18 @@ public class TestSimulationManager {
             ""
         );
         initializeTestWithModelString(invalidModel);
-        assertFalse(sm.initializeWithModel(modelFile));
+        assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
     }
 
     @Test
     public void testInitializeWithModel_historyDeleted() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         assertTrue(sm.performStep(1));
 
         initializeTestWithModelPath("models/even_odd.als");
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         assertEquals("", sm.getHistory(3));
     }
 
@@ -108,14 +108,14 @@ public class TestSimulationManager {
     public void testInitializeWithTrace() throws IOException {
         File traceFile = createTrace();
 
-        assertTrue(sm.initializeWithTrace(traceFile));
+        assertTrue(sm.initialize(traceFile, true));
         assertTrue(sm.isTrace());
     }
 
     @Test
     public void testInitializeWithTrace_invalidXML() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        assertFalse(sm.initializeWithTrace(modelFile));
+        assertFalse(sm.initialize(modelFile, true));
         assertFalse(sm.isTrace());
     }
 
@@ -150,7 +150,7 @@ public class TestSimulationManager {
             "b: { On }",
             ""
         );
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(2);
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
@@ -205,7 +205,7 @@ public class TestSimulationManager {
         );
 
         sm.setParsingConf(pc);
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         sm.performStep(2);
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
@@ -250,7 +250,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         sm.performStep(10);
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
@@ -284,7 +284,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithTrace(traceFile));
+        assertTrue(sm.initialize(traceFile, true));
         assertTrue(sm.isTrace());
         assertTrue(sm.performStep(1));
         assertEquals(expectedDOTString, sm.getDOTString());
@@ -332,7 +332,7 @@ public class TestSimulationManager {
         List<String> constraints = new ArrayList<String>(
             Arrays.asList("Chicken in far", "(Farmer in near) and (Chicken in far)")
         );
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(constraints.size(), constraints);
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
@@ -363,7 +363,7 @@ public class TestSimulationManager {
         List<String> constraints = new ArrayList<String>(
             Arrays.asList("(Farmer in near) and (Farmer in far)")
         );
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(constraints.size(), constraints);
         assertEquals(expectedDOTString, sm.getDOTString());
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
@@ -401,7 +401,7 @@ public class TestSimulationManager {
             "b: { On }",
             ""
         );
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(4);
         sm.performReverseStep(2);
         assertEquals(expectedDOTString, sm.getDOTString());
@@ -469,7 +469,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         assertTrue(sm.performStep(2));
         sm.performReverseStep(2);
         assertEquals(state1, sm.getCurrentStateString());
@@ -540,7 +540,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         assertTrue(sm.selectAlternatePath(false));
         assertTrue(sm.performStep(2));
         sm.performReverseStep(2);
@@ -573,7 +573,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithTrace(traceFile));
+        assertTrue(sm.initialize(traceFile, true));
         assertTrue(sm.isTrace());
         sm.performStep(1);
         sm.performReverseStep(1);
@@ -601,7 +601,7 @@ public class TestSimulationManager {
             ""
         );
 
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(2);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
         String history = sm.getHistory(3);
@@ -651,7 +651,7 @@ public class TestSimulationManager {
             ""
         );
 
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
         assertTrue(sm.selectAlternatePath(false));
         assertEquals(expectedAlternateState, sm.getCurrentStateString());
@@ -685,7 +685,7 @@ public class TestSimulationManager {
             ""
         );
 
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(2);
         assertEquals(expectedCurrentState, sm.getCurrentStateString());
         String history = sm.getHistory(3);
@@ -700,14 +700,14 @@ public class TestSimulationManager {
     @Test
     public void testSelectAlternatePath_noActiveSolutions() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         assertFalse(sm.selectAlternatePath(false));
     }
 
     @Test
     public void testSelectAlternatePath_noValidAlternates() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(2);
         assertFalse(sm.selectAlternatePath(false));
     }
@@ -715,7 +715,7 @@ public class TestSimulationManager {
     @Test
     public void testSelectAlternatePath_reverse_noValidAlternates() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         sm.performStep(2);
         sm.performReverseStep(1);
         assertFalse(sm.selectAlternatePath(true));
@@ -724,7 +724,7 @@ public class TestSimulationManager {
     @Test
     public void testPerformUntil() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         ConstraintManager cm = sm.getConstraintManager();
         String constraint = "a = Off";
         cm.addConstraint(constraint);
@@ -793,7 +793,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         assertEquals(state1, sm.getCurrentStateString());
 
         assertTrue(sm.performStep(2));
@@ -845,7 +845,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithModel(modelFile));
+        assertTrue(sm.initialize(modelFile, false));
         assertEquals(state1, sm.getCurrentStateString());
 
         assertTrue(sm.selectAlternatePath(false));
@@ -887,7 +887,7 @@ public class TestSimulationManager {
             ""
         );
 
-        assertTrue(sm.initializeWithTrace(traceFile));
+        assertTrue(sm.initialize(traceFile, true));
         assertTrue(sm.isTrace());
         assertEquals(state1, sm.getCurrentStateString());
 
@@ -906,7 +906,7 @@ public class TestSimulationManager {
     @Test
     public void testValidateConstraint() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         String constraint = "a = Off";
         assertTrue(sm.validateConstraint(constraint));
     }
@@ -914,7 +914,7 @@ public class TestSimulationManager {
     @Test
     public void testValidateConstraint_invalid() throws IOException {
         initializeTestWithModelPath("models/switch.als");
-        sm.initializeWithModel(modelFile);
+        sm.initialize(modelFile, false);
         String constraint = "ab = Off";
         assertFalse(sm.validateConstraint(constraint));
     }

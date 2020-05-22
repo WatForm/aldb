@@ -42,7 +42,7 @@ public class TraceCommand extends Command {
 
         System.out.printf(CommandConstants.READING_TRACE, filename);
 
-        if (!simulationManager.initializeWithTrace(file)) {
+        if (!simulationManager.initialize(file, true)) {
             System.out.println(CommandConstants.INVALID_TRACE);
             return;
         }
