@@ -81,7 +81,7 @@ public class StepCommand extends Command {
         }
 
         if (simulationManager.isDiffMode()) {
-            System.out.println(simulationManager.getCurrentStateDiffString(steps));
+            System.out.println(simulationManager.getCurrentStateDiffStringByDelta(steps));
         } else {
             System.out.println(simulationManager.getCurrentStateString());
 

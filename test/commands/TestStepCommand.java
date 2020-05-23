@@ -47,12 +47,12 @@ public class TestStepCommand extends TestCommand {
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.performStep(eq(expectedSteps), anyList())).thenReturn(true);
         when(simulationManager.isDiffMode()).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffStringByDelta(expectedSteps)).thenReturn(state);
 
         String[] input = {"s", "3"};
         step.execute(input, simulationManager);
         verify(simulationManager).performStep(expectedSteps, new ArrayList<String>());
-        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
+        verify(simulationManager).getCurrentStateDiffStringByDelta(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -67,7 +67,7 @@ public class TestStepCommand extends TestCommand {
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.isDiffMode()).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffStringByDelta(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         String rawInput = "s [a, \"b and c\", d, \"e\"]";
@@ -77,7 +77,7 @@ public class TestStepCommand extends TestCommand {
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
+        verify(simulationManager).getCurrentStateDiffStringByDelta(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -92,7 +92,7 @@ public class TestStepCommand extends TestCommand {
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.isDiffMode()).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffStringByDelta(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         String rawInput = "s []";
@@ -102,7 +102,7 @@ public class TestStepCommand extends TestCommand {
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
+        verify(simulationManager).getCurrentStateDiffStringByDelta(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -117,7 +117,7 @@ public class TestStepCommand extends TestCommand {
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.isDiffMode()).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffStringByDelta(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         String rawInput = "s [\"\", ,, \"\",]";
@@ -127,7 +127,7 @@ public class TestStepCommand extends TestCommand {
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
+        verify(simulationManager).getCurrentStateDiffStringByDelta(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -142,7 +142,7 @@ public class TestStepCommand extends TestCommand {
         when(simulationManager.isInitialized()).thenReturn(true);
         when(simulationManager.getAliasManager()).thenReturn(am);
         when(simulationManager.isDiffMode()).thenReturn(true);
-        when(simulationManager.getCurrentStateDiffString(expectedSteps)).thenReturn(state);
+        when(simulationManager.getCurrentStateDiffStringByDelta(expectedSteps)).thenReturn(state);
         when(simulationManager.validateConstraint(anyString())).thenReturn(true);
 
         when(am.isAlias(anyString())).thenReturn(true);
@@ -155,7 +155,7 @@ public class TestStepCommand extends TestCommand {
 
         step.execute(rawInput.split(" "), simulationManager);
         verify(simulationManager).performStep(expectedSteps, expectedConstraints);
-        verify(simulationManager).getCurrentStateDiffString(expectedSteps);
+        verify(simulationManager).getCurrentStateDiffStringByDelta(expectedSteps);
         assertEquals(state + "\n", outContent.toString());
         restoreStreams();
     }
@@ -174,7 +174,7 @@ public class TestStepCommand extends TestCommand {
         String expectedOutput = String.format(CommandConstants.INVALID_CONSTRAINT, "a") + "\n";
 
         step.execute(rawInput.split(" "), simulationManager);
-        verify(simulationManager, never()).getCurrentStateDiffString();
+        verify(simulationManager, never()).getCurrentStateDiffStringByDelta(anyInt());
         assertEquals(expectedOutput, outContent.toString());
         restoreStreams();
     }
