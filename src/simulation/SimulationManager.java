@@ -514,6 +514,10 @@ public class SimulationManager {
         }
 
         A4Solution sol = AlloyInterface.run(compModule);
+        if (!sol.satisfiable()) {
+            System.out.println("error. No instance found. Predicate may be inconsistent.");
+            return false;
+        }
 
         evaluateScopes(sol);
 

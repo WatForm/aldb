@@ -7,13 +7,16 @@ import edu.mit.csail.sdg.translator.A4Solution;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
@@ -24,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 public class TestSimulationManager {
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+
     private SimulationManager sm;
     private File modelFile;
 
@@ -32,7 +38,13 @@ public class TestSimulationManager {
 
     @Before
     public void init() {
+        System.setOut(new PrintStream(outContent));
         sm = new SimulationManager();
+    }
+
+    @After
+    public void cleanUp() {
+        System.setOut(originalOut);
     }
 
     @Test
@@ -91,6 +103,20 @@ public class TestSimulationManager {
         initializeTestWithModelString(invalidModel);
         assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
+    }
+
+    @Test
+    public void testInitializeWithModel_unsat() throws IOException {
+        String unsatModel = String.join("\n",
+            "sig State { x: Int }",
+            "pred init[s: State] { s.x = none }",
+            "pred next[s, s': State] {}",
+            ""
+        );
+        initializeTestWithModelString(unsatModel);
+        assertFalse(sm.initialize(modelFile, false));
+        assertFalse(sm.isInitialized());
+        assertTrue(outContent.toString().contains("No instance found"));
     }
 
     @Test
