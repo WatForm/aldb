@@ -41,6 +41,7 @@ public class SimulationManager {
     private ConstraintManager constraintManager;
 
     private boolean traceMode;
+    private boolean diffMode;  // Whether differential output is enabled.
 
     public SimulationManager() {
         scopes = new TreeMap<>();
@@ -53,10 +54,19 @@ public class SimulationManager {
         constraintManager = new ConstraintManager();
 
         traceMode = false;
+        diffMode = true;
     }
 
     public boolean isTrace() {
         return traceMode;
+    }
+
+    public void setDiffMode(boolean b) {
+        diffMode = b;
+    }
+
+    public boolean isDiffMode() {
+        return diffMode;
     }
 
     /**
@@ -385,8 +395,25 @@ public class SimulationManager {
         return statePath.getCurNode().stringForProperty(property);
     }
 
-    public String getCurrentStateDiffString() {
-        return statePath.getCurNode().getDiffString(statePath.getPrevNode());
+    /**
+     * getCurrentStateDiffStringFromLastCommit returns the diff between the current
+     * and the previous last-committed state.
+     * @return String
+     */
+    public String getCurrentStateDiffStringFromLastCommit() {
+        StateNode prev = statePath.getNode(statePath.getPosition() - statePath.getTempPathSize());
+        return statePath.getCurNode().getDiffString(prev);
+    }
+
+    /**
+     * getCurrentStateDiffStringByDelta returns the diff between the current state
+     * and the state at the (current - delta) position in the path.
+     * @param int delta
+     * @return String
+     */
+    public String getCurrentStateDiffStringByDelta(int delta) {
+        StateNode prev = statePath.getNode(statePath.getPosition() - delta);
+        return statePath.getCurNode().getDiffString(prev);
     }
 
     public AliasManager getAliasManager() {

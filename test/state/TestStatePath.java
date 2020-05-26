@@ -91,21 +91,6 @@ public class TestStatePath {
     }
 
     @Test
-    public void testGetPrevNode() {
-        StatePath sp = new StatePath();
-        assertEquals(null, sp.getPrevNode());
-
-        List<StateNode> path = new ArrayList<StateNode>();
-        path.add(n0);
-        path.add(n1);
-        sp.initWithPath(path);
-        assertEquals(null, sp.getPrevNode());
-
-        sp.setPosition(0);
-        assertEquals(n1, sp.getPrevNode());
-    }
-
-    @Test
     public void testSetAndGetPosition() {
         StatePath sp = new StatePath();
         assertEquals(0, sp.getPosition());
@@ -117,7 +102,6 @@ public class TestStatePath {
         assertEquals(1, sp.getPosition());
 
         sp.setPosition(0);
-        assertEquals(n1, sp.getPrevNode());
         assertEquals(0, sp.getPosition());
     }
 
@@ -136,12 +120,10 @@ public class TestStatePath {
 
         sp.incrementPosition(1);
         assertEquals(1, sp.getPosition());
-        assertEquals(n0, sp.getPrevNode());
         assertFalse(sp.atEnd());
 
         sp.incrementPosition(1);
         assertEquals(2, sp.getPosition());
-        assertEquals(n1, sp.getPrevNode());
         assertTrue(sp.atEnd());
     }
 
@@ -157,7 +139,6 @@ public class TestStatePath {
 
         sp.decrementPosition(1, false);
         assertEquals(1, sp.getPosition());
-        assertEquals(n0, sp.getPrevNode());
         assertEquals(n1, sp.getCurNode());
 
         // Decrement path size 3 by 2.
@@ -166,7 +147,6 @@ public class TestStatePath {
 
         sp.decrementPosition(2, false);
         assertEquals(0, sp.getPosition());
-        assertEquals(null, sp.getPrevNode());
         assertEquals(n0, sp.getCurNode());
 
         // Decrement path size 3 by 3.
@@ -175,7 +155,6 @@ public class TestStatePath {
 
         sp.decrementPosition(3, false);
         assertEquals(0, sp.getPosition());
-        assertEquals(null, sp.getPrevNode());
         assertEquals(n0, sp.getCurNode());
 
         // Decrement path size 3 by 4.
@@ -184,7 +163,6 @@ public class TestStatePath {
 
         sp.decrementPosition(4, false);
         assertEquals(0, sp.getPosition());
-        assertEquals(null, sp.getPrevNode());
         assertEquals(n0, sp.getCurNode());
     }
 
@@ -196,8 +174,8 @@ public class TestStatePath {
         tempPath.add(n1);
         sp.setTempPath(tempPath);
         assertEquals(1, sp.getPosition());
-        assertEquals(null, sp.getPrevNode());
         assertEquals(n1, sp.getCurNode());
+        assertEquals(tempPath.size(), sp.getTempPathSize());
     }
 
     @Test
@@ -211,8 +189,8 @@ public class TestStatePath {
 
         sp.clearTempPath();
         assertEquals(-1, sp.getPosition());
-        assertEquals(null, sp.getPrevNode());
         assertEquals(null, sp.getCurNode());
+        assertEquals(0, sp.getTempPathSize());
 
         // Clear temp path with an initial path set.
         sp.initWithPath(tempPath);
@@ -220,14 +198,14 @@ public class TestStatePath {
         // Should be a no-op.
         sp.clearTempPath();
         assertEquals(1, sp.getPosition());
-        assertEquals(null, sp.getPrevNode());
         assertEquals(n1, sp.getCurNode());
+        assertEquals(0, sp.getTempPathSize());
 
         sp.setTempPath(tempPath);
         sp.clearTempPath();
         assertEquals(1, sp.getPosition());
-        assertEquals(null, sp.getPrevNode());
         assertEquals(n1, sp.getCurNode());
+        assertEquals(0, sp.getTempPathSize());
     }
 
     @Test
@@ -235,6 +213,7 @@ public class TestStatePath {
         StatePath sp = new StatePath();
         sp.clearPath();
         assertTrue(sp.isEmpty());
+        assertEquals(0, sp.getTempPathSize());
 
         List<StateNode> tempPath = new ArrayList<StateNode>();
         tempPath.add(n0);
@@ -244,6 +223,7 @@ public class TestStatePath {
         assertFalse(sp.isEmpty());
         sp.clearPath();
         assertTrue(sp.isEmpty());
+        assertEquals(0, sp.getTempPathSize());
     }
 
     @Test

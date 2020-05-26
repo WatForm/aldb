@@ -945,6 +945,78 @@ public class TestSimulationManager {
         assertFalse(sm.validateConstraint(constraint));
     }
 
+    @Test
+    public void testGetCurrentStateDiffStringFromLastCommit() throws IOException {
+        initializeTestWithModelPath("models/musical_chairs.als");
+        sm.initialize(modelFile, false);
+
+        String expectedDiff = String.join("\n",
+            "",
+            "S1 -> S6",
+            "------------",
+            "chairs: { Chair_0, Chair_1 }",
+            "players: { Player_0, Player_1, Player_3 }",
+            ""
+        );
+        String expectedDiff2 = String.join("\n",
+            "",
+            "S6 -> S9",
+            "------------",
+            "mode: { sitting }",
+            "occupied: { Chair_0->Player_3, Chair_1->Player_0 }",
+            ""
+        );
+        String expectedDiff3 = String.join("\n",
+            "",
+            "S6 -> S10",
+            "------------",
+            "mode: { sitting }",
+            "occupied: { Chair_0->Player_3, Chair_1->Player_1 }",
+            ""
+        );
+
+        assertTrue(sm.performStep(3));
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(expectedDiff, sm.getCurrentStateDiffStringFromLastCommit());
+
+        assertTrue(sm.performStep(2));
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(expectedDiff2, sm.getCurrentStateDiffStringFromLastCommit());
+
+        assertTrue(sm.selectAlternatePath(false));
+        assertEquals(expectedDiff3, sm.getCurrentStateDiffStringFromLastCommit());
+    }
+
+    @Test
+    public void testGetCurrentStateDiffStringByDelta() throws IOException {
+        initializeTestWithModelPath("models/musical_chairs.als");
+        sm.initialize(modelFile, false);
+
+        String expectedDiff = String.join("\n",
+            "",
+            "S1 -> S2",
+            "------------",
+            "mode: { walking }",
+            ""
+        );
+        String expectedDiff2 = String.join("\n",
+            "",
+            "S2 -> S5",
+            "------------",
+            "chairs: { Chair_0, Chair_2 }",
+            "players: { Player_0, Player_1, Player_3 }",
+            ""
+        );
+
+        int steps = 1;
+        assertTrue(sm.performStep(steps));
+        assertEquals(expectedDiff, sm.getCurrentStateDiffStringByDelta(steps));
+
+        steps = 3;
+        assertTrue(sm.performStep(steps));
+        assertEquals(expectedDiff2, sm.getCurrentStateDiffStringByDelta(steps));
+    }
+
     private void initializeTestWithModelPath(String modelPath) throws IOException {
         File file = new File(modelPath);
         modelFile = tempFolder.newFile(String.format("test_%s.als", file.getName()));

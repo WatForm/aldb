@@ -80,11 +80,12 @@ public class StepCommand extends Command {
             return;
         }
 
-        if (simulationManager.isTrace()) {
-            System.out.println(simulationManager.getCurrentStateDiffString());
-            return;
-        }
+        if (simulationManager.isDiffMode()) {
+            // States are not generated and committed when stepping through traces, so get the diff by delta.
+            System.out.println(simulationManager.getCurrentStateDiffStringByDelta(steps));
+        } else {
+            System.out.println(simulationManager.getCurrentStateString());
 
-        System.out.println(simulationManager.getCurrentStateString());
+        }
     }
 }

@@ -92,7 +92,11 @@ public class CommandConstants {
         "    transitionRelationName: next\n" +
         "    # Additional Alloy sig scopes to specify.\n" +
         "    additionalSigScopes: {}\n\n" +
-        "    Running set conf with no filename will set the above default options.";
+        "    Running set conf with no filename will set the above default options.\n\n" +
+        "set diff <on | off>\n\n" +
+        "    Turn on/off differential output mode.\n\n" +
+        "    When enabled, only fields that have changed between the previous and current state are displayed when executing step or alt.\n" +
+        "    By default, this option is enabled.";
 
     public final static String STEP_NAME = "step";
     public final static String STEP_DESCRIPTION = "Perform a state transition of n steps";
