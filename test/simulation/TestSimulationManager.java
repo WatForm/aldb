@@ -67,6 +67,7 @@ public class TestSimulationManager {
         File nonexistantFile = new File("nonexistant-file");
         assertFalse(sm.initialize(nonexistantFile, false));
         assertFalse(sm.isInitialized());
+        assertTrue(outContent.toString().contains("syntax error"));
     }
 
     @Test
@@ -79,6 +80,7 @@ public class TestSimulationManager {
         initializeTestWithModelString(noInitModel);
         assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
+        assertTrue(outContent.toString().contains("init not found"));
     }
 
     @Test
@@ -91,6 +93,7 @@ public class TestSimulationManager {
         initializeTestWithModelString(noNextModel);
         assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
+        assertTrue(outContent.toString().contains("next not found"));
     }
 
     @Test
@@ -103,6 +106,7 @@ public class TestSimulationManager {
         initializeTestWithModelString(invalidModel);
         assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
+        assertTrue(outContent.toString().contains("syntax error"));
     }
 
     @Test

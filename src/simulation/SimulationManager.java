@@ -9,6 +9,10 @@ import alloy.AlloyInterface;
 import alloy.AlloyUtils;
 import alloy.ParsingConf;
 import alloy.SigData;
+
+import edu.mit.csail.sdg.alloy4.Err;
+import edu.mit.csail.sdg.alloy4.ErrorSyntax;
+import edu.mit.csail.sdg.alloy4.ErrorType;
 import edu.mit.csail.sdg.ast.Sig;
 import edu.mit.csail.sdg.parser.CompModule;
 import edu.mit.csail.sdg.translator.A4Solution;
@@ -172,9 +176,11 @@ public class SimulationManager {
             return false;
         }
 
-        CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
-        if (compModule == null) {
-            System.out.println("Cannot perform step. Could not parse model.");
+        CompModule compModule = null;
+        try {
+            compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
+        } catch (Err e) {
+            System.out.println("Cannot perform step. Internal error.");
             return false;
         }
 
@@ -268,8 +274,10 @@ public class SimulationManager {
                 return false;
             }
 
-            CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
-            if (compModule == null) {
+            CompModule compModule = null;
+            try {
+                compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
+            } catch (Err e) {
                 return false;
             }
 
@@ -324,9 +332,11 @@ public class SimulationManager {
             return false;
         }
 
-        CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
-        if (compModule == null) {
-            System.out.println("error. Could not parse model.");
+        CompModule compModule = null;
+        try {
+            compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
+        } catch (Err e) {
+            System.out.println("internal error.");
             return false;
         }
 
@@ -363,8 +373,9 @@ public class SimulationManager {
             return false;
         }
 
-        CompModule compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
-        if (compModule == null) {
+        try {
+            AlloyInterface.compile(alloyModelFile.getAbsolutePath());
+        } catch (Err e) {
             return false;
         }
 
@@ -429,8 +440,16 @@ public class SimulationManager {
     }
 
     private boolean initializeWithModel(File model) {
-        if (AlloyInterface.compile(model.getPath()) == null) {
-            System.out.println("error. Could not parse model.");
+        try {
+            AlloyInterface.compile(model.getPath());
+        } catch (Err e) {
+            String errType = "error";
+            if (e instanceof ErrorSyntax) {
+                errType = "syntax error";
+            } else if (e instanceof ErrorType) {
+                errType = "type error";
+            }
+            System.out.printf("%s. %s\n", errType, e.msg.trim());
             return false;
         }
 
@@ -450,6 +469,12 @@ public class SimulationManager {
                 System.out.println("error. Invalid configuration.");
                 return false;
             }
+        }
+
+        int transRelIndex = modelString.indexOf(String.format("pred %s", getParsingConf().getTransitionRelationName()));
+        if (transRelIndex == -1) {
+            System.out.printf("error. Predicate %s not found.\n", getParsingConf().getTransitionRelationName());
+            return false;
         }
 
         int initStartIndex = modelString.indexOf(String.format("pred %s", getParsingConf().getInitPredicateName()));
@@ -507,9 +532,11 @@ public class SimulationManager {
             return false;
         }
 
-        CompModule compModule = AlloyInterface.compile(model.getAbsolutePath());
-        if (compModule == null) {
-            System.out.println("error. Could not parse model.");
+        CompModule compModule = null;
+        try {
+            compModule = AlloyInterface.compile(model.getAbsolutePath());
+        } catch (Err e) {
+            System.out.println("internal error.");
             return false;
         }
 

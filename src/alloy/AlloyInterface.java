@@ -27,12 +27,8 @@ public class AlloyInterface {
     private static final A4Reporter reporter = new A4Reporter();
     private static final A4Options options = new A4Options();
 
-    public static CompModule compile(String modelPath) {
-        try {
-            return CompUtil.parseEverything_fromFile(reporter, null, modelPath);
-        } catch (Err e) {}
-
-        return null;
+    public static CompModule compile(String modelPath) throws Err {
+        return CompUtil.parseEverything_fromFile(reporter, null, modelPath);
     }
 
     public static A4Solution run(CompModule module) {
