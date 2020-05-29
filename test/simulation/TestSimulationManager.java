@@ -67,7 +67,7 @@ public class TestSimulationManager {
         File nonexistantFile = new File("nonexistant-file");
         assertFalse(sm.initialize(nonexistantFile, false));
         assertFalse(sm.isInitialized());
-        assertTrue(outContent.toString().contains("syntax error"));
+        assertTrue(outContent.toString().contains("Syntax error"));
     }
 
     @Test
@@ -106,7 +106,23 @@ public class TestSimulationManager {
         initializeTestWithModelString(invalidModel);
         assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
-        assertTrue(outContent.toString().contains("syntax error"));
+        assertTrue(outContent.toString().contains("Syntax error"));
+    }
+
+    @Test
+    public void testInitializeWithModel_missingScopes() throws IOException {
+        String model = String.join("\n",
+            "sig Foo {}",
+            "sig State { x: set Foo }",
+            "pred init[s: State] {}",
+            "pred next[s, s': State] {}",
+            ""
+        );
+        initializeTestWithModelString(model);
+        assertFalse(sm.initialize(modelFile, false));
+        assertFalse(sm.isInitialized());
+        assertTrue(outContent.toString().contains("Syntax error"));
+        assertTrue(outContent.toString().contains("must specify a scope"));
     }
 
     @Test

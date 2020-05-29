@@ -31,7 +31,7 @@ public class AlloyInterface {
         return CompUtil.parseEverything_fromFile(reporter, null, modelPath);
     }
 
-    public static A4Solution run(CompModule module) {
+    public static A4Solution run(CompModule module) throws Err {
         List<Command> commands = module.getAllCommands();
         if (commands.isEmpty()) {
             return null;

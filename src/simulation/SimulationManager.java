@@ -20,6 +20,8 @@ import edu.mit.csail.sdg.translator.A4Tuple;
 
 import java.io.IOException;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +33,8 @@ import java.util.TreeMap;
 import org.yaml.snakeyaml.error.YAMLException;
 
 public class SimulationManager {
+    private final static String TEMP_FILENAME_PREFIX = "_tmp_";
+
     private File alloyModelFile;
     private String alloyModelString;
     private String alloyInitString;
@@ -184,7 +188,13 @@ public class SimulationManager {
             return false;
         }
 
-        A4Solution sol = AlloyInterface.run(compModule);
+        A4Solution sol = null;
+        try {
+            sol = AlloyInterface.run(compModule);
+        } catch (Err e) {
+            System.out.println("Cannot perform step. Internal error.");
+            return false;
+        }
         if (sol == null || !sol.satisfiable()) {
             System.out.println("Cannot perform step. Transition constraint is unsatisfiable.");
             return false;
@@ -281,7 +291,12 @@ public class SimulationManager {
                 return false;
             }
 
-            A4Solution sol = AlloyInterface.run(compModule);
+            A4Solution sol = null;
+            try {
+                sol = AlloyInterface.run(compModule);
+            } catch (Err e) {
+                return false;
+            }
             if (sol == null) {
                 return false;
             } else if (!sol.satisfiable()) {
@@ -340,7 +355,13 @@ public class SimulationManager {
             return false;
         }
 
-        A4Solution sol = AlloyInterface.run(compModule);
+        A4Solution sol = null;
+        try {
+            sol = AlloyInterface.run(compModule);
+        } catch (Err e) {
+            System.out.println("internal error.");
+            return false;
+        }
         List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
         // We don't re-add this initial node to the StateGraph, so manually set its identifier here.
         initialNodes.get(0).setIdentifier(1);
@@ -443,19 +464,28 @@ public class SimulationManager {
         try {
             AlloyInterface.compile(model.getPath());
         } catch (Err e) {
-            String errType = "error";
-            if (e instanceof ErrorSyntax) {
-                errType = "syntax error";
-            } else if (e instanceof ErrorType) {
-                errType = "type error";
-            }
-            System.out.printf("%s. %s\n", errType, e.msg.trim());
+            System.out.printf("error.\n\n%s\n", e.toString());
             return false;
         }
 
+        String tempModelFilename = TEMP_FILENAME_PREFIX + model.getName();
+        // Note that the temp model file must be created in the same directory as the input model
+        // in order for Alloy to correctly find imported submodules.
+        File tempModelFile = new File(model.getParentFile(), tempModelFilename);
+        tempModelFile.deleteOnExit();
+
+        try {
+            Files.copy(model.toPath(), tempModelFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            System.out.println("error. I/O failed.");
+            return false;
+        }
+
+        alloyModelFile = tempModelFile;
+
         String modelString;
         try {
-            modelString = AlloyUtils.readFromFile(model);
+            modelString = AlloyUtils.readFromFile(alloyModelFile);
         } catch (IOException e) {
             System.out.println("error. Failed to read file.");
             return false;
@@ -511,7 +541,6 @@ public class SimulationManager {
             return false;
         }
 
-        this.alloyModelFile = model;
         this.alloyInitString = modelString.substring(initStartIndex, initEndIndex + 1);
         this.alloyModelString =
             modelString.substring(0, initStartIndex) +
@@ -534,13 +563,19 @@ public class SimulationManager {
 
         CompModule compModule = null;
         try {
-            compModule = AlloyInterface.compile(model.getAbsolutePath());
+            compModule = AlloyInterface.compile(alloyModelFile.getAbsolutePath());
         } catch (Err e) {
             System.out.println("internal error.");
             return false;
         }
 
-        A4Solution sol = AlloyInterface.run(compModule);
+        A4Solution sol = null;
+        try {
+            sol = AlloyInterface.run(compModule);
+        } catch (Err e) {
+            System.out.printf("error.\n\n%s\n", e.toString());
+            return false;
+        }
         if (!sol.satisfiable()) {
             System.out.println("error. No instance found. Predicate may be inconsistent.");
             return false;
