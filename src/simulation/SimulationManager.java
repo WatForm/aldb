@@ -11,8 +11,6 @@ import alloy.ParsingConf;
 import alloy.SigData;
 
 import edu.mit.csail.sdg.alloy4.Err;
-import edu.mit.csail.sdg.alloy4.ErrorSyntax;
-import edu.mit.csail.sdg.alloy4.ErrorType;
 import edu.mit.csail.sdg.ast.Sig;
 import edu.mit.csail.sdg.parser.CompModule;
 import edu.mit.csail.sdg.translator.A4Solution;
@@ -573,7 +571,7 @@ public class SimulationManager {
         try {
             sol = AlloyInterface.run(compModule);
         } catch (Err e) {
-            System.out.printf("error.\n\n%s\n", e.toString());
+            System.out.printf("error.\n\n%s\n", e.msg.trim());
             return false;
         }
         if (!sol.satisfiable()) {

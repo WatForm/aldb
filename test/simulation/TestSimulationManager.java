@@ -121,8 +121,7 @@ public class TestSimulationManager {
         initializeTestWithModelString(model);
         assertFalse(sm.initialize(modelFile, false));
         assertFalse(sm.isInitialized());
-        assertTrue(outContent.toString().contains("Syntax error"));
-        assertTrue(outContent.toString().contains("must specify a scope"));
+        assertTrue(outContent.toString().contains("must specify a scope for sig \"this/Foo\""));
     }
 
     @Test
