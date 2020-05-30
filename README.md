@@ -389,7 +389,7 @@ Session log could not be opened for reading. | Ensure that the given session log
 Unable to create session log. | Restart ALDB and try again. If this error continues to occur, restart the computer.
 Predicate not found. | Ensure that the predicate name specified in the configuration exists in the Alloy model.
 Issue parsing predicate. | Ensure that the Alloy model is syntactically-valid.
-I/O failed, cannot initialize model. | Restart ALDB and try again. If this error continues to occur, restart the computer.
+I/O failed. | Restart ALDB and try again. If this error continues to occur, restart the computer.
 Internal error. | Ensure that you are using the latest version of ALDB. If the error continues to occur, please [report an issue](#reporting-issues).
 
 ## Reporting Issues
