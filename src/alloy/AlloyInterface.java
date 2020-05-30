@@ -33,9 +33,6 @@ public class AlloyInterface {
 
     public static A4Solution run(CompModule module) throws Err {
         List<Command> commands = module.getAllCommands();
-        if (commands.isEmpty()) {
-            return null;
-        }
 
         // Use the command injected by us at the end of the input
         // model. This ensures any extraneous commands in the input model are

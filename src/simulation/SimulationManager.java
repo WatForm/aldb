@@ -193,7 +193,8 @@ public class SimulationManager {
             System.out.println("Cannot perform step. Internal error.");
             return false;
         }
-        if (sol == null || !sol.satisfiable()) {
+
+        if (!sol.satisfiable()) {
             System.out.println("Cannot perform step. Transition constraint is unsatisfiable.");
             return false;
         }
@@ -295,9 +296,8 @@ public class SimulationManager {
             } catch (Err e) {
                 return false;
             }
-            if (sol == null) {
-                return false;
-            } else if (!sol.satisfiable()) {
+
+            if (!sol.satisfiable()) {
                 // Breakpoints not hit for current step size. Try next step size.
                 continue;
             }
@@ -360,6 +360,7 @@ public class SimulationManager {
             System.out.println("internal error.");
             return false;
         }
+
         List<StateNode> initialNodes = getStateNodesForA4Solution(sol);
         // We don't re-add this initial node to the StateGraph, so manually set its identifier here.
         initialNodes.get(0).setIdentifier(1);
@@ -574,6 +575,7 @@ public class SimulationManager {
             System.out.printf("error.\n\n%s\n", e.msg.trim());
             return false;
         }
+
         if (!sol.satisfiable()) {
             System.out.println("error. No instance found. Predicate may be inconsistent.");
             return false;
