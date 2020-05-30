@@ -383,7 +383,6 @@ No file specified. | If the command requires a file, specify the file path after
 Failed to read file. | The file exists but could not be read. Restart ALDB and try again.
 Invalid configuration. | Ensure that the configuration is correctly specified in syntactically-valid YAML.
 Invalid trace. | Ensure that the trace file is XML generated directly from the Alloy Analyzer.
-Internal error. Failed to create temporary Alloy file. | Restart ALDB and try again. If this error continues to occur, restart the computer.
 Undefined command. | The command does not exist. Ensure no typos.
 Signature not found. | Ensure that the Sig being requested by the `scope` command exists in the model that was loaded.
 No model file specified. | Use the `load` command to load an Alloy model, and then retry the action.
