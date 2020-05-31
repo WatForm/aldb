@@ -27,19 +27,12 @@ public class AlloyInterface {
     private static final A4Reporter reporter = new A4Reporter();
     private static final A4Options options = new A4Options();
 
-    public static CompModule compile(String modelPath) {
-        try {
-            return CompUtil.parseEverything_fromFile(reporter, null, modelPath);
-        } catch (Err e) {}
-
-        return null;
+    public static CompModule compile(String modelPath) throws Err {
+        return CompUtil.parseEverything_fromFile(reporter, null, modelPath);
     }
 
-    public static A4Solution run(CompModule module) {
+    public static A4Solution run(CompModule module) throws Err {
         List<Command> commands = module.getAllCommands();
-        if (commands.isEmpty()) {
-            return null;
-        }
 
         // Use the command injected by us at the end of the input
         // model. This ensures any extraneous commands in the input model are

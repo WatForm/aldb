@@ -1,5 +1,6 @@
 package alloy;
 
+import edu.mit.csail.sdg.alloy4.Err;
 import edu.mit.csail.sdg.ast.Sig;
 import edu.mit.csail.sdg.translator.A4Solution;
 
@@ -34,12 +35,16 @@ public class TestAlloyInterface {
         String invalidCode = "}{";
         appendToFile(model, invalidCode);
 
-        assertNull(AlloyInterface.compile(model.getPath()));
+        assertThrows(Err.class, () -> {
+            AlloyInterface.compile(model.getPath());
+        });
     }
 
     @Test
-    public void testCompile_failureNoFile() throws IOException {
-        assertNull(AlloyInterface.compile("non-existant-file"));
+    public void testCompile_failureNoFile() {
+        assertThrows(Err.class, () -> {
+            AlloyInterface.compile("non-existant-file");
+        });
     }
 
     @Test

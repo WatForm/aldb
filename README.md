@@ -383,16 +383,15 @@ No file specified. | If the command requires a file, specify the file path after
 Failed to read file. | The file exists but could not be read. Restart ALDB and try again.
 Invalid configuration. | Ensure that the configuration is correctly specified in syntactically-valid YAML.
 Invalid trace. | Ensure that the trace file is XML generated directly from the Alloy Analyzer.
-Internal error. Failed to create temporary Alloy file. | Restart ALDB and try again. If this error continues to occur, restart the computer.
 Undefined command. | The command does not exist. Ensure no typos.
 Signature not found. | Ensure that the Sig being requested by the `scope` command exists in the model that was loaded.
 No model file specified. | Use the `load` command to load an Alloy model, and then retry the action.
 Session log could not be opened for reading. | Ensure that the given session log path is correct and the file exists.
 Unable to create session log. | Restart ALDB and try again. If this error continues to occur, restart the computer.
-Could not parse model. | Ensure that the model is written in valid Alloy code. Use the Alloy Analyzer to check.
 Predicate not found. | Ensure that the predicate name specified in the configuration exists in the Alloy model.
 Issue parsing predicate. | Ensure that the Alloy model is syntactically-valid.
 I/O failed, cannot initialize model. | Restart ALDB and try again. If this error continues to occur, restart the computer.
+Internal error. | Ensure that you are using the latest version of ALDB. If the error continues to occur, please [report an issue](#reporting-issues).
 
 ## Reporting Issues
 
