@@ -607,13 +607,11 @@ public class SimulationManager {
         A4Solution sol;
         try {
             sol = AlloyInterface.solutionFromXMLFile(trace);
-        } catch (Exception ex) {
-            if (ex instanceof Err) {
-                Err err = (Err) ex;
-                System.out.printf("error.\n\n%s\n", err.toString());
-            } else {
-                System.out.println("error. Could not read XML file.");
-            }
+        } catch (Err e) {
+            System.out.printf("error.\n\n%s\n", e.toString());
+            return false;
+        } catch (Exception e) {
+            System.out.println("error. Could not read XML file.");
             return false;
         }
 
