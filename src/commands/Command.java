@@ -2,6 +2,8 @@ package commands;
 
 import simulation.SimulationManager;
 
+import org.jline.reader.Completer;
+
 public abstract class Command {
     private final static String[] SHORTHAND = {};
 
@@ -17,5 +19,9 @@ public abstract class Command {
 
     public boolean requiresFile() {
         return false;
+    }
+
+    public Completer getSpecialCompleter() {
+        return null;
     }
 }

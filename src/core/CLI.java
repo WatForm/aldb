@@ -15,6 +15,7 @@ import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
+import org.jline.reader.impl.completer.AggregateCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.terminal.*;
@@ -64,18 +65,25 @@ class CLI {
     }
 
     private Completer createCompleter() {
-        Map<String, Completer> completers = new HashMap<>();
+        List<Completer> completers = new ArrayList<Completer>();
+
+        Map<String, Completer> regexCompleters = new HashMap<>();
         List<String> regex = new ArrayList<String>();
+        regexCompleters.put("file", new FileNameCompleter());
 
         int commandID = 1;
-        completers.put("file", new FileNameCompleter());
+
         for (Command command : CommandRegistry.getAllCommands()) {
+            if (command.getSpecialCompleter() != null) {
+                completers.add(command.getSpecialCompleter());
+            }
+
             // The completer name is different from the command name to allow
             // for commands containing special characters (such as hyphens)
             // to be understood by the RegexCompleter.
             String commandName = command.getName();
             String completerName = String.format("C%d", commandID);
-            completers.put(completerName, new StringsCompleter(commandName));
+            regexCompleters.put(completerName, new StringsCompleter(commandName));
 
             if (command.requiresFile()) {
                 regex.add(String.format("%s file", completerName));
@@ -86,6 +94,7 @@ class CLI {
             commandID++;
         }
 
-        return new RegexCompleter(String.join("|", regex), completers::get);
+        completers.add(new RegexCompleter(String.join("|", regex), regexCompleters::get));
+        return new AggregateCompleter(completers);
     }
 }
