@@ -8,7 +8,12 @@ import java.io.IOException;
 import java.io.File;
 import java.nio.file.Files;
 
+import org.jline.builtins.Completers.FileNameCompleter;
+import org.jline.builtins.Completers.TreeCompleter;
+import org.jline.reader.Completer;
 import org.yaml.snakeyaml.error.YAMLException;
+
+import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class SetCommand extends Command {
     private final static String CONF_OPTION = "conf";
@@ -27,6 +32,15 @@ public class SetCommand extends Command {
 
     public String getHelp() {
         return CommandConstants.SET_HELP;
+    }
+
+    public Completer getSpecialCompleter() {
+        return new TreeCompleter(
+            node(getName(),
+                node(CONF_OPTION,
+                    node(new FileNameCompleter())),
+                node(DIFF_OPTION,
+                    node(ON, OFF))));
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
