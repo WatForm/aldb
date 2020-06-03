@@ -607,7 +607,13 @@ public class SimulationManager {
         A4Solution sol;
         try {
             sol = AlloyInterface.solutionFromXMLFile(trace);
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            if (ex instanceof Err) {
+                Err err = (Err) ex;
+                System.out.printf("error.\n\n%s\n", err.toString());
+            } else {
+                System.out.println("error. Could not read XML file.");
+            }
             return false;
         }
 
@@ -623,6 +629,7 @@ public class SimulationManager {
 
         List<StateNode> stateNodes = getStateNodesForA4Solution(sol);
         if (stateNodes.isEmpty()) {
+            System.out.println("internal error.");
             return false;
         }
 

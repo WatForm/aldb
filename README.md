@@ -381,7 +381,6 @@ No such file. | Ensure that the file exists, and that the file path being provid
 No file specified. | If the command requires a file, specify the file path after the command name.
 Failed to read file. | The file exists but could not be read. Restart ALDB and try again.
 Invalid configuration. | Ensure that the configuration is correctly specified in syntactically-valid YAML.
-Invalid trace. | Ensure that the trace file is XML generated directly from the Alloy Analyzer.
 Undefined command. | The command does not exist. Ensure no typos.
 Signature not found. | Ensure that the Sig being requested by the `scope` command exists in the model that was loaded.
 No model file specified. | Use the `load` command to load an Alloy model, and then retry the action.
