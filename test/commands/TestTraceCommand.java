@@ -77,9 +77,8 @@ public class TestTraceCommand extends TestCommand {
 
         String[] input = {"t", file.getPath()};
         trace.execute(input, simulationManager);
-        String msg = String.format(CommandConstants.READING_TRACE, input[1]);
-        msg += CommandConstants.INVALID_TRACE + "\n";
-        assertEquals(msg, outContent.toString());
+        String readingMsg = String.format(CommandConstants.READING_TRACE, input[1]);
+        assertTrue(outContent.toString().contains(readingMsg));
         file.delete();
         restoreStreams();
     }

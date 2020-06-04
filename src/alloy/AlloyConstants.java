@@ -13,9 +13,6 @@ public class AlloyConstants {
     public static final String BLOCK_TERMINATOR = "}";
     public static final String INT = "Int";
     public static final String NONE = "none";
-    public static final String TRACE_SOURCE_TAG = "source";
-    public static final String TRACE_FILENAME_ATTR = "filename";
-    public static final String TRACE_CONTENT_ATTR = "content";
     public static final String PATH_AUXILIARY_PREDICATE_FORMAT = "state_s%d";
     public static final String PATH_PREDICATE_NAME = "path";
     public static final String PLUS = "+";

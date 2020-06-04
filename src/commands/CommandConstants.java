@@ -10,7 +10,6 @@ public class CommandConstants {
     public final static String IO_FAILED = "error. I/O failed.";
     public final static String FAILED_TO_READ_FILE = "error. Failed to read file.";
     public final static String FAILED_TO_READ_CONF = "error. Invalid configuration.";
-    public final static String INVALID_TRACE = "error. Invalid trace.";
     public final static String SETTING_PARSING_OPTIONS = "Setting default parsing options...";
     public final static String SETTING_PARSING_OPTIONS_FROM = "Setting parsing options from %s...";
     public final static String UNDEFINED_COMMAND = "Undefined command: \"%s\". Try \"help\".\n";

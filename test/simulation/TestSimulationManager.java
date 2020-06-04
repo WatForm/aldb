@@ -162,6 +162,7 @@ public class TestSimulationManager {
         initializeTestWithModelPath("models/switch.als");
         assertFalse(sm.initialize(modelFile, true));
         assertFalse(sm.isTrace());
+        assertTrue(outContent.toString().contains("error. Could not read XML file."));
     }
 
     @Test
