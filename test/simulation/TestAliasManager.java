@@ -79,6 +79,12 @@ public class TestAliasManager {
         assertTrue(am.isAlias("i"));
         assertEquals("2", am.getFormula("i"));
 
+        // Removing an alias used in the definition of a newer alias should not affect the newer alias.
+        assertTrue(am.removeAlias("abcd"));
+        assertFalse(am.isAlias("abcd"));
+        assertTrue(am.isAlias("i"));
+        assertEquals("2", am.getFormula("i"));
+
         assertFalse(am.addAlias("z", "`a``+1"));
         assertFalse(am.isAlias("z"));
 

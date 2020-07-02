@@ -10,7 +10,7 @@ public class AliasManager {
     private Map<String, String> aliases;
     private final static String ALIAS_HEADER = "Alias";
     private final static String FORMULA_HEADER = "Formula";
-    private final static String BACKTICK = "`";
+    private final static char NESTED_ALIAS_WRAPPER = '`';
 
     public AliasManager() {
         aliases = new HashMap<>();
@@ -54,8 +54,8 @@ public class AliasManager {
         int l = -1;
         StringBuilder resolved = new StringBuilder();
         for (int i = 0; i < formula.length(); i++) {
-            String c = String.valueOf(formula.charAt(i));
-            if (c.equals(BACKTICK)) {
+            char c = formula.charAt(i);
+            if (c == NESTED_ALIAS_WRAPPER) {
                 if (l == -1) {
                     l = i;
                 } else {
