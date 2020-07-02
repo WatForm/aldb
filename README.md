@@ -105,6 +105,19 @@ Specify the `-c` option to clear all aliases.
 Specify the `-l` option to list all current aliases.
 Specify the `-rm alias` option to remove an alias.
 
+An existing alias can be used in the definition of a new alias. To do so, wrap the existing alias in backticks when specifying the formula for the new alias.
+
+```
+(aldb) alias a 1
+(aldb) alias b `a`+1
+(aldb) alias -l
+
+Alias           Formula
+a               1
+b               1+1
+
+```
+
 #### alt
 The `alt [-r]` command switches between alternative execution paths in the current trace. Multiple unique states can be reached for a given path length; this command allows the user to explore all those states.
 

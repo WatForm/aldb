@@ -10,6 +10,7 @@ public class AliasManager {
     private Map<String, String> aliases;
     private final static String ALIAS_HEADER = "Alias";
     private final static String FORMULA_HEADER = "Formula";
+    private final static char NESTED_ALIAS_WRAPPER = '`';
 
     public AliasManager() {
         aliases = new HashMap<>();
@@ -19,8 +20,13 @@ public class AliasManager {
         return aliases.containsKey(alias);
     }
 
-    public void addAlias(String alias, String formula) {
-        aliases.put(alias, formula);
+    public boolean addAlias(String alias, String formula) {
+        String resolvedFormula = resolveFormula(formula);
+        if (resolvedFormula == null || resolvedFormula.isEmpty()) {
+            return false;
+        }
+        aliases.put(alias, resolvedFormula);
+        return true;
     }
 
     public boolean removeAlias(String alias) {
@@ -42,5 +48,34 @@ public class AliasManager {
             sb.append(String.format("%-16s%s\n", alias, aliases.get(alias)));
         }
         return sb.toString();
+    }
+
+    private String resolveFormula(String formula) {
+        int l = -1;
+        StringBuilder resolved = new StringBuilder();
+        for (int i = 0; i < formula.length(); i++) {
+            char c = formula.charAt(i);
+            if (c == NESTED_ALIAS_WRAPPER) {
+                if (l == -1) {
+                    l = i;
+                } else {
+                    String nestedAlias = formula.substring(l + 1, i).trim();
+                    l = -1;
+                    if (nestedAlias.isEmpty()) {
+                        continue;
+                    }
+                    if (!isAlias(nestedAlias)) {
+                        return null;
+                    }
+                    resolved.append(getFormula(nestedAlias));
+                }
+            } else if (l == -1) {
+                resolved.append(c);
+            }
+        }
+        if (l != -1) {
+            return null;
+        }
+        return resolved.toString();
     }
 }

@@ -13,6 +13,8 @@ public class AliasCommand extends Command {
     private final static String L_FLAG = "-l";
     private final static String C_FLAG = "-c";
 
+    private final static String ERROR_ADDING = "Error adding alias. Please ensure nested aliases are specified properly.";
+
     public String getName() {
         return CommandConstants.ALIAS_NAME;
     }
@@ -66,7 +68,10 @@ public class AliasCommand extends Command {
                     return;
                 }
                 formula = m.group(1).replace("\"", "");
-                am.addAlias(arg, formula);
+
+                if (!am.addAlias(arg, formula)) {
+                    System.out.println(ERROR_ADDING);
+                }
             }
         }
     }
