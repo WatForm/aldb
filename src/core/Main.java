@@ -18,7 +18,7 @@ public class Main {
     private static String prevSessionLogPath;
 
     private static String PROGRAM_NAME = "Alloy Debugger (ALDB)";
-    private static String VERSION = "0.2.0";
+    private static String VERSION = "0.3.0";
     private static String PROGRAM_DESC = "A debugger for transition systems modelled in Alloy.";
 
     private static String RESTORE_FLAG_SHORT = "-r";
