@@ -29,6 +29,8 @@ This guide explains usage of ALDB, compatibility requirements for Alloy models, 
     ```sh
     $ java -jar <path-to-aldb.jar>
     ```
+    
+3. Instructions on building ALDB can be found in CONTRIBUTING.md
 
 ## Model and Configuration Format
 
