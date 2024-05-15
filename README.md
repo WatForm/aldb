@@ -27,7 +27,7 @@ This guide explains usage of ALDB, compatibility requirements for Alloy models, 
 
 2. Run ALDB from the command line:
     ```sh
-    $ java -jar <path-to-aldb.jar>
+    $ java -jar dist/aldb.jar
     ```
 
 ## Model and Configuration Format
