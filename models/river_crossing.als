@@ -16,16 +16,16 @@ pred init[s:State] {
 }
 
 /* At most one item to move from 'from' to 'to' */
-pred crossRiver [from, from', to, to': set Object] {
+pred crossRiver [from, fromprime, to, toprime: set Object] {
   one x: from | {
-    from' = from - x - Farmer - from'.eats
-    to' = to + x + Farmer
+    fromprime = from - x - Farmer - fromprime.eats
+    toprime = to + x + Farmer
   }
 }
 
-pred next[s, s':  State] {
+pred next[s, sprime:  State] {
   Farmer in s.near =>
-    crossRiver [s.near, s'.near, s.far, s'.far]
+    crossRiver [s.near, sprime.near, s.far, sprime.far]
   else
-    crossRiver [s.far, s'.far, s.near, s'.near]
+    crossRiver [s.far, sprime.far, s.near, sprime.near]
 }
