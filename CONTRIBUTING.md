@@ -9,6 +9,7 @@ Prior to submitting a PR, please ensure that:
 
 * Java 8 or later
 * [Ant](https://ant.apache.org/) 1.10.7 or later
+* Note: org.alloytools.alloy.dist-6.0.0.jar is included in lib (from https://github.com/AlloyTools/org.alloytools.alloy/releases)
 
 ## Build and Run
 
