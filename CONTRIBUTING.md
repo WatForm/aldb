@@ -19,7 +19,9 @@ Prior to submitting a PR, please ensure that:
 ## Running Tests
 
      $ ant test
-     
+
+Note: a tmp file is created in the model's directory by aldb during execution (and removed when execution is finished).  Examining this file can be helpful in debugging.
+
 ## Pull Request Process
 
 1. Ensure your code builds successfully.

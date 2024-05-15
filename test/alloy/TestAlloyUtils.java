@@ -45,7 +45,7 @@ public class TestAlloyUtils {
             "",
             "fact { init[first] }",
             "",
-            "fact { all s: State, s': s.next { next[s, s'] } }",
+            "fact { all s: State, sprime: s.next { next[s, sprime] } }",
             "",
             "run {  } for exactly 6 State"
         );
@@ -82,7 +82,7 @@ public class TestAlloyUtils {
             "",
             "fact { initialize[first] }",
             "",
-            "fact { all s: Snapshot, s': s.next { trans[s, s'] } }",
+            "fact { all s: Snapshot, sprime: s.next { trans[s, sprime] } }",
             "",
             "run {  } for exactly 6 Snapshot, exactly 3 Chair, 6 Int, exactly 4 Player, 6 seq"
         );
@@ -108,7 +108,7 @@ public class TestAlloyUtils {
             "",
             "fact { path[first] }",
             "",
-            "fact { all s: State, s': s.next { next[s, s'] } }",
+            "fact { all s: State, sprime: s.next { next[s, sprime] } }",
             "",
             "run {  } for exactly 6 State"
         );
@@ -134,7 +134,7 @@ public class TestAlloyUtils {
             "",
             "fact { break[last] }",
             "",
-            "fact { all s: State, s': s.next { next[s, s'] } }",
+            "fact { all s: State, sprime: s.next { next[s, sprime] } }",
             "",
             "run {  } for exactly 6 State"
         );
