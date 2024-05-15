@@ -222,7 +222,7 @@ public class AlloyUtils {
         Map<String, Integer> additionalSigScopes = parsingConf.getAdditionalSigScopes();
         String additionalConstraintFact = additionalConstraint.trim().isEmpty() ? "" : String.format("fact { %s }" + "\n\n", additionalConstraint);
         String transitionRelationFact = String.format(
-            "fact { all s: %s, s': s.next { %s[s, s'] } }" + "\n\n", stateSigName, transitionRelationName
+            "fact { all s: %s, sprime: s.next { %s[s, sprime] } }" + "\n\n", stateSigName, transitionRelationName
         );
         String sigScopes = String.format("run {  } for exactly %d %s", steps + 1, stateSigName);
         for (String sigScopeName : additionalSigScopes.keySet()) {
