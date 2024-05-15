@@ -60,7 +60,7 @@ The Alloy code that conforms to the above configuration – with the configurati
 /*  BEGIN_ALDB_CONF
  *
  *  stateSigName: State
- *  transitionConstraintName: next
+ *  transitionRelationName: next
  *  initPredicateName: init
  *
  *  END_ALDB_CONF
