@@ -162,7 +162,7 @@ public class TestAlloyInterface {
 
     private File createModelForTesting() throws IOException {
         String modelString = String.join("\n",
-            "open util/ordering[State]",
+            "open util/ordering[State] as aldb_order",
             "",
             "abstract sig SwitchState {}",
             "",
@@ -181,9 +181,9 @@ public class TestAlloyInterface {
             "    s.switch = Off implies sprime.switch = On",
             "}",
             "",
-            "fact { init[first] }",
+            "fact { init[aldb_order/first] }",
             "",
-            "fact { all s: State, sprime: s.next { next[s, sprime] } }",
+            "fact { all s: State, sprime: s.(aldb_order/next) { next[s, sprime] } }",
             ""
         );
 

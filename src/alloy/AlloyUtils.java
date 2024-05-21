@@ -83,11 +83,11 @@ public class AlloyUtils {
     }
 
     public static String annotatedTransitionSystemStep(String model, ParsingConf parsingConf, int steps) {
-        return annotatedTransitionSystem(model, parsingConf, steps, "path[first]");
+        return annotatedTransitionSystem(model, parsingConf, steps, "path[aldb_order/first]");
     }
 
     public static String annotatedTransitionSystemUntil(String model, ParsingConf parsingConf, int steps) {
-        return annotatedTransitionSystem(model, parsingConf, steps, "break[last]");
+        return annotatedTransitionSystem(model, parsingConf, steps, "break[aldb_order/last]");
     }
 
     /**
@@ -222,7 +222,7 @@ public class AlloyUtils {
         Map<String, Integer> additionalSigScopes = parsingConf.getAdditionalSigScopes();
         String additionalConstraintFact = additionalConstraint.trim().isEmpty() ? "" : String.format("fact { %s }" + "\n\n", additionalConstraint);
         String transitionRelationFact = String.format(
-            "fact { all s: %s, sprime: s.next { %s[s, sprime] } }" + "\n\n", stateSigName, transitionRelationName
+            "fact { all s: %s, sprime: s.(aldb_order/next) { %s[s, sprime] } }" + "\n\n", stateSigName, transitionRelationName
         );
         String sigScopes = String.format("run {  } for exactly %d %s", steps + 1, stateSigName);
         for (String sigScopeName : additionalSigScopes.keySet()) {
@@ -232,9 +232,9 @@ public class AlloyUtils {
             sigScopes += String.format(scopeFormat, additionalSigScopes.get(sigScopeName), sigScopeName);
         }
         return String.format(
-            String.format("open util/ordering[%s]" + "\n\n", stateSigName) +
+            String.format("open util/ordering[%s] as aldb_order" + "\n\n", stateSigName) +
             model + "\n\n" +
-            String.format("fact { %s[first] }" + "\n\n", initPredicateName) +
+            String.format("fact { %s[aldb_order/first] }" + "\n\n", initPredicateName) +
             additionalConstraintFact +
             transitionRelationFact +
             sigScopes,

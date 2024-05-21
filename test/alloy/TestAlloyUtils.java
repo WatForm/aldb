@@ -39,13 +39,13 @@ public class TestAlloyUtils {
         int steps = 5;
         boolean until = false;
         String expected = String.join("\n",
-            "open util/ordering[State]",
+            "open util/ordering[State] as aldb_order",
             "",
             "Some model",
             "",
-            "fact { init[first] }",
+            "fact { init[aldb_order/first] }",
             "",
-            "fact { all s: State, sprime: s.next { next[s, sprime] } }",
+            "fact { all s: State, sprime: s.(aldb_order/next) { next[s, sprime] } }",
             "",
             "run {  } for exactly 6 State"
         );
@@ -76,13 +76,13 @@ public class TestAlloyUtils {
         pc.setAdditionalSigScopes(sigScopes);
 
         String expected = String.join("\n",
-            "open util/ordering[Snapshot]",
+            "open util/ordering[Snapshot] as aldb_order",
             "",
             "Some model",
             "",
-            "fact { initialize[first] }",
+            "fact { initialize[aldb_order/first] }",
             "",
-            "fact { all s: Snapshot, sprime: s.next { trans[s, sprime] } }",
+            "fact { all s: Snapshot, sprime: s.(aldb_order/next) { trans[s, sprime] } }",
             "",
             "run {  } for exactly 6 Snapshot, exactly 3 Chair, 6 Int, exactly 4 Player, 6 seq"
         );
@@ -100,15 +100,15 @@ public class TestAlloyUtils {
         int steps = 5;
         boolean until = false;
         String expected = String.join("\n",
-            "open util/ordering[State]",
+            "open util/ordering[State] as aldb_order",
             "",
             "Some model",
             "",
-            "fact { init[first] }",
+            "fact { init[aldb_order/first] }",
             "",
-            "fact { path[first] }",
+            "fact { path[aldb_order/first] }",
             "",
-            "fact { all s: State, sprime: s.next { next[s, sprime] } }",
+            "fact { all s: State, sprime: s.(aldb_order/next) { next[s, sprime] } }",
             "",
             "run {  } for exactly 6 State"
         );
@@ -126,15 +126,15 @@ public class TestAlloyUtils {
         int steps = 5;
         boolean until = false;
         String expected = String.join("\n",
-            "open util/ordering[State]",
+            "open util/ordering[State] as aldb_order",
             "",
             "Some model",
             "",
-            "fact { init[first] }",
+            "fact { init[aldb_order/first] }",
             "",
-            "fact { break[last] }",
+            "fact { break[aldb_order/last] }",
             "",
-            "fact { all s: State, sprime: s.next { next[s, sprime] } }",
+            "fact { all s: State, sprime: s.(aldb_order/next) { next[s, sprime] } }",
             "",
             "run {  } for exactly 6 State"
         );
