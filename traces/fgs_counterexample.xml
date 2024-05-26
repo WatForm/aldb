@@ -1,6 +1,6 @@
 <alloy builddate="2018-04-08T17:20:06.754Z">
 
-<instance bitwidth="4" maxseq="4" command="Check Default_Lateral_Mode_Is_ROLL for 11 Snapshot, exactly 2 EventLabel" filename="/media/jis/TOSHIBA EXT/JIS/Estudio/UWaterloo/Research/Git/dash/Models/Optimisations/optimised/generated_optimised.als">
+<instance bitwidth="4" maxseq="4" mintrace="-1" maxtrace="-1" command="Check Default_Lateral_Mode_Is_ROLL for 11 Snapshot, exactly 2 EventLabel" filename="/media/jis/TOSHIBA EXT/JIS/Estudio/UWaterloo/Research/Git/dash/Models/Optimisations/optimised/generated_optimised.als" tracelength="1" backloop="0">
 
 <sig label="seq/Int" ID="0" parentID="1" builtin="yes">
 </sig>

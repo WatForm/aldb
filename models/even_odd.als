@@ -16,6 +16,6 @@ pred init[s: State] {
     s.i = 0 || s.i = 1
 }
 
-pred next[s, s': State] {
-    s'.i = plus[s.i, 2]
+pred next[s, sprime: State] {
+    sprime.i = plus[s.i, 2]
 }

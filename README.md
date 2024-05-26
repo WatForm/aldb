@@ -27,7 +27,7 @@ This guide explains usage of ALDB, compatibility requirements for Alloy models, 
 
 2. Run ALDB from the command line:
     ```sh
-    $ java -jar <path-to-aldb.jar>
+    $ java -jar dist/aldb.jar
     ```
 
 ## Model and Configuration Format
@@ -60,7 +60,7 @@ The Alloy code that conforms to the above configuration – with the configurati
 /*  BEGIN_ALDB_CONF
  *
  *  stateSigName: State
- *  transitionConstraintName: next
+ *  transitionRelationName: next
  *  initPredicateName: init
  *
  *  END_ALDB_CONF

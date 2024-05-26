@@ -12,9 +12,9 @@ pred init[s: State] {
     s.b = Off
 }
 
-pred next[s, s': State] {
-    s.a = On implies s'.a = Off
-    s.a = Off implies s'.a = On
-    s.b = On implies s'.b = Off
-    s.b = Off implies s'.b = On
+pred next[s, sprime: State] {
+    s.a = On implies sprime.a = Off
+    s.a = Off implies sprime.a = On
+    s.b = On implies sprime.b = Off
+    s.b = Off implies sprime.b = On
 }

@@ -9,6 +9,7 @@ Prior to submitting a PR, please ensure that:
 
 * Java 8 or later
 * [Ant](https://ant.apache.org/) 1.10.7 or later
+* Note: org.alloytools.alloy.dist-6.0.0.jar is included in lib (from https://github.com/AlloyTools/org.alloytools.alloy/releases)
 
 ## Build and Run
 
@@ -18,7 +19,9 @@ Prior to submitting a PR, please ensure that:
 ## Running Tests
 
      $ ant test
-     
+
+Note: a tmp file is created in the model's directory by aldb during execution (and removed when execution is finished).  Examining this file can be helpful in debugging.
+
 ## Pull Request Process
 
 1. Ensure your code builds successfully.

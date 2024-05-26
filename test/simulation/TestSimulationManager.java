@@ -74,7 +74,7 @@ public class TestSimulationManager {
     public void testInitializeWithModel_noInitPredicate() throws IOException {
         String noInitModel = String.join("\n",
             "sig State {}",
-            "pred next[s, s': State] {}",
+            "pred next[s, sprime: State] {}",
             ""
         );
         initializeTestWithModelString(noInitModel);
@@ -115,7 +115,7 @@ public class TestSimulationManager {
             "sig Foo {}",
             "sig State { x: set Foo }",
             "pred init[s: State] {}",
-            "pred next[s, s': State] {}",
+            "pred next[s, sprime: State] {}",
             ""
         );
         initializeTestWithModelString(model);
@@ -129,7 +129,7 @@ public class TestSimulationManager {
         String unsatModel = String.join("\n",
             "sig State { x: Int }",
             "pred init[s: State] { s.x = none }",
-            "pred next[s, s': State] {}",
+            "pred next[s, sprime: State] {}",
             ""
         );
         initializeTestWithModelString(unsatModel);
