@@ -180,7 +180,7 @@ public class AlloyUtils {
 
         for (int i = 0; i < rawConstraint.length(); i++) {
             Character c = rawConstraint.charAt(i);
-            if (!Character.isLetterOrDigit(c)) {
+            if (!Character.isLetterOrDigit(c) && !c.equals('_')) {
                 String field = buffer.toString();
                 if (fields.contains(field)) {
                     String stateField = String.format("s.%s", field);
