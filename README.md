@@ -68,7 +68,7 @@ The Alloy code that conforms to the above configuration – with the configurati
 
 sig State { … }
 pred init[s: State] { … }
-pred next[s, sprime: State] { … }
+pred next[s, s’: State] { … }
 ```
 
 Refer to the worked example in this guide for a sample of a concrete Alloy model that is supported by ALDB.
@@ -236,19 +236,19 @@ pred init [s: State] {
 }
 
 /* At most one item to move from ‘from’ to ‘to’. */
-pred crossRiver [from, fromprime, to, toprime: set Object] {
+pred crossRiver [from, from’, to, to’: set Object] {
   one x: from | {
-    fromprime = from - x - Farmer - fromprime.eats
-    toprime = to + x + Farmer
+    from’ = from - x - Farmer - from’.eats
+    to’ = to + x + Farmer
   }
 }
 
 /* Transition to the next state. */
-pred next [s, sprime: State] {
+pred next [s, s’: State] {
   Farmer in s.near =>
-    crossRiver [s.near, sprime.near, s.far, sprime.far]
+    crossRiver [s.near, s’.near, s.far, s’.far]
   else
-    crossRiver [s.far, sprime.far, s.near, sprime.near]
+    crossRiver [s.far, s’.far, s.near, s’.near]
 }
 ```
 [http://alloytools.org/tutorials/online/frame-RC-1.html](http://alloytools.org/tutorials/online/frame-RC-1.html)

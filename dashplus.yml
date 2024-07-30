@@ -1,0 +1,4 @@
+stateSigName: DshSnapshot
+transitionRelationName: dsh_small_step
+initPredicateName: dsh_initial
+additionalSigScopes: {}
