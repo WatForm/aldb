@@ -1,5 +1,9 @@
 package simulation;
-
+import core.DashGUI;
+import core.DashImageDisplay;
+import core.ImageDisplay;
+import core.JsonDrawing;
+import core.AlloyGUI;
 import state.StateGraph;
 import state.StateNode;
 import state.StatePath;
@@ -9,7 +13,11 @@ import alloy.AlloyInterface;
 import alloy.AlloyUtils;
 import alloy.ParsingConf;
 import alloy.SigData;
-
+import ca.uwaterloo.watform.core.DashUtilFcns;
+import ca.uwaterloo.watform.mainfunctions.MainFunctions;
+import ca.uwaterloo.watform.parser.DashModule;
+import commands.CommandConstants;
+import edu.mit.csail.sdg.alloy4.A4Reporter;
 import edu.mit.csail.sdg.alloy4.Err;
 import edu.mit.csail.sdg.ast.Sig;
 import edu.mit.csail.sdg.parser.CompModule;
@@ -17,8 +25,11 @@ import edu.mit.csail.sdg.translator.A4Solution;
 import edu.mit.csail.sdg.translator.A4Tuple;
 
 import java.io.IOException;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,9 +38,12 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.json.JSONObject;
 import org.yaml.snakeyaml.error.YAMLException;
-
+import javax.swing.*;
 public class SimulationManager {
     private final static String TEMP_FILENAME_PREFIX = "_tmp_";
 
@@ -45,10 +59,16 @@ public class SimulationManager {
     private Stack<A4Solution> activeSolutions;
     private AliasManager aliasManager;
     private ConstraintManager constraintManager;
-
+    private GraphPrinter gp;
+    private ImageDisplay display;
+    private AlloyGUI stateTreeViewer;
     private boolean traceMode;
-    private boolean diffMode;  // Whether differential output is enabled.
-
+    private boolean diffMode;
+    
+    
+    
+    
+    
     public SimulationManager() {
         scopes = new TreeMap<>();
         statePath = new StatePath();
@@ -58,11 +78,104 @@ public class SimulationManager {
         activeSolutions = new Stack<>();
         aliasManager = new AliasManager();
         constraintManager = new ConstraintManager();
-
         traceMode = false;
         diffMode = true;
+        
     }
-
+    
+    // checks if a given label represents a state, e.g. is s/S followed by a digit
+    public boolean isState(String label) {
+    	String regex = "^[sS]\\d+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(label);
+        return matcher.matches();
+    }
+    
+    
+    
+    //implements logic for handling clicks on transitions/states in GUI
+    public void handleClick(String label) { //
+    	
+    	if ((isState(label))) {
+    		String identifier = label.substring(1);
+    		moveToState(Integer.parseInt(identifier));
+    		return;
+    	}
+    	
+    }
+    
+    
+    public void savePath() { //saves the path for the current node
+    	if (statePath.getCurNode()!=null) {
+	    	StateNode curr_node_from_path = statePath.getCurNode();
+	    	StateNode curr_node=stateGraph.getNodeById(curr_node_from_path.getIdentifier());
+	    	if (curr_node.getPath().size()==0) {
+	    		curr_node.storePath(statePath.getPath());
+	    		//System.out.println(curr_node.getPath());
+	    	}
+    	}
+    }
+ 
+    //builds the .dot file using the information stored in stateGraph and generates the .png image
+    public void printGraph() {
+    	gp = new GraphPrinter();
+    	for (int i = 0; i < stateGraph.size(); i++) {
+            StateNode node = stateGraph.getNode(i);
+            if (node.getSteps().size()!=0) {
+	            for (StateNode next_node : node.getSteps()) {
+	            	if (next_node.getTransitionName().isEmpty()) {
+	            		gp.addln("S"+Integer.toString(node.getIdentifier()) + " -> " + "S"+Integer.toString(next_node.getIdentifier()));
+	            	}
+	            	else {
+	            		gp.addln("S"+Integer.toString(node.getIdentifier()) + " -> " + "S"+Integer.toString(next_node.getIdentifier())+"[label="+next_node.getTransitionName() +"]");
+	            	}
+	            	
+	            }
+            }
+            else {
+            	gp.addln("S"+Integer.toString(node.getIdentifier()));
+            }
+            if (node.hasStable()) {
+	            if (node.getStable()) {
+	        		gp.addln("S"+Integer.toString(node.getIdentifier()) + "[color=green]");
+	        	}
+	            else {
+	            	gp.addln("S"+Integer.toString(node.getIdentifier()) + "[color=red]");
+	            }
+            }
+        }
+    	if (statePath.getCurNode()!=null) {
+	    	StateNode curr_node = statePath.getCurNode();
+	    	gp.addln("S"+Integer.toString(curr_node.getIdentifier())+ "[style=filled, fillcolor=yellow]"); //highlight curr node
+	    	
+	    	
+    	}
+	    gp.print("state_tree");
+	    gp.generateJson("state_tree");
+	    
+    }
+    
+    public void showStateTreeJson() { // starts/refreshes the GUI displaying the interactive state tree
+    	
+    	if (stateTreeViewer==null) {
+    		stateTreeViewer = new AlloyGUI("state_tree.json",this);
+    		stateTreeViewer.refreshJsonWithDelay(500);
+    		return;
+    	}
+    	stateTreeViewer.refreshJsonWithDelay(500);
+    	
+    }
+    
+    public void loadImage() {
+    	
+	    showStateTreeJson();
+	    if (this.display==null) {
+	 	   	this.display=new ImageDisplay();
+	 	}
+	    display.refresh();
+	    display.setVisible(true);
+    }
+    
     public boolean isTrace() {
         return traceMode;
     }
@@ -86,7 +199,25 @@ public class SimulationManager {
     public void setParsingConf(ParsingConf conf) {
         persistentParsingConf = conf;
     }
-
+    
+    // move to a specified state using the state path stored (which represents the first route taken to reach the state)
+    public boolean moveToState(int identifier) {
+    	if (identifier > stateGraph.size()) {
+    		return false;
+    	}
+    	else {
+    		List<StateNode> targetpath = new ArrayList<>();
+    		StateNode targetnode = stateGraph.getNodeById(identifier);
+    		for (int i : targetnode.getPath()) {
+    			targetpath.add(stateGraph.getNodeById(i));
+    		}
+    		statePath.setPath(targetpath);
+    		printGraph();
+    		loadImage();
+    		return true;
+    	}
+    }
+    
     /**
      * initialize is a wrapper for initializing a model or trace which cleans up internal state if
      * initialization fails.
@@ -94,7 +225,8 @@ public class SimulationManager {
      */
     public boolean initialize(File file, boolean isTrace) {
         ParsingConf oldEmbeddedParsingConf = embeddedParsingConf;
-
+        
+        
         // Ensure any embedded ParsingConf from a previously loaded model is removed.
         embeddedParsingConf = null;
 
@@ -103,9 +235,19 @@ public class SimulationManager {
             // The embedded conf of the new model shouldn't persist if load fails.
             embeddedParsingConf = oldEmbeddedParsingConf;
         }
+        if (res) {
+	        printGraph();
+	        loadImage();
+	        savePath();
+        }
         return res;
     }
-
+    
+  
+	// replace the '/'s in dash states and transitions with '_'
+	public String formatString(String s) {
+		return s.replace('/', '_');
+	}
     /**
      * performReverseStep goes backward by `steps` states in the current state traversal path.
      * @param steps
@@ -122,7 +264,7 @@ public class SimulationManager {
             statePath.decrementPosition(steps + 1, traceMode);
             performStep(1);
         }
-
+ 
         // If the user was on some alternate path, we need to perform `alt` until we get back
         // to the correct StateNode.
         while (!statePath.getCurNode().equals(targetNode)) {
@@ -131,6 +273,9 @@ public class SimulationManager {
 
         // Ensure the ID is set when reverse-stepping back to an alternative initial state.
         statePath.getCurNode().setIdentifier(targetNode.getIdentifier());
+        //statePath.printPath();
+        printGraph();
+        loadImage();
     }
 
     /**
@@ -158,9 +303,10 @@ public class SimulationManager {
             statePath.incrementPosition(steps);
             return true;
         }
-
+        
         statePath.commitNodes();
-
+        
+        
         String pathPredicate = AlloyUtils.getPathPredicate(constraints, stateSigData);
         try {
             String curInitString;
@@ -213,7 +359,11 @@ public class SimulationManager {
 
         this.activeSolutions.clear();
         this.activeSolutions.push(sol);
-
+        //statePath.printPath();
+        
+        printGraph();
+        loadImage();
+        savePath();
         return true;
     }
 
@@ -254,7 +404,11 @@ public class SimulationManager {
         }
 
         stateGraph.addNodes(startNode, stateNodes);
-
+        //statePath.printPath();
+        
+        printGraph();
+        loadImage();
+        savePath();
         return true;
     }
 
@@ -266,7 +420,7 @@ public class SimulationManager {
      */
     public boolean performUntil(int limit) {
         String breakPredicate = AlloyUtils.getBreakPredicate(constraintManager.getConstraints(), stateSigData);
-
+        
         for (int steps = 1; steps <= limit; steps++) {
             try {
                 String curInitString;
@@ -314,10 +468,11 @@ public class SimulationManager {
 
             this.activeSolutions.clear();
             this.activeSolutions.push(sol);
-
+            printGraph();
+            loadImage();
+            savePath();
             return true;
         }
-
         return false;
     }
 
@@ -370,7 +525,8 @@ public class SimulationManager {
 
         activeSolutions.clear();
         activeSolutions.push(sol);
-
+        printGraph();
+        loadImage();
         return true;
     }
 
@@ -383,6 +539,7 @@ public class SimulationManager {
      */
     public boolean validateConstraint(String constraint) {
         String breakPredicate = AlloyUtils.getBreakPredicate(Arrays.asList(constraint), stateSigData);
+
 
         try {
             AlloyUtils.writeToFile(
@@ -417,7 +574,14 @@ public class SimulationManager {
     public List<String> getScopeForSig(String sigName) {
         return scopes.get(sigName);
     }
-
+    
+    public String getStateString(int id) {
+    	if (id<=0 || id-1>stateGraph.size()) {
+    		return "state not found!";
+    	}
+        return stateGraph.getNode(id-1).toString();
+    }
+    
     public String getCurrentStateString() {
         return statePath.getCurNode().toString();
     }
@@ -479,7 +643,7 @@ public class SimulationManager {
             System.out.println("error. I/O failed.");
             return false;
         }
-
+        
         alloyModelFile = tempModelFile;
 
         String modelString;
@@ -588,7 +752,8 @@ public class SimulationManager {
             System.out.printf("error. Sig %s not found.\n", getParsingConf().getStateSigName());
             return false;
         }
-
+        //System.out.println(getParsingConf().getStateSigName());
+        
         stateSigData = new SigData(stateSig);
 
         List<StateNode> initialNodes = getStateNodesForA4Solution(sol);

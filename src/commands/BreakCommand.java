@@ -2,6 +2,7 @@ package commands;
 
 import simulation.AliasManager;
 import simulation.ConstraintManager;
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 import java.util.Arrays;
@@ -31,6 +32,9 @@ public class BreakCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (input.length == 1) {
             System.out.println(CommandConstants.BREAK_HELP);
             return;
@@ -74,7 +78,6 @@ public class BreakCommand extends Command {
                 if (am.isAlias(constraint)) {
                     constraint = am.getFormula(constraint);
                 }
-
                 if (simulationManager.validateConstraint(constraint)) {
                     cm.addConstraint(constraint);
                 } else {

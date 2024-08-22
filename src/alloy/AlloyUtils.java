@@ -89,7 +89,10 @@ public class AlloyUtils {
     public static String annotatedTransitionSystemUntil(String model, ParsingConf parsingConf, int steps) {
         return annotatedTransitionSystem(model, parsingConf, steps, "break[aldb_order/last]");
     }
-
+    
+    public static String annotatedTransitionSystemForced(String model, ParsingConf parsingConf, int steps) {
+        return annotatedTransitionSystem(model, parsingConf, steps, "transitionForced");
+    }
     /**
      * getBreakPredicate creates a predicate containing all breakpoints entered
      * by the user.
@@ -98,13 +101,13 @@ public class AlloyUtils {
      */
     public static String getBreakPredicate(List<String> rawConstraints, SigData sigData) {
         List<String> constraints = new ArrayList<String>();
+        
         for (String rawConstraint : rawConstraints) {
             constraints.add(String.format("(%s)", getConstraint(rawConstraint, sigData.getFields())));
         }
 
         String constraintsString = String.join(String.format(" %s ", AlloyConstants.OR), constraints);
         String predicateBody = String.format("\t%s\n", constraintsString);
-
         return makeStatePredicate(
             AlloyConstants.BREAK_PREDICATE_NAME,
             sigData.getLabel(),
@@ -174,13 +177,12 @@ public class AlloyUtils {
         if (rawConstraint.trim().isEmpty()) {
             return AlloyConstants.ALWAYS_TRUE;
         }
-
         StringBuilder constraint = new StringBuilder();
         StringBuilder buffer = new StringBuilder();
 
         for (int i = 0; i < rawConstraint.length(); i++) {
             Character c = rawConstraint.charAt(i);
-            if (!Character.isLetterOrDigit(c)) {
+            if (!Character.isLetterOrDigit(c) && !c.equals('_')) {
                 String field = buffer.toString();
                 if (fields.contains(field)) {
                     String stateField = String.format("s.%s", field);
@@ -204,10 +206,27 @@ public class AlloyUtils {
                 constraint.append(stateField);
             }
         }
-
+        
         return constraint.toString();
     }
 
+    
+    public static String getTransitionPredicate(String rawConstraint) {
+    	StringBuilder constraint = new StringBuilder();
+
+        // Start building the predicate string
+    	constraint.append("pred transitionForced {\n")
+                 .append("  some s: DshSnapshot, sn: DshSnapshot | sn.(s.")
+                 .append(rawConstraint).append(")\n")
+                 .append("}");
+
+        return constraint.toString();
+    }
+    
+    
+    
+    
+    
     /**
      * annotatedTransitionSystem generates Alloy code based on the following rules:
      * 1. Use ordering module.

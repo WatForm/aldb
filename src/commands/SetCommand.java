@@ -2,6 +2,7 @@ package commands;
 
 import alloy.AlloyUtils;
 import alloy.ParsingConf;
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 import java.io.IOException;
@@ -65,6 +66,9 @@ public class SetCommand extends Command {
 
     private void setConf(String[] input, SimulationManager simulationManager) {
         // Omitting a filename will set the default conf.
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (input.length < 3) {
             System.out.print(CommandConstants.SETTING_PARSING_OPTIONS);
             simulationManager.setParsingConf(new ParsingConf());

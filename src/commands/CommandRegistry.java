@@ -20,6 +20,9 @@ public final class CommandRegistry {
         new StepCommand(),
         new TraceCommand(),
         new UntilCommand(),
+        new ShowCommand(),
+        new GotoCommand(),
+        new ForceCommand(),
     };
 
     public static Command commandForString(String string) {
@@ -30,12 +33,14 @@ public final class CommandRegistry {
             if (command.getName().equals(string)) {
                 return command;
             }
-
+            
             String[] shorthand = command.getShorthand();
-            for (String s : shorthand) {
-                if (s.equals(string)) {
-                    return command;
-                }
+            if (shorthand!=null) {
+	            for (String s : shorthand) {
+	                if (s.equals(string)) {
+	                    return command;
+	                }
+	            }
             }
         }
 

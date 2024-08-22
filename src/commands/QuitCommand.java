@@ -1,5 +1,6 @@
 package commands;
 
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 public class QuitCommand extends Command {
@@ -21,6 +22,9 @@ public class QuitCommand extends Command {
 
     public void execute(String[] input, SimulationManager simulationManager) {
         // Only require user confirmation when they are in an active simulation.
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (!simulationManager.isInitialized()) {
             System.exit(0);
         }

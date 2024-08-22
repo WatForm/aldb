@@ -1,6 +1,7 @@
 package commands;
 
 import simulation.AliasManager;
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 import java.util.Arrays;
@@ -32,6 +33,9 @@ public class AliasCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (input.length == 1) {
             System.out.println(CommandConstants.ALIAS_HELP);
             return;

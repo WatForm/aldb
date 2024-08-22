@@ -9,28 +9,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
+import ca.uwaterloo.watform.core.DashStrings;
 /**
  * StateNode represents a single execution state of an Alloy transition system.
  */
 public class StateNode {
     private List<StateNode> steps; // outgoing edges (states that can be stepped to from this state)
     private SortedMap<String, List<String>> state; // the state that this node represents
+    // can aldb support multi arity relations ??
+    
     private int id;
     private ParsingConf parsingConf;
     private SigData sigData;
+    private List<Integer> path; // redo with List<StateNode>
 
     public StateNode(SigData data, ParsingConf conf) {
+    	//System.out.println("New state node created ");
         sigData = data;
         parsingConf = conf;
         steps = new ArrayList<>();
         state = new TreeMap<>();
-
+        path = new ArrayList<>();
         for (String field : sigData.getFields()) {
+        	//System.out.println(field);
             state.put(field, new ArrayList<>());
         }
     }
-
+    //implement a function for look up in state map
+    
+    
+    
+    public boolean hasStable() {
+    	if (state.get(DashStrings.stableName)!=null) { //refer to strings in dash core 
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public boolean getStable() {
+    	if (state.get("dsh_stable")!=null && state.get(DashStrings.stableName).contains(DashStrings.trueName)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public void printId() {
+    	System.out.println(id);
+    }
+    
+    public String getTransitionName(){
+    	return String.join(", ", state.get(DashStrings.transTakenName+"0"));
+    }
+    
+    public List<String> getControlStateNames(){
+    	return state.get(DashStrings.confName+"0");
+    }
+    		
     public void addValueToField(String field, String value) {
         if (!state.containsKey(field)) {
             return;
@@ -51,12 +85,22 @@ public class StateNode {
 
         valuesForField.add(value);
     }
+    
+    public void storePath(List<Integer> input_path) {
+    	path=input_path;
+    }
+    
+    public List<Integer> getPath() {
+    	return path;
+    }
 
     public List<StateNode> getSteps() {
         return steps;
     }
 
     public void addStep(StateNode node) {
+    	//System.out.println("Adding new node to step:");
+    	//node.printId();
         steps.add(node);
     }
 
@@ -127,6 +171,7 @@ public class StateNode {
             StringBuilder alloyFormattedValsBuilder = new StringBuilder();
             String prefix = "";
             for (String val : vals) {
+            	//System.out.println(val);
                 alloyFormattedValsBuilder.append(prefix);
                 prefix = String.format(" %s ", AlloyConstants.PLUS);
                 String[] values = val.split(AlloyConstants.SET_DELIMITER);
@@ -159,14 +204,26 @@ public class StateNode {
     public void setIdentifier(int id) {
         this.id = id;
     }
-
-    private String getStateString() {
+    
+    public void printState() {
+    	for (String key : state.keySet()) {
+        	System.out.println(key);
+        	System.out.println(state.get(key));
+        }
+    }
+    
+    public String getStateString() {
         StringBuilder sb = new StringBuilder();
+        //System.out.println("calling getstatestring function");
+        //printState();
         for (String key : state.keySet()) {
+        	//System.out.println(key);
             sb.append(String.format("\n%s: %s ", key, AlloyConstants.BLOCK_INITIALIZER));
+            //System.out.println(sb.toString());
             sb.append(String.format("%s %s", String.join(", ", state.get(key)), AlloyConstants.BLOCK_TERMINATOR));
         }
         sb.append("\n");
+        
         return sb.toString();
     }
 

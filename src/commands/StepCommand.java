@@ -1,6 +1,7 @@
 package commands;
 
 import simulation.AliasManager;
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 import java.util.ArrayList;
@@ -8,15 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class StepCommand extends Command {
-    private final static String[] SHORTHAND = CommandConstants.STEP_SHORTHAND;
+
 
     public String getName() {
         return CommandConstants.STEP_NAME;
     }
 
-    public String[] getShorthand() {
-        return SHORTHAND;
-    }
+
 
     public String getDescription() {
         return CommandConstants.STEP_DESCRIPTION;
@@ -27,11 +26,14 @@ public class StepCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
-        if (!simulationManager.isInitialized()) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
+    	if (!simulationManager.isInitialized()) {
             System.out.println(CommandConstants.NO_MODEL_LOADED);
             return;
         }
-
+        
         int steps = 1;
         List<String> constraints = new ArrayList<String>();
 

@@ -1,5 +1,6 @@
 package commands;
 
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 public class CurrentCommand extends Command {
@@ -22,6 +23,9 @@ public class CurrentCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (!simulationManager.isInitialized()) {
             System.out.println(CommandConstants.NO_MODEL_LOADED);
             return;

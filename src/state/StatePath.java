@@ -16,7 +16,28 @@ public class StatePath {
         position = 0;
         tempPathSize = 0;
     }
+    
+    public void printPath() {
+    	System.out.println("printing path");
+    	for (int i = 0; i < path.size(); i++) {
+            path.get(i).printId();
+        }
+    }
+    public List<Integer> getPath(){
+    	List<Integer> result = new ArrayList<>();
+    	for (int i = 0; i < path.size(); i++) {
+            result.add(path.get(i).getIdentifier());
+        }
+    	return result;
+    }
+    public int getLength() {
+    	return path.size();
+    }
 
+    public int getIndex(StateNode target) {
+    	return path.indexOf(target);
+    }
+    
     private void appendPath(List<StateNode> path) {
         this.path.addAll(path);
         position = this.path.size() - 1;
@@ -93,10 +114,14 @@ public class StatePath {
         path.clear();
         tempPathSize = 0;
     }
-
+    public void setPath(List<StateNode> Path) {
+    	clearPath();
+        appendPath(Path);
+        
+    }
     public String getHistory(int n, boolean traceMode) {
         int i = position - 1;
-        int j = i;
+        int j = i+1;
         int pos;
         StringBuilder sb = new StringBuilder();
         while (j >= 0 && i - j < n) {

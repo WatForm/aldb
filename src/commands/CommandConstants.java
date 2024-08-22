@@ -3,6 +3,7 @@ package commands;
 public class CommandConstants {
     public final static String DONE = "done.";
     public final static String READING_MODEL = "Reading model from %s...";
+    public final static String READING_DASH_MODEL = "Reading dash model from %s... \n";
     public final static String READING_TRACE = "Reading trace from %s...";
     public final static String WRITING_DOT_GRAPH = "Writing DOT graph to %s...";
     public final static String NO_SUCH_FILE = "%s: No such file.\n";
@@ -39,6 +40,13 @@ public class CommandConstants {
         "Usage: current [property]\n\n" +
         "By default, all properties are printed.";
     public final static String[] CURRENT_SHORTHAND = {"c", "curr"};
+    
+    public final static String SHOW_NAME = "show";
+    public final static String SHOW_DESCRIPTION = "Display a specified state";
+    public final static String SHOW_HELP = "Display a specified state.\n\n" +
+        "Usage: show [state name]\n\n" +
+        "By default, all properties are printed.";
+    public final static String[] SHOW_SHORTHAND = {"s"};
 
     public final static String HELP_NAME = "help";
     public final static String HELP_DESCRIPTION = "Display the list of available commands";
@@ -49,6 +57,10 @@ public class CommandConstants {
     public final static String INIT_DESCRIPTION = "Return to the initial state of the active model";
     public final static String INIT_HELP = "Return to the initial state of the active model.\n\nUsage: init";
     public final static String[] INIT_SHORTHAND = {"i"};
+    
+    public final static String GOTO_NAME = "goto";
+    public final static String GOTO_DESCRIPTION = "Goto a specified state";
+    public final static String GOTO_HELP = "Goto a specified state.\n\nUsage: goto [state name]";
 
     public final static String LOAD_NAME = "load";
     public final static String LOAD_DESCRIPTION = "Load an Alloy model";
@@ -156,4 +168,17 @@ public class CommandConstants {
     public final static String DOT_DESCRIPTION = "Dump DOT graph to disk";
     public final static String DOT_HELP = "Dump DOT graph to the current working directory.\n\nUsage: dot";
     public final static String[] DOT_SHORTHAND = {"d"};
+    
+    public final static String TEST_NAME = "test";
+    public final static String[] TEST_SHORTHAND = {"T"};
+    
+    public final static String Force_NAME = "force";
+    public final static String Force_DESCRIPTION = "force a constraint to happen in a specified number of steps (10 by default)";
+    public final static String Force_HELP = "force a constraint to happen in a specified number of steps (10 by default).\\n\\nUsage: force [transition name] [max-steps]";
+    
+    
+    public final static String[] Force_SHORTHAND = {"f"};
+    
+    
 }
+

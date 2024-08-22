@@ -1,6 +1,7 @@
 package commands;
 
 import alloy.AlloyConstants;
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class ScopeCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (!simulationManager.isInitialized()) {
             System.out.println(CommandConstants.NO_MODEL_LOADED);
             return;

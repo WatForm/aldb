@@ -7,6 +7,8 @@ import org.yaml.snakeyaml.representer.Representer;
 import java.util.HashMap;
 import java.util.Map;
 
+
+// do comments for this 
 public class ParsingConf {
     private static final String STATE_SIG_NAME_DEFAULT = "State";
     private static final String INIT_PREDICATE_NAME_DEFAULT = "init";

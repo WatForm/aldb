@@ -1,5 +1,6 @@
 package commands;
 
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 import java.io.File;
@@ -28,6 +29,9 @@ public class TraceCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (input.length < 2) {
             System.out.println(CommandConstants.NO_FILE_SPECIFIED);
             return;

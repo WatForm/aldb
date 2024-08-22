@@ -1,5 +1,6 @@
 package commands;
 
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 import java.lang.StringBuilder;
@@ -28,6 +29,9 @@ public class HelpCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         if (input.length < 2) {
             System.out.println(getHelp());
         } else {

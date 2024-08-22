@@ -3,6 +3,7 @@ package core;
 import commands.Command;
 import commands.CommandConstants;
 import commands.CommandRegistry;
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
@@ -14,7 +15,10 @@ import java.io.IOException;
 
 public class Main {
     private static SimulationManager simulationManager;
+    private static DashSimulationManager dashsimulationManager;
     private static SessionLog log;
+    
+    private static String SET_MODE_PROMPT = "Enter 'd' or 'dash' to enter dash mode. Enter anything else to enter alloy mode.";
     private static String prevSessionLogPath;
 
     private static String PROGRAM_NAME = "Alloy Debugger (ALDB)";
@@ -44,7 +48,8 @@ public class Main {
         parser.addArgument(VERSION_FLAG_SHORT, VERSION_FLAG).help(VERSION_DESC).action(Arguments.version());
         parser.addArgument(RESTORE_FLAG_SHORT, RESTORE_FLAG).help(RESTORE_DESC);
         parser.addArgument(FILE_ARG_NAME).nargs(OPTIONAL).help(FILE_ARG_DESC);
-
+        
+        boolean dashmode = false;
         Namespace ns = null;
         try {
             ns = parser.parseArgs(args);
@@ -54,8 +59,11 @@ public class Main {
         }
 
         simulationManager = new SimulationManager();
+        dashsimulationManager = new DashSimulationManager();
         CLI cli = new CLI();
-
+        
+        //your code here
+        
         // Pre-load a model if its path is passed in on start-up.
         String modelPath = ns.getString(FILE_ARG_NAME);
         if (modelPath != null) {
@@ -85,10 +93,26 @@ public class Main {
                 prevLog.restore(simulationManager, log);
             }
         }
-
+        System.out.println(SET_MODE_PROMPT);
+        String[] modeinput = cli.getInput();
+        if (modeinput.length > 0 && (modeinput[0].equals("d") || modeinput[0].equals("dash"))) {
+            dashmode = true;
+            System.out.println("Dash mode activated.");
+        }
+        else {
+        	System.out.println("Alloy mode activated.");
+        }
         while (true) {
             String[] input = cli.getInput();
+            
             Command command = CommandRegistry.commandForString(input[0]);
+            if (dashmode) {
+            	command.execute(input, dashsimulationManager);
+            	if (log.isInitialized()) {
+                    log.append(input);
+                }
+            	continue;
+            }
             command.execute(input, simulationManager);
             if (log.isInitialized()) {
                 log.append(input);

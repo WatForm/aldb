@@ -1,5 +1,6 @@
 package commands;
 
+import simulation.DashSimulationManager;
 import simulation.SimulationManager;
 
 public class NotFoundCommand extends Command {
@@ -16,6 +17,9 @@ public class NotFoundCommand extends Command {
     }
 
     public void execute(String[] input, SimulationManager simulationManager) {
+    	if (simulationManager instanceof DashSimulationManager) {
+            simulationManager = (DashSimulationManager) simulationManager; 
+        } 
         System.out.printf(CommandConstants.UNDEFINED_COMMAND, input[0]);
     }
 }

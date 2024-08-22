@@ -12,7 +12,28 @@ public class StateGraph {
     public StateGraph() {
         nodes = new ArrayList<>();
     }
-
+    
+    public StateNode getNode(int i){
+    	return nodes.get(i);
+    }
+    public StateNode getNodeById(int identifier){
+    	for (StateNode i:nodes) {
+    		if (i.getIdentifier()==identifier) {
+    			return i;
+    		}
+    	}
+    	return null;
+    }
+    
+    
+    
+    
+    
+    public void printGraph() {
+    	for (StateNode i:nodes) {
+    		System.out.println(i.getStateString());
+    	} 
+    }
     /**
      * initWithNodes initializes the graph with initial nodes.
      * @param List<StateNode> nodes
